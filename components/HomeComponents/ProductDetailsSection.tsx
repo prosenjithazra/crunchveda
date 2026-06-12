@@ -7,28 +7,22 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 
 import { assets } from '@/json/assest';
 import { ProductDetailsSectionWrapper } from '@/styles/StyledComponents/ProductDetailsSectionWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 export default function ProductDetailsSection() {
-  const { data: moduleData } = useContentModule("home");
-  const detailsRecord = moduleData?.records?.find(r => r.id === "home-product-details");
+  const { data: sectionData } = useHomeSection("product-details");
 
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = detailsRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
+  const walnutEyebrow = sectionData?.content?.walnutEyebrow || "NATURAL SUPERFOOD";
+  const walnutHeading = sectionData?.content?.walnutHeading || "The Brain-Boosting Power of Walnuts";
+  const walnutDescription = sectionData?.content?.walnutDescription || "Rich in omega-3 fatty acids and antioxidants, our Chilean walnuts are more than just a snack. They are essential fuel for cognitive health and heart vitality.";
+  const walnutBulletsRaw = (sectionData?.content?.walnutBullets as string) || "";
+  const walnutImage = sectionData?.content?.walnutImage || assets.walnutDetail;
 
-  const walnutEyebrow = getFieldValue("walnutEyebrow", "NATURAL SUPERFOOD");
-  const walnutHeading = getFieldValue("walnutHeading", "The Brain-Boosting Power of Walnuts");
-  const walnutDescription = getFieldValue("walnutDescription", "Rich in omega-3 fatty acids and antioxidants, our Chilean walnuts are more than just a snack. They are essential fuel for cognitive health and heart vitality.");
-  const walnutBulletsRaw = getFieldValue("walnutBullets", "");
-  const walnutImage = getFieldValue("walnutImage", assets.walnutDetail);
-
-  const almondEyebrow = getFieldValue("almondEyebrow", "IMMUNE SUPPORT");
-  const almondHeading = getFieldValue("almondHeading", "Almonds: Nature's Daily Multi-Vitamin");
-  const almondDescription = getFieldValue("almondDescription", "Packed with Vitamin E, magnesium, and protein, our California almonds help maintain healthy skin and a robust immune system with every crunch.");
-  const almondBulletsRaw = getFieldValue("almondBullets", "");
-  const almondImage = getFieldValue("almondImage", assets.almondDetail);
+  const almondEyebrow = sectionData?.content?.almondEyebrow || "IMMUNE SUPPORT";
+  const almondHeading = sectionData?.content?.almondHeading || "Almonds: Nature's Daily Multi-Vitamin";
+  const almondDescription = sectionData?.content?.almondDescription || "Packed with Vitamin E, magnesium, and protein, our California almonds help maintain healthy skin and a robust immune system with every crunch.";
+  const almondBulletsRaw = (sectionData?.content?.almondBullets as string) || "";
+  const almondImage = sectionData?.content?.almondImage || assets.almondDetail;
 
   // Fallback lists
   const defaultWalnutBullets = ["High in Omega-3 DHA", "Supports Heart Health", "Natural Energy Booster"];

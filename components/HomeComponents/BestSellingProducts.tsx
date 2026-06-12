@@ -11,7 +11,7 @@ import { assets } from '@/json/assest';
 import ShopingBagIcon from '@/ui/Icons/ShopingBagIcon';
 import WhatsAppIcon from '@/ui/Icons/WhatsAppIcon';
 import { BestSellingProductsWrapper } from '@/styles/StyledComponents/BestSellingProductsWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 const defaultProducts = [
   {
@@ -61,19 +61,13 @@ const defaultProducts = [
 ];
 
 export default function BestSellingProducts() {
-  const { data: moduleData } = useContentModule("home");
-  const bestSellingRecord = moduleData?.records?.find(r => r.id === "home-best-selling");
+  const { data: sectionData } = useHomeSection("best-selling");
 
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = bestSellingRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
-
-  const eyebrow = getFieldValue("eyebrow", "CROWD FAVORITES");
-  const heading = getFieldValue("heading", "Best Selling Products");
-  const viewAllLabel = getFieldValue("viewAllLabel", "View All Products");
-  const viewAllHref = getFieldValue("viewAllHref", "/product");
-  const productsRaw = getFieldValue("products", "");
+  const eyebrow = sectionData?.content?.eyebrow || "CROWD FAVORITES";
+  const heading = sectionData?.content?.heading || "Best Selling Products";
+  const viewAllLabel = sectionData?.content?.viewAllLabel || "View All Products";
+  const viewAllHref = sectionData?.content?.viewAllHref || "/product";
+  const productsRaw = (sectionData?.content?.products as string) || "";
 
   let products: Array<{
     id: string;

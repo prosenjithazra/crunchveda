@@ -7,34 +7,20 @@ import { Box, Button, Container, Typography } from "@mui/material";
 
 import { assets } from "@/json/assest";
 import { HomeBannerWrapper } from "@/styles/StyledComponents/HomeBannerWrapper";
-import { useContentModule } from "@/hooks/useContent";
+import { useHomeSection } from "@/hooks/useContent";
 
 export default function HomeBanner() {
-  const { data: moduleData } = useContentModule("home");
+  const { data: sectionData } = useHomeSection("hero");
   
-  // Find the home-hero record
-  const heroRecord = moduleData?.records?.find(r => r.id === "home-hero");
-  
-  // Extract values with default fallbacks
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = heroRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
-  
-  const getFieldToggle = (fieldId: string, defaultValue: boolean): boolean => {
-    const field = heroRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "boolean" ? field.value : defaultValue;
-  };
-
-  const showSection = getFieldToggle("showSection", true);
+  const showSection = sectionData?.content?.showSection ?? true;
   if (!showSection) return null;
 
-  const eyebrow = getFieldValue("eyebrow", "CRAFTING AGRICULTURAL EXCELLENCE");
-  const headline = getFieldValue("headline", "Premium Dry Fruits Delivered Fresh");
-  const description = getFieldValue("description", "Experience the pinnacle of nutrition with our hand- picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.");
-  const primaryCtaLabel = getFieldValue("primaryCtaLabel", "Explore Collection");
-  const primaryCtaHref = getFieldValue("primaryCtaHref", "/product");
-  const image = getFieldValue("image", assets.homeBannerImg);
+  const eyebrow = sectionData?.content?.eyebrow || "CRAFTING AGRICULTURAL EXCELLENCE";
+  const headline = sectionData?.content?.headline || "Premium Dry Fruits Delivered Fresh";
+  const description = sectionData?.content?.description || "Experience the pinnacle of nutrition with our hand- picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.";
+  const primaryCtaLabel = sectionData?.content?.primaryCtaLabel || "Explore Collection";
+  const primaryCtaHref = sectionData?.content?.primaryCtaHref || "/product";
+  const image = sectionData?.content?.image || assets.homeBannerImg;
 
   return (
     <HomeBannerWrapper>

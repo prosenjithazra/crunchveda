@@ -8,7 +8,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 import { FeaturesSectionWrapper } from '@/styles/StyledComponents/FeaturesSectionWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 const defaultFeatures = [
   {
@@ -38,15 +38,9 @@ const defaultFeatures = [
 ];
 
 export default function FeaturesSection() {
-  const { data: moduleData } = useContentModule("home");
-  const featuresRecord = moduleData?.records?.find(r => r.id === "home-features");
+  const { data: sectionData } = useHomeSection("features");
 
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = featuresRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
-
-  const featuresRaw = getFieldValue("features", "");
+  const featuresRaw = (sectionData?.content?.features as string) || "";
 
   let features = defaultFeatures;
   if (featuresRaw && featuresRaw.trim()) {

@@ -143,6 +143,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <ListItemButton
           component={Link}
           href="/admin"
+          className="menuListSidebar"
           onClick={() => setMobileOpen(false)}
           selected={pathname === "/admin"}
           sx={{
@@ -177,6 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           href="/admin/products"
           onClick={() => setMobileOpen(false)}
           selected={pathname.startsWith("/admin/products")}
+          className="menuListSidebar"
           sx={{
             mb: 0.5,
             borderRadius: 2,
@@ -221,12 +223,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <React.Fragment key={mId}>
               <ListItemButton
                 onClick={() => handleToggleModule(mId)}
+                className="menuListSidebar"
                 sx={{
                   mb: 0.5,
                   borderRadius: 2,
                   color: isActiveModule ? "primary.main" : "text.primary",
                   "&:hover": {
                     bgcolor: "action.hover",
+                   
                   },
                 }}
               >
@@ -255,6 +259,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         href={sectionPath}
                         onClick={() => setMobileOpen(false)}
                         selected={active}
+                        className="menuListSidebar"
                         sx={{
                           mb: 0.5,
                           borderRadius: 2.5,
@@ -292,6 +297,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <ListItemButton
           component={Link}
           href="/admin/media"
+          className="menuListSidebar"
           onClick={() => setMobileOpen(false)}
           selected={pathname === "/admin/media"}
           sx={{
@@ -326,6 +332,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           href="/admin/settings"
           onClick={() => setMobileOpen(false)}
           selected={pathname === "/admin/settings"}
+          className="menuListSidebar"
           sx={{
             mb: 0.5,
             borderRadius: 2,

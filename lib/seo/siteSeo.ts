@@ -5,7 +5,19 @@ export const siteSeo = {
   title: "NutriHarvest | Premium Dry Fruits, Nuts & Organic Gifts",
   description:
     "Shop premium dry fruits, nuts, organic pantry essentials, and curated gift hampers sourced from trusted farms and delivered fresh.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://nutriharvest.com",
+  url: (() => {
+    let rawUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nutriharvest.com";
+    rawUrl = rawUrl.trim();
+    if (rawUrl && !rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+      rawUrl = `https://${rawUrl}`;
+    }
+    try {
+      new URL(rawUrl);
+      return rawUrl;
+    } catch {
+      return "https://nutriharvest.com";
+    }
+  })(),
   author: "NutriHarvest",
   locale: "en_US",
   twitterHandle: "@nutriharvest",
@@ -31,7 +43,18 @@ export type PageSeoConfig = {
   noIndex?: boolean;
 };
 
-export const absoluteUrl = (path = "/") => new URL(path, siteSeo.url).toString();
+export const absoluteUrl = (path = "/") => {
+  try {
+    const cleanPath = path ? path.trim() : "/";
+    if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
+      return cleanPath;
+    }
+    return new URL(cleanPath, siteSeo.url).toString();
+  } catch {
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    return `${siteSeo.url}${normalizedPath}`;
+  }
+};
 
 export function createPageMetadata({
   title,

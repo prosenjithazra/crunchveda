@@ -7,26 +7,17 @@ import { Box, Button, Container, Typography } from '@mui/material';
 
 import { assets } from '@/json/assest';
 import { GiftBannerWrapper } from '@/styles/StyledComponents/GiftBannerWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 export default function GiftBanner() {
-  const { data: moduleData } = useContentModule("home");
-  
-  // Find the home-gift-banner record
-  const giftRecord = moduleData?.records?.find(r => r.id === "home-gift-banner");
-  
-  // Extract values with default fallbacks
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = giftRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
+  const { data: sectionData } = useHomeSection("gift-banner");
 
-  const eyebrow = getFieldValue("eyebrow", "GIFT OF HEALTH");
-  const heading = getFieldValue("heading", "Premium Curated Gift Boxes");
-  const description = getFieldValue("description", "Celebrate special moments with our elegant gift hampers. Perfect for corporate gifting or cherished family traditions.");
-  const ctaLabel = getFieldValue("ctaLabel", "Customize Your Box");
-  const ctaHref = getFieldValue("ctaHref", "/gifts");
-  const image = getFieldValue("image", assets.giftBannerBg);
+  const eyebrow = sectionData?.content?.eyebrow || "GIFT OF HEALTH";
+  const heading = sectionData?.content?.heading || "Premium Curated Gift Boxes";
+  const description = sectionData?.content?.description || "Celebrate special moments with our elegant gift hampers. Perfect for corporate gifting or cherished family traditions.";
+  const ctaLabel = sectionData?.content?.ctaLabel || "Customize Your Box";
+  const ctaHref = sectionData?.content?.ctaHref || "/gifts";
+  const image = sectionData?.content?.image || assets.giftBannerBg;
 
   return (
     <GiftBannerWrapper>

@@ -17,6 +17,22 @@ export function useContentModule(moduleId: string) {
   });
 }
 
+export function useContentSection(moduleId: string, sectionId: string) {
+  return useQuery({
+    queryKey: ["content-section", moduleId, sectionId],
+    queryFn: () => adminContentService.getSectionById(moduleId, sectionId),
+    enabled: !!moduleId && !!sectionId,
+  });
+}
+
+export function useHomeSection(sectionName: string) {
+  return useQuery({
+    queryKey: ["home-section", sectionName],
+    queryFn: () => adminContentService.getHomeSection(sectionName),
+    enabled: !!sectionName,
+  });
+}
+
 export function useSaveContentSection() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -25,6 +41,11 @@ export function useSaveContentSection() {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["content-module", variables.moduleId] });
       queryClient.invalidateQueries({ queryKey: ["content-modules"] });
+      queryClient.invalidateQueries({ queryKey: ["content-section", variables.moduleId, variables.section.id] });
+      if (variables.moduleId === "home") {
+        const name = variables.section.id.replace("home-", "");
+        queryClient.invalidateQueries({ queryKey: ["home-section", name] });
+      }
     },
   });
 }
@@ -37,6 +58,11 @@ export function useDeleteContentSection() {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["content-module", variables.moduleId] });
       queryClient.invalidateQueries({ queryKey: ["content-modules"] });
+      queryClient.invalidateQueries({ queryKey: ["content-section", variables.moduleId, variables.sectionId] });
+      if (variables.moduleId === "home") {
+        const name = variables.sectionId.replace("home-", "");
+        queryClient.invalidateQueries({ queryKey: ["home-section", name] });
+      }
     },
   });
 }

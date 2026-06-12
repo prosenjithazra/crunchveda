@@ -15,7 +15,13 @@ export const metadata: Metadata = {
     path: '/',
     image: siteSeo.defaultImage,
   }),
-  metadataBase: new URL(siteSeo.url),
+  metadataBase: (() => {
+    try {
+      return new URL(siteSeo.url);
+    } catch {
+      return new URL("https://nutriharvest.com");
+    }
+  })(),
   applicationName: siteSeo.name,
   manifest: '/manifest.webmanifest',
   icons: {

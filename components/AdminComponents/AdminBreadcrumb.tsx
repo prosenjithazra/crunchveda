@@ -19,7 +19,7 @@ export default function AdminBreadcrumb({ items }: AdminBreadcrumbProps) {
       </MuiLink>
       {items.map(item =>
         item.href ? (
-          <MuiLink key={item.label} component={Link} href={item.href} underline="hover" color="text.secondary">
+          <MuiLink key={item.label} component={Link} href={item.href} underline="hover" color="text.secondary" className="menuListSidebar">
             {item.label}
           </MuiLink>
         ) : (

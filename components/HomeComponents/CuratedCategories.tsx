@@ -9,7 +9,7 @@ import '@splidejs/react-splide/css';
 
 import { assets } from '@/json/assest';
 import { CuratedCategoriesWrapper } from '@/styles/StyledComponents/CuratedCategoriesWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 const defaultCategories = [
   { title: "Almonds", count: "12 ITEMS", image: assets.almonds, href: "/product?category=almonds" },
@@ -21,17 +21,11 @@ const defaultCategories = [
 ];
 
 export default function CuratedCategories() {
-  const { data: moduleData } = useContentModule("home");
-  const categoriesRecord = moduleData?.records?.find(r => r.id === "home-categories");
+  const { data: sectionData } = useHomeSection("categories");
 
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = categoriesRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
-
-  const heading = getFieldValue("heading", "Curated Categories");
-  const cardsRaw = getFieldValue("cards", "");
-  const imageSetRaw = getFieldValue("imageSet", "");
+  const heading = sectionData?.content?.heading || "Curated Categories";
+  const cardsRaw = (sectionData?.content?.cards as string) || "";
+  const imageSetRaw = (sectionData?.content?.imageSet as string) || "";
 
   let categories: Array<{ title: string; count: string; image: string; href: string }> = defaultCategories;
   if (cardsRaw && cardsRaw.trim()) {

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { FaqSectionWrapper } from '@/styles/StyledComponents/FaqSectionWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 interface FaqItem {
   question: string;
@@ -27,21 +27,14 @@ const faqData: FaqItem[] = [
 
 export default function FaqSection() {
   const [activeId, setActiveId] = useState<number | null>(null);
-  const { data: moduleData } = useContentModule("home");
+  const { data: sectionData } = useHomeSection("faq");
 
   const handleToggle = (index: number) => {
     setActiveId(activeId === index ? null : index);
   };
 
-  const faqRecord = moduleData?.records?.find(r => r.id === "home-faq");
-  
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = faqRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
-
-  const heading = getFieldValue("heading", "Frequently Asked Questions");
-  const faqItemsRaw = getFieldValue("faqItems", "");
+  const heading = sectionData?.content?.heading || "Frequently Asked Questions";
+  const faqItemsRaw = (sectionData?.content?.faqItems as string) || "";
 
   let faqs = faqData;
   if (faqItemsRaw && faqItemsRaw.trim()) {

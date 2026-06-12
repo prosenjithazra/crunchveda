@@ -4,7 +4,7 @@ import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
 
 import { HeritageTimelineWrapper } from '@/styles/StyledComponents/HeritageTimelineWrapper';
-import { useContentModule } from '@/hooks/useContent';
+import { useHomeSection } from '@/hooks/useContent';
 
 const defaultEvents = [
   {
@@ -31,17 +31,11 @@ const defaultEvents = [
 ];
 
 export default function HeritageTimeline() {
-  const { data: moduleData } = useContentModule("home");
-  const timelineRecord = moduleData?.records?.find(r => r.id === "home-timeline");
+  const { data: sectionData } = useHomeSection("timeline");
 
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = timelineRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
-  };
-
-  const heading = getFieldValue("heading", "Our Heritage Journey");
-  const description = getFieldValue("description", "Tracing our roots back to the finest organic orchards.");
-  const eventsRaw = getFieldValue("events", "");
+  const heading = sectionData?.content?.heading || "Our Heritage Journey";
+  const description = sectionData?.content?.description || "Tracing our roots back to the finest organic orchards.";
+  const eventsRaw = (sectionData?.content?.events as string) || "";
 
   let events = defaultEvents;
   if (eventsRaw && eventsRaw.trim()) {

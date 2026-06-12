@@ -26,6 +26,24 @@ export const adminContentService = {
     return data.data;
   },
 
+  getSectionById: async (moduleId: string, sectionId: string): Promise<AdminContentRecord> => {
+    const res = await fetch(`${API_URL}/content/modules/${moduleId}/sections/${sectionId}`, { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch content section");
+    }
+    return data.data;
+  },
+
+  getHomeSection: async (sectionName: string): Promise<AdminContentRecord & { content: Record<string, any> }> => {
+    const res = await fetch(`${API_URL}/content/home/${sectionName}`, { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch homepage section");
+    }
+    return data.data;
+  },
+
   saveSection: async (section: AdminContentRecord, moduleId?: string): Promise<AdminContentRecord> => {
     const resolvedModuleId = moduleId || (section.id.includes("-") ? section.id.split("-")[0] : "home");
     const res = await fetch(`${API_URL}/content/sections`, {
