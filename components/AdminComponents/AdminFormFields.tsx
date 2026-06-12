@@ -30,7 +30,9 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -52,7 +54,9 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
       toast.success("Image uploaded successfully!");
     } catch (error: unknown) {
       console.error(error);
-      toast.error(error instanceof Error ? error.message : "Image upload failed");
+      toast.error(
+        error instanceof Error ? error.message : "Image upload failed",
+      );
     } finally {
       setUploading(false);
     }
@@ -64,7 +68,9 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
         fullWidth
         label={field.label}
         value={field.value}
-        onChange={event => onChange({ ...field, value: event.target.value } as AdminSectionField)}
+        onChange={(event) =>
+          onChange({ ...field, value: event.target.value } as AdminSectionField)
+        }
         placeholder="/assets/example.png"
       />
       <input
@@ -87,7 +93,11 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
           "&:hover": { bgcolor: "action.hover" },
         }}
       >
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", justifyContent: "center" }}>
+        <Stack
+          direction="row"
+          spacing={1.5}
+          sx={{ alignItems: "center", justifyContent: "center" }}
+        >
           {uploading ? (
             <>
               <CircularProgress size={20} />
@@ -98,7 +108,11 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
           ) : (
             <>
               <CloudUploadOutlinedIcon color="primary" />
-              <Typography variant="body2" color="primary" sx={{ fontWeight: 600 }}>
+              <Typography
+                variant="body2"
+                color="primary"
+                sx={{ fontWeight: 600 }}
+              >
                 Click to upload image to Cloudinary
               </Typography>
             </>
@@ -106,8 +120,21 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
         </Stack>
       </Box>
       {field.value && (
-        <Box sx={{ mt: 1, border: 1, borderColor: "divider", borderRadius: 2, overflow: "hidden", maxWidth: 200 }}>
-          <img src={field.value} alt={field.label} style={{ width: "100%", height: "auto", display: "block" }} />
+        <Box
+          sx={{
+            mt: 1,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            overflow: "hidden",
+            maxWidth: 200,
+          }}
+        >
+          <img
+            src={field.value}
+            alt={field.label}
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
         </Box>
       )}
     </Stack>
@@ -115,14 +142,19 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
 }
 
 // ─── Main dispatcher — no hooks here, only conditional renders ────────────────
-export function SectionFieldEditor({ field, onChange }: SectionFieldEditorProps) {
+export function SectionFieldEditor({
+  field,
+  onChange,
+}: SectionFieldEditorProps) {
   if (field.type === "toggle") {
     return (
       <FormControlLabel
         control={
           <Switch
             checked={field.value}
-            onChange={event => onChange({ ...field, value: event.target.checked })}
+            onChange={(event) =>
+              onChange({ ...field, value: event.target.checked })
+            }
           />
         }
         label={field.label}
@@ -137,9 +169,11 @@ export function SectionFieldEditor({ field, onChange }: SectionFieldEditorProps)
         <Select
           label={field.label}
           value={field.value}
-          onChange={event => onChange({ ...field, value: event.target.value })}
+          onChange={(event) =>
+            onChange({ ...field, value: event.target.value })
+          }
         >
-          {field.options.map(option => (
+          {field.options.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
             </MenuItem>
@@ -161,7 +195,7 @@ export function SectionFieldEditor({ field, onChange }: SectionFieldEditorProps)
       value={field.value}
       multiline={field.type === "textarea"}
       minRows={field.type === "textarea" ? 4 : undefined}
-      onChange={event => onChange({ ...field, value: event.target.value })}
+      onChange={(event) => onChange({ ...field, value: event.target.value })}
     />
   );
 }
