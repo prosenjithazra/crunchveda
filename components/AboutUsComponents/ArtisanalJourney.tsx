@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
+import { useContentModule } from '@/hooks/useContent';
 
-const steps = [
+const defaultSteps = [
   {
     title: "Seed Heritage",
     description: "The finest seed, hand-selected to reflect archaeological history and botanical purity.",
@@ -22,15 +25,42 @@ const steps = [
 ];
 
 export default function ArtisanalJourney() {
+  const { data: moduleData } = useContentModule("about-us");
+  const journeyRecord = moduleData?.records?.find(r => r.id === "about-journey");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = journeyRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const eyebrow = getFieldValue("eyebrow", "Our Process");
+  const heading = getFieldValue("heading", "The Artisanal Journey");
+  const stepsRaw = getFieldValue("steps", "");
+  const imageSetRaw = getFieldValue("imageSet", "");
+
+  let steps: Array<{ title: string; description: string; image: string }> = defaultSteps;
+  if (stepsRaw && stepsRaw.trim()) {
+    const lines = stepsRaw.split("\n").filter(Boolean);
+    const images = imageSetRaw ? imageSetRaw.split("\n").filter(Boolean) : [];
+    steps = lines.map((line, idx) => {
+      const parts = line.split("|");
+      return {
+        title: parts[0]?.trim() || "",
+        description: parts[1]?.trim() || "",
+        image: images[idx]?.trim() || defaultSteps[idx]?.image || assets.seedHeritage
+      };
+    });
+  }
+
   return (
     <Box className="artisanal_journey section_pad">
       <Container fixed>
         <Box className="title_box">
           <Typography variant="h6" className="section_title_small">
-            Our Process
+            {eyebrow}
           </Typography>
           <Typography variant="h2" className="section_title_large">
-            The Artisanal Journey
+            {heading}
           </Typography>
         </Box>
 

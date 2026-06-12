@@ -13,6 +13,7 @@ import {
   MenuItem,
   Button,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { ProductUIWrapper } from "@/styles/StyledComponents/ProductUIWrapper";
 import CartIcon from "@/ui/Icons/CartIcon";
@@ -20,9 +21,9 @@ import WhatsAppIcon from "@/ui/Icons/WhatsAppIcon";
 import FilterBtnIcon from "@/ui/Icons/FilterBtnIcon";
 import HeartBtnIcon from "@/ui/Icons/HeartBtnIcon";
 import CloseIcon from '@mui/icons-material/Close';
-import { dryFruits, DryFruitProduct as ProductItem } from "@/json/mock/dryFruits";
-
-const mockProducts: ProductItem[] = dryFruits;
+import { DryFruitProduct as ProductItem } from "@/json/mock/dryFruits";
+import { useProducts } from "@/hooks/useProducts";
+import { mapApiProductToUi } from "@/services/productService";
 
 const categoryOptions = [
   "Premium Almonds",
@@ -129,6 +130,13 @@ function ProductCard({
 }
 
 export default function ProductUI() {
+  const { data, isLoading } = useProducts({ limit: 100 });
+
+  const productsList = useMemo(() => {
+    if (!data?.data) return [];
+    return data.data.map(mapApiProductToUi);
+  }, [data]);
+
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
     "Premium Almonds",
   ]);
@@ -180,7 +188,7 @@ export default function ProductUI() {
 
   // Filter and Sort Products
   const filteredProducts = useMemo(() => {
-    let result = mockProducts;
+    let result = productsList;
 
     // Filter by Categories
     if (selectedCategories.length > 0) {
@@ -216,7 +224,7 @@ export default function ProductUI() {
     }
 
     return result;
-  }, [selectedCategories, selectedDietary, priceRange, sortBy]);
+  }, [productsList, selectedCategories, selectedDietary, priceRange, sortBy]);
 
   // Paginated Products
   const paginatedProducts = useMemo(() => {
@@ -378,7 +386,11 @@ export default function ProductUI() {
             </Box>
 
             {/* Products Grid */}
-            {paginatedProducts.length > 0 ? (
+            {isLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 12 }}>
+                <CircularProgress color="primary" />
+              </Box>
+            ) : paginatedProducts.length > 0 ? (
               <Box className="products_grid">
                 {paginatedProducts.map((product) => (
                   <ProductCard

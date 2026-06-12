@@ -9,8 +9,9 @@ import '@splidejs/react-splide/css';
 
 import { assets } from '@/json/assest';
 import { CuratedCategoriesWrapper } from '@/styles/StyledComponents/CuratedCategoriesWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
-const categories = [
+const defaultCategories = [
   { title: "Almonds", count: "12 ITEMS", image: assets.almonds, href: "/product?category=almonds" },
   { title: "Cashews", count: "8 ITEMS", image: assets.cashews, href: "/product?category=cashews" },
   { title: "Pistachios", count: "10 ITEMS", image: assets.pistachios, href: "/product?category=pistachios" },
@@ -20,11 +21,38 @@ const categories = [
 ];
 
 export default function CuratedCategories() {
+  const { data: moduleData } = useContentModule("home");
+  const categoriesRecord = moduleData?.records?.find(r => r.id === "home-categories");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = categoriesRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const heading = getFieldValue("heading", "Curated Categories");
+  const cardsRaw = getFieldValue("cards", "");
+  const imageSetRaw = getFieldValue("imageSet", "");
+
+  let categories: Array<{ title: string; count: string; image: string; href: string }> = defaultCategories;
+  if (cardsRaw && cardsRaw.trim()) {
+    const lines = cardsRaw.split("\n").filter(Boolean);
+    const images = imageSetRaw ? imageSetRaw.split("\n").filter(Boolean) : [];
+    categories = lines.map((line, idx) => {
+      const parts = line.split("|");
+      return {
+        title: parts[0]?.trim() || "",
+        count: parts[1]?.trim() || "",
+        href: parts[2]?.trim() || "/product",
+        image: images[idx]?.trim() || assets.almonds
+      };
+    });
+  }
+
   return (
     <CuratedCategoriesWrapper>
       <Container fixed>
         <Box className='wrapper_titleBox'>
-          <Typography variant='h2'>Curated Categories</Typography>
+          <Typography variant='h2'>{heading}</Typography>
         </Box>
 
         {/* Desktop Grid Layout */}

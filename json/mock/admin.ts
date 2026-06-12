@@ -35,6 +35,7 @@ export type AdminContentRecord = {
 
 export type AdminModule = {
   id: string;
+  moduleId?: string;
   title: string;
   route: string;
   description: string;

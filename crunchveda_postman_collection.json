@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "c138b029-9e8a-4ab0-b492-b430e3b97063",
+		"name": "CrunchVeda CMS API",
+		"description": "Postman Collection to test all live CRUD API endpoints for the CrunchVeda CMS pages.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Modules",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/content/modules",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"content",
+						"modules"
+					]
+				},
+				"description": "Retrieves all modules. On first run, it seeds default configurations into MongoDB."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Homepage Module",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/content/modules/home",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"content",
+						"modules",
+						"home"
+					]
+				},
+				"description": "Retrieves the content sections specific to the homepage module."
+			},
+			"response": []
+		},
+		{
+			"name": "Save/Update Hero Section",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"moduleId\": \"home\",\n  \"section\": {\n    \"id\": \"home-hero\",\n    \"title\": \"Home hero banner\",\n    \"type\": \"Hero section\",\n    \"status\": \"Published\",\n    \"fields\": [\n      {\n        \"id\": \"eyebrow\",\n        \"label\": \"Small title\",\n        \"type\": \"text\",\n        \"value\": \"CRAFTING AGRICULTURAL EXCELLENCE\"\n      },\n      {\n        \"id\": \"headline\",\n        \"label\": \"H1 headline\",\n        \"type\": \"text\",\n        \"value\": \"Premium Dry Fruits Delivered Fresh & Organic\"\n      },\n      {\n        \"id\": \"description\",\n        \"label\": \"Hero paragraph\",\n        \"type\": \"textarea\",\n        \"value\": \"Experience the pinnacle of nutrition with our hand-picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.\"\n      },\n      {\n        \"id\": \"primaryCtaLabel\",\n        \"label\": \"Primary CTA label\",\n        \"type\": \"text\",\n        \"value\": \"Explore Collection\"\n      },\n      {\n        \"id\": \"primaryCtaHref\",\n        \"label\": \"Primary CTA link\",\n        \"type\": \"text\",\n        \"value\": \"/product\"\n      },\n      {\n        \"id\": \"image\",\n        \"label\": \"Hero background image\",\n        \"type\": \"image\",\n        \"value\": \"/assets/homeBannerImg.png\"\n      },\n      {\n        \"id\": \"showSection\",\n        \"label\": \"Show hero section\",\n        \"type\": \"toggle\",\n        \"value\": true\n      }\n    ]\n  }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/content/sections",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"content",
+						"sections"
+					]
+				},
+				"description": "Saves or updates a content section layout inside a module."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Section",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/content/modules/home/sections/section-test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"content",
+						"modules",
+						"home",
+						"sections",
+						"section-test"
+					]
+				},
+				"description": "Removes a specific section configuration from a module by ID."
+			},
+			"response": []
+		}
+	]
+}

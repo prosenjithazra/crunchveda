@@ -11,8 +11,9 @@ import { assets } from '@/json/assest';
 import ShopingBagIcon from '@/ui/Icons/ShopingBagIcon';
 import WhatsAppIcon from '@/ui/Icons/WhatsAppIcon';
 import { BestSellingProductsWrapper } from '@/styles/StyledComponents/BestSellingProductsWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
-const products = [
+const defaultProducts = [
   {
     id: "1",
     title: "Jumbo Cashews",
@@ -60,6 +61,77 @@ const products = [
 ];
 
 export default function BestSellingProducts() {
+  const { data: moduleData } = useContentModule("home");
+  const bestSellingRecord = moduleData?.records?.find(r => r.id === "home-best-selling");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = bestSellingRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const eyebrow = getFieldValue("eyebrow", "CROWD FAVORITES");
+  const heading = getFieldValue("heading", "Best Selling Products");
+  const viewAllLabel = getFieldValue("viewAllLabel", "View All Products");
+  const viewAllHref = getFieldValue("viewAllHref", "/product");
+  const productsRaw = getFieldValue("products", "");
+
+  let products: Array<{
+    id: string;
+    title: string;
+    price: string;
+    image: string;
+    badge: { text: string; type: string } | null;
+    sizes: string[];
+    defaultSize: string;
+    hasWhatsApp: boolean;
+    href: string;
+  }> = defaultProducts;
+
+  if (productsRaw && productsRaw.trim()) {
+    const lines = productsRaw.split("\n").filter(Boolean);
+    products = lines.map((line, idx) => {
+      const parts = line.split("|");
+      const title = parts[0]?.trim() || "";
+      const price = parts[1]?.trim() || "";
+      const badgeText = parts[2]?.trim() || "";
+      const sizes = parts[3]?.split(",").map(s => s.trim()).filter(Boolean) || ["500g"];
+      const hasWhatsApp = parts[4]?.toLowerCase().includes("enabled") ?? true;
+
+      let image: string = assets.cashewsProduct;
+      let href = "/product/jumbo-cashews";
+      if (idx === 1) {
+        image = assets.almondsProduct;
+        href = "/product/california-almonds";
+      } else if (idx === 2) {
+        image = assets.walnutsProduct;
+        href = "/product/walnut-halves";
+      } else if (idx === 3) {
+        image = assets.pistachiosProduct;
+        href = "/product/iranian-pistachios";
+      }
+
+      let badge = null;
+      if (badgeText && badgeText.toLowerCase() !== "no badge" && badgeText.toLowerCase() !== "none") {
+        badge = {
+          text: badgeText,
+          type: badgeText.toLowerCase().includes("seller") ? "bestseller" : "organic"
+        };
+      }
+
+      return {
+        id: String(idx + 1),
+        title,
+        price,
+        image,
+        badge,
+        sizes,
+        defaultSize: sizes[0] || "500g",
+        hasWhatsApp,
+        href
+      };
+    });
+  }
+
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
     "1": "500g",
     "2": "500g",
@@ -72,7 +144,7 @@ export default function BestSellingProducts() {
   };
 
   const renderProductCard = (product: typeof products[0]) => {
-    const selectedSize = selectedSizes[product.id];
+    const selectedSize = selectedSizes[product.id] || product.defaultSize;
 
     return (
       <Box className='product_card'>
@@ -124,15 +196,15 @@ export default function BestSellingProducts() {
           >
             Add to Cart
           </Button>
-            <Button
-              variant='contained'
-              className='whatsapp_btn'
-              startIcon={<WhatsAppIcon />}
-              disableRipple
-              disabled={!product.hasWhatsApp}
-            >
-              {product.hasWhatsApp ? 'WhatsApp Order' : 'Not Available'}
-            </Button>
+          <Button
+            variant='contained'
+            className='whatsapp_btn'
+            startIcon={<WhatsAppIcon />}
+            disableRipple
+            disabled={!product.hasWhatsApp}
+          >
+            {product.hasWhatsApp ? 'WhatsApp Order' : 'Not Available'}
+          </Button>
         </Box>
       </Box>
     );
@@ -144,14 +216,14 @@ export default function BestSellingProducts() {
         <Box className='best_selling_header'>
           <Box>
             <Typography className='cmnSmallTitle'>
-              CROWD FAVORITES
+              {eyebrow}
             </Typography>
             <Typography variant='h2'>
-              Best Selling Products
+              {heading}
             </Typography>
           </Box>
-          <Link href='/product' className='view_all_link'>
-            View All Products
+          <Link href={viewAllHref} className='view_all_link'>
+            {viewAllLabel}
           </Link>
         </Box>
 

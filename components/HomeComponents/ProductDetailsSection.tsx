@@ -7,8 +7,41 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 
 import { assets } from '@/json/assest';
 import { ProductDetailsSectionWrapper } from '@/styles/StyledComponents/ProductDetailsSectionWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
 export default function ProductDetailsSection() {
+  const { data: moduleData } = useContentModule("home");
+  const detailsRecord = moduleData?.records?.find(r => r.id === "home-product-details");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = detailsRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const walnutEyebrow = getFieldValue("walnutEyebrow", "NATURAL SUPERFOOD");
+  const walnutHeading = getFieldValue("walnutHeading", "The Brain-Boosting Power of Walnuts");
+  const walnutDescription = getFieldValue("walnutDescription", "Rich in omega-3 fatty acids and antioxidants, our Chilean walnuts are more than just a snack. They are essential fuel for cognitive health and heart vitality.");
+  const walnutBulletsRaw = getFieldValue("walnutBullets", "");
+  const walnutImage = getFieldValue("walnutImage", assets.walnutDetail);
+
+  const almondEyebrow = getFieldValue("almondEyebrow", "IMMUNE SUPPORT");
+  const almondHeading = getFieldValue("almondHeading", "Almonds: Nature's Daily Multi-Vitamin");
+  const almondDescription = getFieldValue("almondDescription", "Packed with Vitamin E, magnesium, and protein, our California almonds help maintain healthy skin and a robust immune system with every crunch.");
+  const almondBulletsRaw = getFieldValue("almondBullets", "");
+  const almondImage = getFieldValue("almondImage", assets.almondDetail);
+
+  // Fallback lists
+  const defaultWalnutBullets = ["High in Omega-3 DHA", "Supports Heart Health", "Natural Energy Booster"];
+  const defaultAlmondBullets = ["Rich in Vitamin E", "High Fiber Content", "Promotes Skin Health"];
+
+  const walnutBullets = walnutBulletsRaw && walnutBulletsRaw.trim() 
+    ? walnutBulletsRaw.split("\n").filter(Boolean)
+    : defaultWalnutBullets;
+
+  const almondBullets = almondBulletsRaw && almondBulletsRaw.trim() 
+    ? almondBulletsRaw.split("\n").filter(Boolean)
+    : defaultAlmondBullets;
+
   return (
     <ProductDetailsSectionWrapper>
       <Container fixed>
@@ -19,43 +52,31 @@ export default function ProductDetailsSection() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box className='detail_content'>
                 <Typography variant='body1' className='cmnSmallTitle'>
-                  NATURAL SUPERFOOD
+                  {walnutEyebrow}
                 </Typography>
                 <Typography variant='h2'>
-                  The Brain-Boosting Power of Walnuts
+                  {walnutHeading}
                 </Typography>
                 <Typography variant='body1'>
-                  Rich in omega-3 fatty acids and antioxidants, our Chilean walnuts are more
-                  than just a snack. They are essential fuel for cognitive health and heart
-                  vitality.
+                  {walnutDescription}
                 </Typography>
                 <Box className='bullet_list'>
-                  <Box className='bullet_item'>
-                    <CheckCircleOutlineRoundedIcon />
-                    <Typography variant='subtitle2' component='span'>
-                      High in Omega-3 DHA
-                    </Typography>
-                  </Box>
-                  <Box className='bullet_item'>
-                    <CheckCircleOutlineRoundedIcon />
-                    <Typography variant='subtitle2' component='span'>
-                      Supports Heart Health
-                    </Typography>
-                  </Box>
-                  <Box className='bullet_item'>
-                    <CheckCircleOutlineRoundedIcon />
-                    <Typography variant='subtitle2' component='span'>
-                      Natural Energy Booster
-                    </Typography>
-                  </Box>
+                  {walnutBullets.map((bullet, idx) => (
+                    <Box className='bullet_item' key={idx}>
+                      <CheckCircleOutlineRoundedIcon />
+                      <Typography variant='subtitle2' component='span'>
+                        {bullet}
+                      </Typography>
+                    </Box>
+                  ))}
                 </Box>
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Box className='detail_imgBox'>
                 <Image
-                  src={assets.walnutDetail}
-                  alt="Walnuts abstract shell details"
+                  src={walnutImage}
+                  alt={walnutHeading}
                   width={800}
                   height={800}
                 />
@@ -68,8 +89,8 @@ export default function ProductDetailsSection() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box className='detail_imgBox'>
                 <Image
-                  src={assets.almondDetail}
-                  alt="Almonds milk splash detail"
+                  src={almondImage}
+                  alt={almondHeading}
                   width={800}
                   height={800}
                 />
@@ -78,34 +99,23 @@ export default function ProductDetailsSection() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box className='detail_content'>
                 <Typography variant='body1' className='cmnSmallTitle'>
-                  IMMUNE SUPPORT
+                  {almondEyebrow}
                 </Typography>
                 <Typography variant='h2'>
-                  Almonds: Nature&apos;s Daily Multi-Vitamin
+                  {almondHeading}
                 </Typography>
                 <Typography variant='body1'>
-                  Packed with Vitamin E, magnesium, and protein, our California almonds help
-                  maintain healthy skin and a robust immune system with every crunch.
+                  {almondDescription}
                 </Typography>
                 <Box className='bullet_list'>
-                  <Box className='bullet_item'>
-                    <CheckCircleOutlineRoundedIcon />
-                    <Typography variant='subtitle2' component='span'>
-                      Rich in Vitamin E
-                    </Typography>
-                  </Box>
-                  <Box className='bullet_item'>
-                    <CheckCircleOutlineRoundedIcon />
-                    <Typography variant='subtitle2' component='span'>
-                      High Fiber Content
-                    </Typography>
-                  </Box>
-                  <Box className='bullet_item'>
-                    <CheckCircleOutlineRoundedIcon />
-                    <Typography variant='subtitle2' component='span'>
-                      Promotes Skin Health
-                    </Typography>
-                  </Box>
+                  {almondBullets.map((bullet, idx) => (
+                    <Box className='bullet_item' key={idx}>
+                      <CheckCircleOutlineRoundedIcon />
+                      <Typography variant='subtitle2' component='span'>
+                        {bullet}
+                      </Typography>
+                    </Box>
+                  ))}
                 </Box>
               </Box>
             </Grid>

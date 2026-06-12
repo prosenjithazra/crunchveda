@@ -3,7 +3,8 @@
 import type { AdminProductRecord, AdminStatus } from "@/json/mock/admin";
 import { adminContentService } from "@/services/admin/contentService";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography, CircularProgress, Box } from "@mui/material";
 import React from "react";
 import toast from "react-hot-toast";
 import AdminBreadcrumb from "./AdminBreadcrumb";
@@ -12,6 +13,95 @@ import AdminModal from "./AdminModal";
 import AdminPageHeader from "./AdminPageHeader";
 import AdminStatusChip from "./AdminStatusChip";
 import ConfirmDialog from "./ConfirmDialog";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+type ProductImageUploaderProps = {
+  value: string;
+  onChange: (url: string) => void;
+};
+
+function ProductImageUploader({ value, onChange }: ProductImageUploaderProps) {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = React.useState(false);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setUploading(true);
+    try {
+      const res = await fetch(`${API_URL}/upload/image`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to upload image");
+      }
+      onChange(result.data.url);
+      toast.success("Product image uploaded successfully!");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Stack spacing={1}>
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+      <Box
+        onClick={() => !uploading && fileInputRef.current?.click()}
+        sx={{
+          p: 1.5,
+          border: "1px dashed",
+          borderColor: "primary.main",
+          borderRadius: 2,
+          bgcolor: "customColors.lightCream",
+          cursor: uploading ? "not-allowed" : "pointer",
+          textAlign: "center",
+          "&:hover": {
+            bgcolor: "action.hover",
+          },
+        }}
+      >
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center", justifyContent: "center" }}>
+          {uploading ? (
+            <>
+              <CircularProgress size={16} />
+              <Typography variant="body2" color="text.secondary">
+                Uploading to Cloudinary...
+              </Typography>
+            </>
+          ) : (
+            <>
+              <CloudUploadOutlinedIcon fontSize="small" color="primary" />
+              <Typography variant="body2" color="primary" sx={{ fontWeight: 600 }}>
+                Upload Image to Cloudinary
+              </Typography>
+            </>
+          )}
+        </Stack>
+      </Box>
+      {value && (
+        <Box sx={{ border: 1, borderColor: "divider", borderRadius: 2, overflow: "hidden", maxWidth: 120 }}>
+          <img src={value} alt="Preview" style={{ width: "100%", height: "auto", display: "block" }} />
+        </Box>
+      )}
+    </Stack>
+  );
+}
 
 const blankProduct = (): AdminProductRecord => ({
   id: `product-${Date.now()}`,
@@ -181,12 +271,18 @@ export default function AdminProductManager() {
                 </FormControl>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Image path"
-                  value={editingProduct.image}
-                  onChange={event => updateProduct({ image: event.target.value })}
-                />
+                <Stack spacing={1}>
+                  <TextField
+                    fullWidth
+                    label="Image path"
+                    value={editingProduct.image}
+                    onChange={event => updateProduct({ image: event.target.value })}
+                  />
+                  <ProductImageUploader
+                    value={editingProduct.image}
+                    onChange={url => updateProduct({ image: url })}
+                  />
+                </Stack>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField
@@ -210,6 +306,7 @@ export default function AdminProductManager() {
           </Stack>
         )}
       </AdminModal>
+
 
       <ConfirmDialog
         open={Boolean(deleteProduct)}

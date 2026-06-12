@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
@@ -5,8 +7,9 @@ import DropletIcon from '@/ui/Icons/DropletIcon';
 import SolarIcon from '@/ui/Icons/SolarIcon';
 import SoilShieldIcon from '@/ui/Icons/SoilShieldIcon';
 import RibbonBadgeIcon from '@/ui/Icons/RibbonBadgeIcon';
+import { useContentModule } from '@/hooks/useContent';
 
-const charters = [
+const defaultCharters = [
   {
     title: "Water Safety",
     description: "Closed-loop irrigation systems that reduce water by 45 percent.",
@@ -30,6 +33,41 @@ const charters = [
 ];
 
 export default function SustainabilityCharter() {
+  const { data: moduleData } = useContentModule("about-us");
+  const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = charterRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const heading = getFieldValue("heading", "The Sustainability Charter");
+  const description = getFieldValue("description", "Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance.");
+  const reportLabel = getFieldValue("reportLabel", "Read Our Full Report");
+  const reportHref = getFieldValue("reportHref", "#report");
+  const chartersRaw = getFieldValue("charters", "");
+
+  let charters = defaultCharters;
+  if (chartersRaw && chartersRaw.trim()) {
+    const lines = chartersRaw.split("\n").filter(Boolean);
+    charters = lines.map((line, idx) => {
+      const parts = line.split("|");
+      const title = parts[0]?.trim() || "";
+      const description = parts[1]?.trim() || "";
+
+      let icon = <DropletIcon />;
+      if (idx === 1) {
+        icon = <SolarIcon />;
+      } else if (idx === 2) {
+        icon = <SoilShieldIcon />;
+      } else if (idx === 3) {
+        icon = <RibbonBadgeIcon />;
+      }
+
+      return { title, description, icon };
+    });
+  }
+
   return (
     <Box className="charter_section section_pad">
       <Container fixed>
@@ -37,10 +75,10 @@ export default function SustainabilityCharter() {
         <Box className="charter_header">
           <Box className="header_text">
             <Typography variant="h2" className="section_title_large" sx={{ mb: 1 }}>
-              The Sustainability Charter
+              {heading}
             </Typography>
             <Typography variant="body1" className="body_desc" sx={{ mb: 0 }}>
-              Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance.
+              {description}
             </Typography>
           </Box>
           <Button
@@ -48,9 +86,9 @@ export default function SustainabilityCharter() {
             color="info"
             disableRipple
             component={Link}
-            href="#report"
+            href={reportHref}
           >
-            Read Our Full Report
+            {reportLabel}
           </Button>
         </Box>
 

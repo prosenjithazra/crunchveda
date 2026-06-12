@@ -8,8 +8,9 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 import { FeaturesSectionWrapper } from '@/styles/StyledComponents/FeaturesSectionWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
-const features = [
+const defaultFeatures = [
   {
     icon: <SpaIcon />,
     title: "100% Organic",
@@ -37,6 +38,40 @@ const features = [
 ];
 
 export default function FeaturesSection() {
+  const { data: moduleData } = useContentModule("home");
+  const featuresRecord = moduleData?.records?.find(r => r.id === "home-features");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = featuresRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const featuresRaw = getFieldValue("features", "");
+
+  let features = defaultFeatures;
+  if (featuresRaw && featuresRaw.trim()) {
+    const lines = featuresRaw.split("\n").filter(Boolean);
+    features = lines.map((line, idx) => {
+      const parts = line.split("|");
+      const title = parts[0]?.trim() || "";
+      const desc = parts[1]?.trim() || "";
+
+      let icon = <SpaIcon />;
+      let bgClass = "organic_bg";
+      if (idx === 1) {
+        icon = <VerifiedIcon />;
+        bgClass = "quality_bg";
+      } else if (idx === 2) {
+        icon = <LocalShippingIcon />;
+        bgClass = "delivery_bg";
+      } else if (idx === 3) {
+        icon = <Inventory2Icon />;
+        bgClass = "packing_bg";
+      }
+      return { icon, title, desc, bgClass };
+    });
+  }
+
   return (
     <FeaturesSectionWrapper>
       <Container fixed>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { FaqSectionWrapper } from '@/styles/StyledComponents/FaqSectionWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
 interface FaqItem {
   question: string;
@@ -26,20 +27,48 @@ const faqData: FaqItem[] = [
 
 export default function FaqSection() {
   const [activeId, setActiveId] = useState<number | null>(null);
+  const { data: moduleData } = useContentModule("home");
 
   const handleToggle = (index: number) => {
     setActiveId(activeId === index ? null : index);
   };
 
+  const faqRecord = moduleData?.records?.find(r => r.id === "home-faq");
+  
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = faqRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const heading = getFieldValue("heading", "Frequently Asked Questions");
+  const faqItemsRaw = getFieldValue("faqItems", "");
+
+  let faqs = faqData;
+  if (faqItemsRaw && faqItemsRaw.trim()) {
+    const parsedFaqs = faqItemsRaw
+      .split("\n")
+      .map(line => {
+        const parts = line.split("|");
+        return {
+          question: parts[0]?.trim() || "",
+          answer: parts[1]?.trim() || ""
+        };
+      })
+      .filter((f): f is FaqItem => Boolean(f.question && f.answer));
+    if (parsedFaqs.length > 0) {
+      faqs = parsedFaqs;
+    }
+  }
+
   return (
     <FaqSectionWrapper>
       <Container fixed>
         <Box className="faq_header">
-          <Typography variant="h2">Frequently Asked Questions</Typography>
+          <Typography variant="h2">{heading}</Typography>
         </Box>
 
         <Box className="faq_container">
-          {faqData.map((item, index) => {
+          {faqs.map((item, index) => {
             const isActive = activeId === index;
             return (
               <Box 

@@ -1,8 +1,8 @@
 import ProductDetailsUI from "@/components/ProductComponents/ProductDetailsUI";
 import JsonLd from "@/components/SEO/JsonLd";
-import { dryFruits } from "@/json/mock/dryFruits";
 import { createBreadcrumbSchema, createProductSchema } from "@/lib/seo/schema";
 import { createPageMetadata } from "@/lib/seo/siteSeo";
+import { productService, mapApiProductToUi } from "@/services/productService";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -12,14 +12,38 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return dryFruits.map((p) => ({ slug: p.id }));
+  try {
+    const res = await productService.getProducts({ limit: 100 });
+    return res.data.map((p) => ({ slug: p.slug }));
+  } catch (error) {
+    console.error("Failed to generate static params:", error);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = dryFruits.find((p) => p.id === slug);
+  try {
+    const res = await productService.getProductBySlug(slug);
+    const product = res.data;
 
-  if (!product) {
+    if (!product) {
+      return createPageMetadata({
+        title: "Product Not Found | NutriHarvest",
+        description: "The requested NutriHarvest product could not be found.",
+        path: `/product/${slug}`,
+        noIndex: true,
+      });
+    }
+
+    return createPageMetadata({
+      title: `${product.name} | NutriHarvest`,
+      description: product.description,
+      path: `/product/${product.slug}`,
+      keywords: [product.name, ...(product.dietary || []), "premium dry fruits"],
+      image: product.images?.[0] || "",
+    });
+  } catch {
     return createPageMetadata({
       title: "Product Not Found | NutriHarvest",
       description: "The requested NutriHarvest product could not be found.",
@@ -27,21 +51,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       noIndex: true,
     });
   }
-
-  return createPageMetadata({
-    title: `${product.name} | ${product.category} | NutriHarvest`,
-    description: product.description,
-    path: `/product/${product.id}`,
-    keywords: [product.name, product.category, ...product.dietary, "premium dry fruits"],
-    image: product.image,
-  });
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = dryFruits.find((p) => p.id === slug);
+  
+  let apiProduct;
+  try {
+    const res = await productService.getProductBySlug(slug);
+    apiProduct = res.data;
+  } catch {
+    return notFound();
+  }
+  
+  if (!apiProduct) return notFound();
 
-  if (!product) return notFound();
+  const product = mapApiProductToUi(apiProduct);
 
   return (
     <>
@@ -59,3 +84,4 @@ export default async function ProductDetailPage({ params }: PageProps) {
     </>
   );
 }
+

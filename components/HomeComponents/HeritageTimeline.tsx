@@ -4,8 +4,9 @@ import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
 
 import { HeritageTimelineWrapper } from '@/styles/StyledComponents/HeritageTimelineWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
-const events = [
+const defaultEvents = [
   {
     id: 1,
     year: "1994",
@@ -30,15 +31,42 @@ const events = [
 ];
 
 export default function HeritageTimeline() {
+  const { data: moduleData } = useContentModule("home");
+  const timelineRecord = moduleData?.records?.find(r => r.id === "home-timeline");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = timelineRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const heading = getFieldValue("heading", "Our Heritage Journey");
+  const description = getFieldValue("description", "Tracing our roots back to the finest organic orchards.");
+  const eventsRaw = getFieldValue("events", "");
+
+  let events = defaultEvents;
+  if (eventsRaw && eventsRaw.trim()) {
+    const lines = eventsRaw.split("\n").filter(Boolean);
+    events = lines.map((line, idx) => {
+      const parts = line.split("|");
+      return {
+        id: idx + 1,
+        year: parts[0]?.trim() || "",
+        title: parts[1]?.trim() || "",
+        desc: parts[2]?.trim() || "",
+        align: parts[3]?.trim() || (idx % 2 === 0 ? "left" : "right")
+      };
+    });
+  }
+
   return (
     <HeritageTimelineWrapper>
       <Container fixed>
         <Box className='timeline_header'>
           <Typography variant='h2'>
-            Our Heritage Journey
+            {heading}
           </Typography>
           <Typography variant='body1'>
-            Tracing our roots back to the finest organic orchards.
+            {description}
           </Typography>
         </Box>
 

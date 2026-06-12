@@ -1,19 +1,36 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import { Box, Container, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { SustainabilityHeroWrapper } from '@/styles/StyledComponents/SustainabilityHeroWrapper';
+import { useContentModule } from '@/hooks/useContent';
 
 export default function SustainabilityHero() {
+  const { data: moduleData } = useContentModule("sustainability");
+  const heroRecord = moduleData?.records?.find(r => r.id === "sustainability-hero");
+
+  const getFieldValue = (fieldId: string, defaultValue: string): string => {
+    const field = heroRecord?.fields?.find(f => f.id === fieldId);
+    return field && typeof field.value === "string" ? field.value : defaultValue;
+  };
+
+  const tag = getFieldValue("tag", "Our Green Pledge");
+  const heading = getFieldValue("heading", "A Charter for the Future of Food");
+  const description = getFieldValue("description", "We believe luxury is keeping the integrity of the soil, the purity of the food, and the transparency of the journey. Harvest fields to your table.");
+  const image = getFieldValue("image", assets.sustainabilityHeroBg);
+  const quote = getFieldValue("quote", "We do not inherit the earth from our ancestors, we borrow it from our children.");
+
   return (
     <SustainabilityHeroWrapper>
       {/* Hero Banner Box */}
       <Box className="sustainability_hero">
         <Box className="hero_bg">
           <Image
-            src={assets.sustainabilityHeroBg}
-            alt="Rolling green agricultural hills showing NutriHarvest sustainability practices"
-            title="NutriHarvest regenerative agriculture landscape"
+            src={image}
+            alt={heading}
+            title={heading}
             fill
             priority
             sizes="100vw"
@@ -21,10 +38,10 @@ export default function SustainabilityHero() {
         </Box>
         <Box className="hero_overlay" />
         <Box className="hero_content">
-          <Typography className="section_tag">Our Green Pledge</Typography>
-          <Typography variant="h1">A Charter for the Future of Food</Typography>
+          <Typography className="section_tag">{tag}</Typography>
+          <Typography variant="h1">{heading}</Typography>
           <Typography className="hero_desc">
-            We believe luxury is keeping the integrity of the soil, the purity of the food, and the transparency of the journey. Harvest fields to your table.
+            {description}
           </Typography>
         </Box>
       </Box>
@@ -34,7 +51,7 @@ export default function SustainabilityHero() {
         <Container fixed>
           <Typography className="quote_symbol">&ldquo;</Typography>
           <Typography component="blockquote">
-            &ldquo;We do not inherit the earth from our ancestors, we borrow it from our children.&rdquo;
+            &ldquo;{quote}&rdquo;
           </Typography>
         </Container>
       </Box>
