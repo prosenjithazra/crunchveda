@@ -119,7 +119,7 @@ function ImageFieldUploader({ field, onChange }: SectionFieldEditorProps) {
           )}
         </Stack>
       </Box>
-      {field.value && (
+      {typeof field.value === "string" && field.value && (
         <Box
           sx={{
             mt: 1,
