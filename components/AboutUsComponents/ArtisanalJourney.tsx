@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
+import { ArtisanalJourneySkeleton } from '../Loader/SectionSkeletons';
 
 const defaultSteps = [
   {
@@ -25,7 +26,9 @@ const defaultSteps = [
 ];
 
 export default function ArtisanalJourney() {
-  const { data: moduleData } = useContentModule("about-us");
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+  if (isLoading) return <ArtisanalJourneySkeleton />;
+
   const journeyRecord = moduleData?.records?.find(r => r.id === "about-journey");
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {

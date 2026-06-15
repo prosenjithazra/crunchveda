@@ -4,7 +4,13 @@ import { Box, Container, Grid, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { ZeroPlasticMandateWrapper } from '@/styles/StyledComponents/ZeroPlasticMandateWrapper';
 
+import { useContentModule } from '@/hooks/useContent';
+import { ZeroPlasticMandateSkeleton } from '../Loader/SectionSkeletons';
+
 export default function ZeroPlasticMandate() {
+  const { isLoading } = useContentModule("sustainability");
+  if (isLoading) return <ZeroPlasticMandateSkeleton />;
+
   return (
     <ZeroPlasticMandateWrapper>
       <Container fixed>

@@ -8,9 +8,12 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import { assets } from '@/json/assest';
 import { ProductDetailsSectionWrapper } from '@/styles/StyledComponents/ProductDetailsSectionWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { ProductDetailsSectionSkeleton } from '../Loader/SectionSkeletons';
 
 export default function ProductDetailsSection() {
-  const { data: sectionData } = useHomeSection("product-details");
+  const { data: sectionData, isLoading } = useHomeSection("product-details");
+
+  if (isLoading) return <ProductDetailsSectionSkeleton />;
 
   const walnutEyebrow = sectionData?.content?.walnutEyebrow || "NATURAL SUPERFOOD";
   const walnutHeading = sectionData?.content?.walnutHeading || "The Brain-Boosting Power of Walnuts";

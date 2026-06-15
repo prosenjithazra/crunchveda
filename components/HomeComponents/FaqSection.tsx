@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { FaqSectionWrapper } from '@/styles/StyledComponents/FaqSectionWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { FaqSectionSkeleton } from '../Loader/SectionSkeletons';
 
 interface FaqItem {
   question: string;
@@ -27,7 +28,9 @@ const faqData: FaqItem[] = [
 
 export default function FaqSection() {
   const [activeId, setActiveId] = useState<number | null>(null);
-  const { data: sectionData } = useHomeSection("faq");
+  const { data: sectionData, isLoading } = useHomeSection("faq");
+
+  if (isLoading) return <FaqSectionSkeleton />;
 
   const handleToggle = (index: number) => {
     setActiveId(activeId === index ? null : index);

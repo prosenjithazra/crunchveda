@@ -8,9 +8,12 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { GiftBannerWrapper } from '@/styles/StyledComponents/GiftBannerWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { GiftBannerSkeleton } from '../Loader/SectionSkeletons';
 
 export default function GiftBanner() {
-  const { data: sectionData } = useHomeSection("gift-banner");
+  const { data: sectionData, isLoading } = useHomeSection("gift-banner");
+
+  if (isLoading) return <GiftBannerSkeleton />;
 
   const eyebrow = sectionData?.content?.eyebrow || "GIFT OF HEALTH";
   const heading = sectionData?.content?.heading || "Premium Curated Gift Boxes";

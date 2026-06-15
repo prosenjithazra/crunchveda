@@ -5,9 +5,12 @@ import Image from 'next/image';
 import { Box, Container, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
+import { AboutBannerSkeleton } from '../Loader/SectionSkeletons';
 
 export default function AboutBanner() {
-  const { data: moduleData } = useContentModule("about-us");
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+  if (isLoading) return <AboutBannerSkeleton />;
+
   const bannerRecord = moduleData?.records?.find(r => r.id === "about-banner");
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {

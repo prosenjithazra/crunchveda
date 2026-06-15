@@ -5,6 +5,7 @@ import { Box, Container, Typography } from '@mui/material';
 
 import { HeritageTimelineWrapper } from '@/styles/StyledComponents/HeritageTimelineWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { HeritageTimelineSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultEvents = [
   {
@@ -31,7 +32,9 @@ const defaultEvents = [
 ];
 
 export default function HeritageTimeline() {
-  const { data: sectionData } = useHomeSection("timeline");
+  const { data: sectionData, isLoading } = useHomeSection("timeline");
+
+  if (isLoading) return <HeritageTimelineSkeleton />;
 
   const heading = sectionData?.content?.heading || "Our Heritage Journey";
   const description = sectionData?.content?.description || "Tracing our roots back to the finest organic orchards.";

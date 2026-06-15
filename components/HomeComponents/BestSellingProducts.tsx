@@ -12,6 +12,7 @@ import ShopingBagIcon from '@/ui/Icons/ShopingBagIcon';
 import WhatsAppIcon from '@/ui/Icons/WhatsAppIcon';
 import { BestSellingProductsWrapper } from '@/styles/StyledComponents/BestSellingProductsWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { BestSellingProductsSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultProducts = [
   {
@@ -61,7 +62,15 @@ const defaultProducts = [
 ];
 
 export default function BestSellingProducts() {
-  const { data: sectionData } = useHomeSection("best-selling");
+  const { data: sectionData, isLoading } = useHomeSection("best-selling");
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
+    "1": "500g",
+    "2": "500g",
+    "3": "500g",
+    "4": "500g"
+  });
+
+  if (isLoading) return <BestSellingProductsSkeleton />;
 
   const eyebrow = sectionData?.content?.eyebrow || "CROWD FAVORITES";
   const heading = sectionData?.content?.heading || "Best Selling Products";
@@ -125,13 +134,6 @@ export default function BestSellingProducts() {
       };
     });
   }
-
-  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
-    "1": "500g",
-    "2": "500g",
-    "3": "500g",
-    "4": "500g"
-  });
 
   const handleSizeChange = (productId: string, size: string) => {
     setSelectedSizes((prev) => ({ ...prev, [productId]: size }));

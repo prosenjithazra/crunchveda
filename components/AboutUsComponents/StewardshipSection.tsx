@@ -5,9 +5,12 @@ import Image from 'next/image';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
+import { StewardshipSectionSkeleton } from '../Loader/SectionSkeletons';
 
 export default function StewardshipSection() {
-  const { data: moduleData } = useContentModule("about-us");
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+  if (isLoading) return <StewardshipSectionSkeleton />;
+
   const rootsRecord = moduleData?.records?.find(r => r.id === "about-roots");
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {

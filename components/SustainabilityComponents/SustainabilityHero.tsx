@@ -6,9 +6,12 @@ import { Box, Container, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { SustainabilityHeroWrapper } from '@/styles/StyledComponents/SustainabilityHeroWrapper';
 import { useContentModule } from '@/hooks/useContent';
+import { SustainabilityHeroSkeleton } from '../Loader/SectionSkeletons';
 
 export default function SustainabilityHero() {
-  const { data: moduleData } = useContentModule("sustainability");
+  const { data: moduleData, isLoading } = useContentModule("sustainability");
+  if (isLoading) return <SustainabilityHeroSkeleton />;
+
   const heroRecord = moduleData?.records?.find(r => r.id === "sustainability-hero");
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {

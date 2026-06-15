@@ -8,10 +8,13 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import { assets } from "@/json/assest";
 import { HomeBannerWrapper } from "@/styles/StyledComponents/HomeBannerWrapper";
 import { useHomeSection } from "@/hooks/useContent";
+import { HomeBannerSkeleton } from "../Loader/SectionSkeletons";
 
 export default function HomeBanner() {
-  const { data: sectionData } = useHomeSection("hero");
+  const { data: sectionData, isLoading } = useHomeSection("hero");
   
+  if (isLoading) return <HomeBannerSkeleton />;
+
   const showSection = sectionData?.content?.showSection ?? true;
   if (!showSection) return null;
 

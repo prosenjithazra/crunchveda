@@ -3,9 +3,12 @@
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { useContentModule } from '@/hooks/useContent';
+import { QuoteSectionSkeleton } from '../Loader/SectionSkeletons';
 
 export default function QuoteSection() {
-  const { data: moduleData } = useContentModule("about-us");
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+  if (isLoading) return <QuoteSectionSkeleton />;
+
   const quoteRecord = moduleData?.records?.find(r => r.id === "about-quote");
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {

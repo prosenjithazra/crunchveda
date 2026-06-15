@@ -8,6 +8,7 @@ import SolarIcon from '@/ui/Icons/SolarIcon';
 import SoilShieldIcon from '@/ui/Icons/SoilShieldIcon';
 import RibbonBadgeIcon from '@/ui/Icons/RibbonBadgeIcon';
 import { useContentModule } from '@/hooks/useContent';
+import { SustainabilityCharterSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultCharters = [
   {
@@ -33,7 +34,9 @@ const defaultCharters = [
 ];
 
 export default function SustainabilityCharter() {
-  const { data: moduleData } = useContentModule("about-us");
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+  if (isLoading) return <SustainabilityCharterSkeleton />;
+
   const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {

@@ -6,7 +6,13 @@ import SpaIcon from '@mui/icons-material/Spa';
 import { assets } from '@/json/assest';
 import { RegenerativeAgricultureWrapper } from '@/styles/StyledComponents/RegenerativeAgricultureWrapper';
 
+import { useContentModule } from '@/hooks/useContent';
+import { RegenerativeAgricultureSkeleton } from '../Loader/SectionSkeletons';
+
 export default function RegenerativeAgriculture() {
+  const { isLoading } = useContentModule("sustainability");
+  if (isLoading) return <RegenerativeAgricultureSkeleton />;
+
   return (
     <RegenerativeAgricultureWrapper>
       <Container fixed>

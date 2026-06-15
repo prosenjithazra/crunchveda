@@ -9,6 +9,7 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 import { FeaturesSectionWrapper } from '@/styles/StyledComponents/FeaturesSectionWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { FeaturesSectionSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultFeatures = [
   {
@@ -38,7 +39,9 @@ const defaultFeatures = [
 ];
 
 export default function FeaturesSection() {
-  const { data: sectionData } = useHomeSection("features");
+  const { data: sectionData, isLoading } = useHomeSection("features");
+
+  if (isLoading) return <FeaturesSectionSkeleton />;
 
   const featuresRaw = (sectionData?.content?.features as string) || "";
 

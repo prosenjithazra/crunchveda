@@ -10,6 +10,7 @@ import '@splidejs/react-splide/css';
 import { assets } from '@/json/assest';
 import { CuratedCategoriesWrapper } from '@/styles/StyledComponents/CuratedCategoriesWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { CuratedCategoriesSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultCategories = [
   { title: "Almonds", count: "12 ITEMS", image: assets.almonds, href: "/product?category=almonds" },
@@ -21,7 +22,9 @@ const defaultCategories = [
 ];
 
 export default function CuratedCategories() {
-  const { data: sectionData } = useHomeSection("categories");
+  const { data: sectionData, isLoading } = useHomeSection("categories");
+
+  if (isLoading) return <CuratedCategoriesSkeleton />;
 
   const heading = sectionData?.content?.heading || "Curated Categories";
   const cardsRaw = (sectionData?.content?.cards as string) || "";

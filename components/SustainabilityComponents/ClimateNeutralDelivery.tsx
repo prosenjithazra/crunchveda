@@ -3,7 +3,13 @@ import Link from 'next/link';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { ClimateNeutralDeliveryWrapper } from '@/styles/StyledComponents/ClimateNeutralDeliveryWrapper';
 
+import { useContentModule } from '@/hooks/useContent';
+import { ClimateNeutralDeliverySkeleton } from '../Loader/SectionSkeletons';
+
 export default function ClimateNeutralDelivery() {
+  const { isLoading } = useContentModule("sustainability");
+  if (isLoading) return <ClimateNeutralDeliverySkeleton />;
+
   return (
     <ClimateNeutralDeliveryWrapper>
       <Container fixed>
