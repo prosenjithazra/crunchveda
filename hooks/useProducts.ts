@@ -60,3 +60,10 @@ export function useDeleteProduct(token: string) {
     },
   });
 }
+
+export function useBestsellers() {
+  return useQuery({
+    queryKey: ["bestsellers"],
+    queryFn: () => productService.getBestsellers(),
+  });
+}

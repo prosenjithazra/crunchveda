@@ -53,6 +53,7 @@ export type AdminProductRecord = {
   rating: string;
   image: string;
   description: string;
+  badge?: string;
 };
 
 const today = "2026-06-11";
@@ -546,6 +547,6 @@ export const adminProducts: AdminProductRecord[] = dryFruits.map(product => ({
 }));
 
 export const adminCredentials = {
-  email: "admin@nutriharvest.com",
-  password: "admin123",
+  email: "admin@crunchveda.com",
+  password: "adminpassword123",
 };

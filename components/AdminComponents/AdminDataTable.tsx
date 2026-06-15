@@ -26,6 +26,20 @@ export type AdminTableColumn<T> = {
   width?: number | string;
 };
 
+export type AdminTableAction<T> = {
+  label: string;
+  icon: ReactNode;
+  onClick: (row: T) => void;
+  color?: string;
+};
+
+type ExtraAction<T> = {
+  label: string;
+  icon: ReactNode;
+  onClick: (row: T) => void;
+  color?: string;
+};
+
 type AdminDataTableProps<T> = {
   columns: AdminTableColumn<T>[];
   rows: T[];
@@ -35,6 +49,7 @@ type AdminDataTableProps<T> = {
   emptyDescription: string;
   onEdit?: (row: T) => void;
   onDelete?: (row: T) => void;
+  extraActions?: ExtraAction<T>[];
 };
 
 export default function AdminDataTable<T>({
@@ -46,6 +61,7 @@ export default function AdminDataTable<T>({
   emptyDescription,
   onEdit,
   onDelete,
+  extraActions,
 }: AdminDataTableProps<T>) {
   if (loading) {
     return (
@@ -88,7 +104,7 @@ export default function AdminDataTable<T>({
                 {column.label}
               </TableCell>
             ))}
-            {(onEdit || onDelete) && <TableCell align="right">Actions</TableCell>}
+            {(onEdit || onDelete || extraActions) && <TableCell align="right">Actions</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -97,9 +113,21 @@ export default function AdminDataTable<T>({
               {columns.map(column => (
                 <TableCell key={column.key}>{column.render(row)}</TableCell>
               ))}
-              {(onEdit || onDelete) && (
+              {(onEdit || onDelete || extraActions) && (
                 <TableCell align="right">
                   <Stack direction="row" spacing={0.5} sx={{ justifyContent: "flex-end" }}>
+                    {extraActions?.map(action => (
+                      <Tooltip key={action.label} title={action.label}>
+                        <IconButton
+                          aria-label={action.label}
+                          sx={{ color: action.color }}
+                          onClick={() => action.onClick(row)}
+                          size="small"
+                        >
+                          {action.icon}
+                        </IconButton>
+                      </Tooltip>
+                    ))}
                     {onEdit && (
                       <Tooltip title="Edit">
                         <IconButton aria-label="Edit" onClick={() => onEdit(row)} size="small">

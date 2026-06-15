@@ -1,5 +1,6 @@
 import { adminCredentials } from "@/json/mock/admin";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 const ADMIN_SESSION_KEY = "nutriharvest_admin_session";
 
 export type AdminSession = {
@@ -7,6 +8,7 @@ export type AdminSession = {
   name: string;
   role: string;
   loggedInAt: string;
+  token: string;
 };
 
 export type LoginPayload = {
@@ -16,17 +18,30 @@ export type LoginPayload = {
 
 export const adminAuthService = {
   login: async ({ email, password }: LoginPayload): Promise<AdminSession> => {
-    await new Promise(resolve => setTimeout(resolve, 450));
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    if (email !== adminCredentials.email || password !== adminCredentials.password) {
-      throw new Error("Invalid admin email or password.");
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Invalid admin email or password.");
     }
 
-    const session = {
-      email,
-      name: "NutriHarvest Admin",
-      role: "Content Manager",
+    const { user, accessToken } = data.data;
+    if (user.role !== "admin") {
+      throw new Error("Access denied. Admin privileges required.");
+    }
+
+    const session: AdminSession = {
+      email: user.email,
+      name: user.name,
+      role: user.role,
       loggedInAt: new Date().toISOString(),
+      token: accessToken,
     };
 
     window.localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));

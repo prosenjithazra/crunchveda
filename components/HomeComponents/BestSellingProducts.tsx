@@ -12,6 +12,8 @@ import ShopingBagIcon from '@/ui/Icons/ShopingBagIcon';
 import WhatsAppIcon from '@/ui/Icons/WhatsAppIcon';
 import { BestSellingProductsWrapper } from '@/styles/StyledComponents/BestSellingProductsWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { useBestsellers } from '@/hooks/useProducts';
+import { mapApiProductToUi } from '@/services/productService';
 import { BestSellingProductsSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultProducts = [
@@ -62,21 +64,16 @@ const defaultProducts = [
 ];
 
 export default function BestSellingProducts() {
-  const { data: sectionData, isLoading } = useHomeSection("best-selling");
-  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
-    "1": "500g",
-    "2": "500g",
-    "3": "500g",
-    "4": "500g"
-  });
+  const { data: sectionData, isLoading: sectionLoading } = useHomeSection("best-selling");
+  const { data: bestsellersData, isLoading: bestsellersLoading } = useBestsellers();
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
 
-  if (isLoading) return <BestSellingProductsSkeleton />;
+  if (sectionLoading || bestsellersLoading) return <BestSellingProductsSkeleton />;
 
   const eyebrow = sectionData?.content?.eyebrow || "CROWD FAVORITES";
   const heading = sectionData?.content?.heading || "Best Selling Products";
   const viewAllLabel = sectionData?.content?.viewAllLabel || "View All Products";
   const viewAllHref = sectionData?.content?.viewAllHref || "/product";
-  const productsRaw = (sectionData?.content?.products as string) || "";
 
   let products: Array<{
     id: string;
@@ -89,48 +86,25 @@ export default function BestSellingProducts() {
     hasWhatsApp: boolean;
     href: string;
   }> = defaultProducts;
-
-  if (productsRaw && productsRaw.trim()) {
-    const lines = productsRaw.split("\n").filter(Boolean);
-    products = lines.map((line, idx) => {
-      const parts = line.split("|");
-      const title = parts[0]?.trim() || "";
-      const price = parts[1]?.trim() || "";
-      const badgeText = parts[2]?.trim() || "";
-      const sizes = parts[3]?.split(",").map(s => s.trim()).filter(Boolean) || ["500g"];
-      const hasWhatsApp = parts[4]?.toLowerCase().includes("enabled") ?? true;
-
-      let image: string = assets.cashewsProduct;
-      let href = "/product/jumbo-cashews";
-      if (idx === 1) {
-        image = assets.almondsProduct;
-        href = "/product/california-almonds";
-      } else if (idx === 2) {
-        image = assets.walnutsProduct;
-        href = "/product/walnut-halves";
-      } else if (idx === 3) {
-        image = assets.pistachiosProduct;
-        href = "/product/iranian-pistachios";
-      }
-
-      let badge = null;
-      if (badgeText && badgeText.toLowerCase() !== "no badge" && badgeText.toLowerCase() !== "none") {
-        badge = {
-          text: badgeText,
-          type: badgeText.toLowerCase().includes("seller") ? "bestseller" : "organic"
-        };
-      }
-
+  if (bestsellersData?.data && bestsellersData.data.length > 0) {
+    products = bestsellersData.data.map((p) => {
+      const uiProd = mapApiProductToUi(p);
+      const price = uiProd.sizePrices[uiProd.defaultSize] || 0;
       return {
-        id: String(idx + 1),
-        title,
-        price,
-        image,
-        badge,
-        sizes,
-        defaultSize: sizes[0] || "500g",
-        hasWhatsApp,
-        href
+        id: p._id,
+        title: uiProd.name,
+        price: price ? `$${price.toFixed(2)}` : "$0.00",
+        image: uiProd.image || assets.cashewsProduct,
+        badge: uiProd.badge
+          ? {
+              text: uiProd.badge === "BEST SELLER" ? "Best Seller" : "Organic",
+              type: uiProd.badge === "BEST SELLER" ? "bestseller" : "organic"
+            }
+          : null,
+        sizes: Object.keys(uiProd.sizePrices),
+        defaultSize: uiProd.defaultSize,
+        hasWhatsApp: true,
+        href: `/product/${uiProd.id}`
       };
     });
   }

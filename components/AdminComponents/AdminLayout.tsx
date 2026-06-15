@@ -205,6 +205,72 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           />
         </ListItemButton>
 
+        {/* Categories Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/categories"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/categories")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/categories") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/categories") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
+            "&:hover": {
+              bgcolor: pathname.startsWith("/admin/categories") ? "primary.main" : "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <CategoryOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/categories") ? 700 : 500 }}>
+                Categories
+              </Typography>
+            }
+          />
+        </ListItemButton>
+
+        {/* Bestsellers Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/bestsellers"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/bestsellers")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/bestsellers") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/bestsellers") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
+            "&:hover": {
+              bgcolor: pathname.startsWith("/admin/bestsellers") ? "primary.main" : "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <StarBorderOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/bestsellers") ? 700 : 500 }}>
+                Bestsellers
+              </Typography>
+            }
+          />
+        </ListItemButton>
+
         <Divider sx={{ my: 2 }} />
 
         {/* CMS Pages Header */}

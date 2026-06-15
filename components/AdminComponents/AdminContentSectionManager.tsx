@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import AdminBreadcrumb from "./AdminBreadcrumb";
 import AdminPageHeader from "./AdminPageHeader";
 import { SectionFieldEditor } from "./AdminFormFields";
+import CategoryCardsEditor from "./CategoryCardsEditor";
 
 type AdminContentSectionManagerProps = {
   moduleId: string;
@@ -172,14 +173,31 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
         <Divider sx={{ my: 3 }} />
 
         <Stack spacing={3}>
-          {record.fields.map(field => (
-            <Box key={field.id}>
-              <SectionFieldEditor
-                field={field}
-                onChange={handleFieldChange}
+          {(record.id === "home-categories" || record.id === "categories-grid") && (
+            <Box>
+              <CategoryCardsEditor
+                record={record}
+                onChange={setRecord}
               />
+              <Divider sx={{ my: 3 }} />
             </Box>
-          ))}
+          )}
+
+          {record.fields
+            .filter(field => {
+              if (record.id === "home-categories" || record.id === "categories-grid") {
+                return field.id !== "cards" && field.id !== "imageSet";
+              }
+              return true;
+            })
+            .map(field => (
+              <Box key={field.id}>
+                <SectionFieldEditor
+                  field={field}
+                  onChange={handleFieldChange}
+                />
+              </Box>
+            ))}
         </Stack>
 
         <Divider sx={{ my: 3 }} />

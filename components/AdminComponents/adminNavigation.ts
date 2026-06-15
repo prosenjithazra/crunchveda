@@ -28,6 +28,8 @@ export type AdminNavigationItem = {
 export const adminNavigation: AdminNavigationItem[] = [
   { label: "Dashboard", href: "/admin", icon: DashboardOutlinedIcon },
   { label: "Products", href: "/admin/products", icon: Inventory2OutlinedIcon },
+  { label: "Categories", href: "/admin/categories", icon: CategoryOutlinedIcon },
+  { label: "Bestsellers", href: "/admin/bestsellers", icon: StarBorderOutlinedIcon },
   {
     label: "Pages",
     icon: ArticleOutlinedIcon,

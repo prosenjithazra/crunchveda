@@ -114,7 +114,7 @@ export default function AdminLoginPage() {
               fullWidth
               value={email}
               type="email"
-              placeholder="admin@nutriharvest.com"
+              placeholder="admin@crunchveda.com"
               onChange={event => {
                 setEmail(event.target.value);
                 setErrors(prev => ({ ...prev, email: undefined }));
@@ -144,7 +144,7 @@ export default function AdminLoginPage() {
 
           <Box sx={{ p: 2, borderRadius: 2, bgcolor: "customColors.lightCream" }}>
             <Typography variant="caption" color="text.secondary">
-              Demo credentials: admin@nutriharvest.com / admin123
+              Demo credentials: admin@crunchveda.com / adminpassword123
             </Typography>
           </Box>
         </Stack>

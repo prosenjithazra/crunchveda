@@ -10,6 +10,7 @@ import '@splidejs/react-splide/css';
 import { assets } from '@/json/assest';
 import { CuratedCategoriesWrapper } from '@/styles/StyledComponents/CuratedCategoriesWrapper';
 import { useHomeSection } from '@/hooks/useContent';
+import { useCategories } from '@/hooks/useProducts';
 import { CuratedCategoriesSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultCategories = [
@@ -22,27 +23,23 @@ const defaultCategories = [
 ];
 
 export default function CuratedCategories() {
-  const { data: sectionData, isLoading } = useHomeSection("categories");
+  const { data: sectionData, isLoading: sectionLoading } = useHomeSection("categories");
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
 
-  if (isLoading) return <CuratedCategoriesSkeleton />;
+  if (sectionLoading || categoriesLoading) return <CuratedCategoriesSkeleton />;
 
   const heading = sectionData?.content?.heading || "Curated Categories";
-  const cardsRaw = (sectionData?.content?.cards as string) || "";
-  const imageSetRaw = (sectionData?.content?.imageSet as string) || "";
 
   let categories: Array<{ title: string; count: string; image: string; href: string }> = defaultCategories;
-  if (cardsRaw && cardsRaw.trim()) {
-    const lines = cardsRaw.split("\n").filter(Boolean);
-    const images = imageSetRaw ? imageSetRaw.split("\n").filter(Boolean) : [];
-    categories = lines.map((line, idx) => {
-      const parts = line.split("|");
-      return {
-        title: parts[0]?.trim() || "",
-        count: parts[1]?.trim() || "",
-        href: parts[2]?.trim() || "/product",
-        image: images[idx]?.trim() || assets.almonds
-      };
-    });
+  if (categoriesData?.data && categoriesData.data.length > 0) {
+    categories = categoriesData.data.map((cat) => ({
+      title: cat.name,
+      count: cat.productCount !== undefined
+        ? `${cat.productCount} ITEM${cat.productCount !== 1 ? 'S' : ''}`
+        : "0 ITEMS",
+      image: cat.image || assets.almonds,
+      href: `/product?category=${encodeURIComponent(cat.name)}`
+    }));
   }
 
   return (

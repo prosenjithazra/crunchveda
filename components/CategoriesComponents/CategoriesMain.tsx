@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Box, Container, Grid, Typography, Button } from '@mui/material';
+import { Box, Container, Grid, Typography, Button, CircularProgress } from '@mui/material';
 
 import { assets } from '@/json/assest';
 import { CategoriesMainWrapper } from '@/styles/StyledComponents/CategoriesMainWrapper';
@@ -11,8 +11,12 @@ import DiscoverArrowIcon from '@/ui/Icons/DiscoverArrowIcon';
 import EthicalIcon from '@/ui/Icons/EthicalIcon';
 import CertifiedOrganicIcon from '@/ui/Icons/CertifiedOrganicIcon';
 import GlobalExcellenceIcon from '@/ui/Icons/GlobalExcellenceIcon';
+import { useCategories } from '@/hooks/useProducts';
 
 export default function CategoriesMain() {
+  const { data: categoriesData, isLoading } = useCategories();
+  const categories = categoriesData?.data || [];
+
   return (
     <CategoriesMainWrapper>
       <Container fixed>
@@ -33,102 +37,57 @@ export default function CategoriesMain() {
 
         {/* Categories Grid */}
         <Grid container spacing={{lg:3, md:2, xs:1.5}} className="grid_container">
-          {/* Row 1: Premium Dates & Exotic Nuts */}
-          <Grid size={{ xs: 12, md: 7.5 }}>
-            <Link href="/product?category=dates" className="category_card tall_card">
-              <Box className="card_badge">Signature Selection</Box>
-              <Box className="card_bg">
-                <Image
-                  src={assets.dates}
-                  alt="Premium Dates"
-                  fill
-                  priority
-                  sizes="(max-width: 900px) 100vw, 65vw"
-                />
+          {isLoading ? (
+            <Grid size={{ xs: 12 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+                <CircularProgress color="primary" />
               </Box>
-              <Box className="overlay" />
-              <Box className="card_content">
-                <Typography variant="h2">Premium Dates</Typography>
-                <Typography variant="body2">
-                  Heritage varieties hand-plucked from the sun-drenched oases of the Middle East.
-                </Typography>
-                <Box className="discover_link">
-                  Discover <DiscoverArrowIcon />
-                </Box>
-              </Box>
-            </Link>
-          </Grid>
+            </Grid>
+          ) : categories.length === 0 ? (
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="body1" align="center" color="text.secondary" sx={{ py: 8 }}>
+                No categories found in the database.
+              </Typography>
+            </Grid>
+          ) : (
+            categories.map((cat, idx) => {
+              let mdSize = 6;
+              let cardClass = "medium_card";
+              if (idx % 4 === 0) {
+                mdSize = 7.5;
+                cardClass = "tall_card";
+              } else if (idx % 4 === 1) {
+                mdSize = 4.5;
+                cardClass = "tall_card";
+              }
 
-          <Grid size={{ xs: 12, md: 4.5 }}>
-            <Link href="/product?category=nuts" className="category_card tall_card">
-              <Box className="card_bg">
-                <Image
-                  src={assets.exoticNuts}
-                  alt="Exotic Nuts"
-                  fill
-                  priority
-                  sizes="(max-width: 900px) 100vw, 35vw"
-                />
-              </Box>
-              <Box className="overlay" />
-              <Box className="card_content">
-                <Typography variant="h2">Exotic Nuts</Typography>
-                <Typography variant="body2">
-                  Sustainably sourced, slow-roasted perfection.
-                </Typography>
-                <Box className="discover_link">
-                  Discover <DiscoverArrowIcon />
-                </Box>
-              </Box>
-            </Link>
-          </Grid>
-
-          {/* Row 2: Ancient Grains & Artisanal Oils */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Link href="/product?category=grains" className="category_card medium_card">
-              <Box className="card_bg">
-                <Image
-                  src={assets.ancientGrains}
-                  alt="Ancient Grains"
-                  fill
-                  sizes="(max-width: 900px) 100vw, 50vw"
-                />
-              </Box>
-              <Box className="overlay" />
-              <Box className="card_content">
-                <Typography variant="h2">Ancient Grains</Typography>
-                <Typography variant="body2">
-                  Heirloom grains from untouched soils.
-                </Typography>
-                <Box className="discover_link">
-                  Discover <DiscoverArrowIcon />
-                </Box>
-              </Box>
-            </Link>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Link href="/product?category=oils" className="category_card medium_card">
-              <Box className="card_bg">
-                <Image
-                  src={assets.oliveOil}
-                  alt="Artisanal Oils"
-                  fill
-                  sizes="(max-width: 900px) 100vw, 50vw"
-                />
-              </Box>
-              <Box className="overlay" />
-              <Box className="card_content">
-                <Typography variant="h2">Artisanal Oils</Typography>
-                <Typography variant="body2">
-                  Cold-pressed liquid gold for the discerning palate.
-                </Typography>
-                <Box className="discover_link">
-                  Discover <DiscoverArrowIcon />
-                </Box>
-              </Box>
-            </Link>
-          </Grid>
+              return (
+                <Grid size={{ xs: 12, md: mdSize }} key={cat._id}>
+                  <Link href={`/product?category=${encodeURIComponent(cat.name)}`} className={`category_card ${cardClass}`}>
+                    {idx === 0 && <Box className="card_badge">Signature Selection</Box>}
+                    <Box className="card_bg">
+                      <Image
+                        src={cat.image || assets.dates}
+                        alt={cat.name}
+                        fill
+                        sizes={mdSize === 7.5 ? "(max-width: 900px) 100vw, 65vw" : mdSize === 4.5 ? "(max-width: 900px) 100vw, 35vw" : "(max-width: 900px) 100vw, 50vw"}
+                      />
+                    </Box>
+                    <Box className="overlay" />
+                    <Box className="card_content">
+                      <Typography variant="h2">{cat.name}</Typography>
+                      <Typography variant="body2">
+                        {cat.description}
+                      </Typography>
+                      <Box className="discover_link">
+                        Discover <DiscoverArrowIcon />
+                      </Box>
+                    </Box>
+                  </Link>
+                </Grid>
+              );
+            })
+          )}
 
           {/* Row 3: Artisanal Gifting */}
           <Grid size={{ xs: 12 }}>

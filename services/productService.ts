@@ -8,6 +8,7 @@ export type Category = {
   slug: string;
   description: string;
   image?: string;
+  productCount?: number;
 };
 
 export type Product = {
@@ -139,6 +140,15 @@ export const productService = {
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || "Failed to fetch categories");
+    }
+    return data;
+  },
+
+  getBestsellers: async (): Promise<{ success: boolean; data: Product[] }> => {
+    const res = await fetch(`${API_URL}/products/bestsellers`);
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch bestsellers");
     }
     return data;
   },

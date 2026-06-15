@@ -113,6 +113,7 @@ const blankProduct = (): AdminProductRecord => ({
   rating: "",
   image: "",
   description: "",
+  badge: "",
 });
 
 const columns: AdminTableColumn<AdminProductRecord>[] = [
@@ -267,6 +268,20 @@ export default function AdminProductManager() {
                     <MenuItem value="Published">Published</MenuItem>
                     <MenuItem value="Draft">Draft</MenuItem>
                     <MenuItem value="Archived">Archived</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Badge</InputLabel>
+                  <Select
+                    label="Badge"
+                    value={editingProduct.badge || ""}
+                    onChange={event => updateProduct({ badge: event.target.value as string })}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="BEST SELLER">Best Seller</MenuItem>
+                    <MenuItem value="ORGANIC">Organic</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

@@ -22,16 +22,8 @@ import FilterBtnIcon from "@/ui/Icons/FilterBtnIcon";
 import HeartBtnIcon from "@/ui/Icons/HeartBtnIcon";
 import CloseIcon from '@mui/icons-material/Close';
 import { DryFruitProduct as ProductItem } from "@/json/mock/dryFruits";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts, useCategories } from "@/hooks/useProducts";
 import { mapApiProductToUi } from "@/services/productService";
-
-const categoryOptions = [
-  "Premium Almonds",
-  "Exotic Cashews",
-  "Walnut Kernels",
-  "California Pistachios",
-  "Dates & Figs",
-];
 
 const dietaryOptions = ["Organic", "Gluten-Free", "Raw"];
 
@@ -131,15 +123,19 @@ function ProductCard({
 
 export default function ProductUI() {
   const { data, isLoading } = useProducts({ limit: 100 });
+  const { data: categoriesData } = useCategories();
+
+  const categoryOptions = useMemo(() => {
+    if (!categoriesData?.data) return [];
+    return categoriesData.data.map(cat => cat.name);
+  }, [categoriesData]);
 
   const productsList = useMemo(() => {
     if (!data?.data) return [];
     return data.data.map(mapApiProductToUi);
   }, [data]);
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    "Premium Almonds",
-  ]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([5, 100]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("Premium First");
