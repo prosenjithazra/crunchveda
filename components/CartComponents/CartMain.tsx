@@ -77,7 +77,16 @@ export default function CartMain() {
   }, []);
 
   useEffect(() => {
-    loadCart();
+    let active = true;
+    const initCart = async () => {
+      if (active) {
+        await loadCart();
+      }
+    };
+    initCart();
+    return () => {
+      active = false;
+    };
   }, [loadCart]);
 
   useEffect(() => {

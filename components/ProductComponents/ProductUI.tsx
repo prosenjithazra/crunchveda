@@ -193,34 +193,29 @@ export default function ProductUI() {
   const categoryParam = searchParams.get("category");
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [maxPriceLimit, setMaxPriceLimit] = useState<number>(2000);
+  const [prevCategoryParam, setPrevCategoryParam] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [selectedBadges, setSelectedBadges] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("Premium First");
 
-  useEffect(() => {
-    if (productsList.length > 0) {
-      const getPrice = (p: ProductItem) =>
-        p.sizePrices[p.defaultSize] ?? Object.values(p.sizePrices)[0] ?? 0;
-      const maxVal = Math.max(...productsList.map(getPrice), 100);
-      const calculatedMax = Math.ceil(maxVal / 100) * 100;
-      setMaxPriceLimit(calculatedMax);
-      setPriceRange((prev) => {
-        if (prev[1] === 2000 || prev[1] > calculatedMax || prev[0] === 5) {
-          return [0, calculatedMax];
-        }
-        return prev;
-      });
-    }
+  const maxPriceLimit = useMemo(() => {
+    if (productsList.length === 0) return 2000;
+    const getPrice = (p: ProductItem) =>
+      p.sizePrices[p.defaultSize] ?? Object.values(p.sizePrices)[0] ?? 0;
+    const maxVal = Math.max(...productsList.map(getPrice), 100);
+    return Math.ceil(maxVal / 100) * 100;
   }, [productsList]);
 
-  useEffect(() => {
-    if (categoryParam) {
-      setSelectedCategories([categoryParam]);
-    } else {
-      setSelectedCategories([]);
-    }
-  }, [categoryParam]);
+  const [prevMaxLimit, setPrevMaxLimit] = useState<number>(2000);
+  if (maxPriceLimit !== prevMaxLimit) {
+    setPrevMaxLimit(maxPriceLimit);
+    setPriceRange([0, maxPriceLimit]);
+  }
+
+  if (categoryParam !== prevCategoryParam) {
+    setPrevCategoryParam(categoryParam);
+    setSelectedCategories(categoryParam ? [categoryParam] : []);
+  }
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [mobileFilterBox, setMobileFilterBox] = useState(false);
   const handleFilterBoxToggle = () => {
