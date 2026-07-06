@@ -1,335 +1,305 @@
 "use client";
 
-import type { AdminProductRecord, AdminStatus } from "@/json/mock/admin";
-import { adminContentService } from "@/services/admin/contentService";
+import type { IProduct, IProductCategory } from "@/types/product";
+import {
+  adminProductService,
+  getCategoryName,
+} from "@/services/admin/productService";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
-import { Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography, CircularProgress, Box } from "@mui/material";
+import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  IconButton,
+  Stack,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import AdminBreadcrumb from "./AdminBreadcrumb";
-import AdminDataTable, { type AdminTableColumn } from "./AdminDataTable";
-import AdminModal from "./AdminModal";
 import AdminPageHeader from "./AdminPageHeader";
-import AdminStatusChip from "./AdminStatusChip";
 import ConfirmDialog from "./ConfirmDialog";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-
-type ProductImageUploaderProps = {
-  value: string;
-  onChange: (url: string) => void;
-};
-
-function ProductImageUploader({ value, onChange }: ProductImageUploaderProps) {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = React.useState(false);
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    setUploading(true);
-    try {
-      const res = await fetch(`${API_URL}/upload/image`, {
-        method: "POST",
-        body: formData,
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.message || "Failed to upload image");
-      }
-      onChange(result.data.url);
-      toast.success("Product image uploaded successfully!");
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || "Image upload failed");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  return (
-    <Stack spacing={1}>
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-      <Box
-        onClick={() => !uploading && fileInputRef.current?.click()}
-        sx={{
-          p: 1.5,
-          border: "1px dashed",
-          borderColor: "primary.main",
-          borderRadius: 2,
-          bgcolor: "customColors.lightCream",
-          cursor: uploading ? "not-allowed" : "pointer",
-          textAlign: "center",
-          "&:hover": {
-            bgcolor: "action.hover",
-          },
-        }}
-      >
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center", justifyContent: "center" }}>
-          {uploading ? (
-            <>
-              <CircularProgress size={16} />
-              <Typography variant="body2" color="text.secondary">
-                Uploading to Cloudinary...
-              </Typography>
-            </>
-          ) : (
-            <>
-              <CloudUploadOutlinedIcon fontSize="small" color="primary" />
-              <Typography variant="body2" color="primary" sx={{ fontWeight: 600 }}>
-                Upload Image to Cloudinary
-              </Typography>
-            </>
-          )}
-        </Stack>
-      </Box>
-      {value && (
-        <Box sx={{ border: 1, borderColor: "divider", borderRadius: 2, overflow: "hidden", maxWidth: 120 }}>
-          <img src={value} alt="Preview" style={{ width: "100%", height: "auto", display: "block" }} />
-        </Box>
-      )}
-    </Stack>
-  );
-}
-
-const blankProduct = (): AdminProductRecord => ({
-  id: `product-${Date.now()}`,
-  name: "",
-  category: "",
-  status: "Draft",
-  price: "",
-  defaultSize: "",
-  rating: "",
-  image: "",
-  description: "",
-  badge: "",
-});
-
-const columns: AdminTableColumn<AdminProductRecord>[] = [
-  {
-    key: "name",
-    label: "Product",
-    render: row => (
-      <Stack spacing={0.5}>
-        <Typography sx={{ fontWeight: 700 }}>{row.name}</Typography>
-        <Typography variant="caption" color="text.secondary">
-          {row.id}
-        </Typography>
-      </Stack>
-    ),
-  },
-  { key: "category", label: "Category", render: row => row.category },
-  { key: "price", label: "Price", render: row => row.price },
-  { key: "size", label: "Default size", render: row => row.defaultSize },
-  { key: "status", label: "Status", render: row => <AdminStatusChip status={row.status} /> },
-];
+// ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function AdminProductManager() {
-  const [products, setProducts] = React.useState<AdminProductRecord[]>([]);
+  const router = useRouter();
+  const [products, setProducts] = React.useState<IProduct[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [editingProduct, setEditingProduct] = React.useState<AdminProductRecord | null>(null);
-  const [deleteProduct, setDeleteProduct] = React.useState<AdminProductRecord | null>(null);
 
-  React.useEffect(() => {
-    adminContentService.getProducts().then(data => {
-      setProducts(data);
+  const [deleteTarget, setDeleteTarget] = React.useState<IProduct | null>(null);
+  const [togglingId, setTogglingId] = React.useState<string | null>(null);
+
+  // ── Load data ────────────────────────────────────────────────────────────────
+  const loadData = React.useCallback(async () => {
+    try {
+      const prods = await adminProductService.getAll();
+      setProducts(prods);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to load products");
+    } finally {
       setLoading(false);
-    });
+    }
   }, []);
 
-  const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  React.useEffect(() => {
+    loadData();
+  }, [loadData]);
 
-    if (!editingProduct) {
-      return;
+
+  const handleToggle = async (product: IProduct) => {
+    setTogglingId(product._id);
+    try {
+      const updated = await adminProductService.toggleStatus(product._id, !product.isActive);
+      setProducts((prev) => prev.map((p) => (p._id === updated._id ? updated : p)));
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update status.");
+    } finally {
+      setTogglingId(null);
     }
-
-    if (!editingProduct.name.trim() || !editingProduct.category.trim()) {
-      toast.error("Product name and category are required.");
-      return;
-    }
-
-    const saved = await adminContentService.saveProduct(editingProduct);
-    setProducts(prev => {
-      const exists = prev.some(product => product.id === saved.id);
-      return exists ? prev.map(product => (product.id === saved.id ? saved : product)) : [saved, ...prev];
-    });
-    setEditingProduct(null);
-    toast.success("Product saved.");
   };
 
-  const handleDelete = async () => {
-    if (!deleteProduct) {
-      return;
+  // ── Delete ────────────────────────────────────────────────────────────────────
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await adminProductService.remove(deleteTarget._id);
+      setProducts((prev) => prev.filter((p) => p._id !== deleteTarget._id));
+      toast.success(`"${deleteTarget.name}" deleted.`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete product.");
+    } finally {
+      setDeleteTarget(null);
     }
-
-    await adminContentService.deleteProduct(deleteProduct.id);
-    setProducts(prev => prev.filter(product => product.id !== deleteProduct.id));
-    setDeleteProduct(null);
-    toast.success("Product deleted.");
   };
 
-  const updateProduct = (patch: Partial<AdminProductRecord>) => {
-    setEditingProduct(prev => (prev ? { ...prev, ...patch } : prev));
-  };
-
+  // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <>
+    <Box>
       <AdminBreadcrumb items={[{ label: "Products" }]} />
       <AdminPageHeader
         title="Product Management"
-        description="Add, edit, delete, and publish product records used by product listing, product detail, best-seller, saved, and gift sections."
-        actionLabel="Add product"
-        actionIcon={<AddRoundedIcon />}
-        onAction={() => setEditingProduct(blankProduct())}
-      />
-
-      <AdminDataTable
-        columns={columns}
-        rows={products}
-        loading={loading}
-        getRowKey={row => row.id}
-        emptyTitle="No products"
-        emptyDescription="Add products with images, descriptions, categories, prices, and status toggles."
-        onEdit={row => setEditingProduct({ ...row })}
-        onDelete={row => setDeleteProduct(row)}
-      />
-
-      <AdminModal
-        open={Boolean(editingProduct)}
-        title={editingProduct?.id.startsWith("product-") ? "Add product" : "Edit product"}
-        description="Manage product content and mock commerce fields."
-        onClose={() => setEditingProduct(null)}
+        description="Add, edit, delete, and manage all product records. Changes are saved to the database immediately."
       >
-        {editingProduct && (
-          <Stack component="form" onSubmit={handleSave} spacing={3}>
-            <Grid container spacing={2.5}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Product name"
-                  value={editingProduct.name}
-                  onChange={event => updateProduct({ name: event.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Category"
-                  value={editingProduct.category}
-                  onChange={event => updateProduct({ category: event.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Price"
-                  value={editingProduct.price}
-                  onChange={event => updateProduct({ price: event.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Default size"
-                  value={editingProduct.defaultSize}
-                  onChange={event => updateProduct({ defaultSize: event.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Rating"
-                  value={editingProduct.rating}
-                  onChange={event => updateProduct({ rating: event.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Status</InputLabel>
-                  <Select
-                    label="Status"
-                    value={editingProduct.status}
-                    onChange={event => updateProduct({ status: event.target.value as AdminStatus })}
-                  >
-                    <MenuItem value="Published">Published</MenuItem>
-                    <MenuItem value="Draft">Draft</MenuItem>
-                    <MenuItem value="Archived">Archived</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Badge</InputLabel>
-                  <Select
-                    label="Badge"
-                    value={editingProduct.badge || ""}
-                    onChange={event => updateProduct({ badge: event.target.value as string })}
-                  >
-                    <MenuItem value="">None</MenuItem>
-                    <MenuItem value="BEST SELLER">Best Seller</MenuItem>
-                    <MenuItem value="ORGANIC">Organic</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Stack spacing={1}>
-                  <TextField
-                    fullWidth
-                    label="Image path"
-                    value={editingProduct.image}
-                    onChange={event => updateProduct({ image: event.target.value })}
-                  />
-                  <ProductImageUploader
-                    value={editingProduct.image}
-                    onChange={url => updateProduct({ image: url })}
-                  />
-                </Stack>
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  multiline
-                  minRows={4}
-                  label="Description"
-                  value={editingProduct.description}
-                  onChange={event => updateProduct({ description: event.target.value })}
-                />
-              </Grid>
-            </Grid>
-            <Stack direction="row" spacing={1.5} sx={{ justifyContent: "flex-end" }}>
-              <Button variant="outlined" onClick={() => setEditingProduct(null)}>
-                Cancel
-              </Button>
-              <Button variant="contained" type="submit">
-                Save product
-              </Button>
-            </Stack>
+        <Button
+          variant="contained"
+          startIcon={<AddRoundedIcon />}
+          onClick={() => router.push("/admin/products/add")}
+          sx={{ textTransform: "none", borderRadius: 2, fontWeight: 600 }}
+        >
+          Add Product
+        </Button>
+      </AdminPageHeader>
+
+      {/* Product Table */}
+      <Box
+        sx={{
+          mt: 3,
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 2.5,
+          overflow: "hidden",
+          boxShadow: "0px 2px 8px rgba(0,0,0,0.04)",
+        }}
+      >
+        {loading ? (
+          <Stack sx={{ alignItems: "center", py: 8 }}>
+            <CircularProgress />
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Loading products…
+            </Typography>
           </Stack>
+        ) : products.length === 0 ? (
+          <Stack sx={{ alignItems: "center", py: 8 }}>
+            <Typography variant="h6" color="text.secondary">
+              No products yet.
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<AddRoundedIcon />}
+              onClick={() => router.push("/admin/products/add")}
+              sx={{ mt: 2, textTransform: "none", borderRadius: 2 }}
+            >
+              Add your first product
+            </Button>
+          </Stack>
+        ) : (
+          <Box sx={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr
+                  style={{
+                    background: "#fafaf8",
+                    borderBottom: "1px solid rgba(0,0,0,0.08)",
+                  }}
+                >
+                  {[
+                    "Image",
+                    "Name",
+                    "Category",
+                    "Price",
+                    "Stock",
+                    "Badge",
+                    "Status",
+                    "Actions",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      style={{
+                        padding: "12px 16px",
+                        textAlign: "left",
+                        fontWeight: 700,
+                        fontSize: 13,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => (
+                  <tr
+                    key={p._id}
+                    style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}
+                  >
+                    <td style={{ padding: "10px 16px" }}>
+                      {p.images?.[0] ? (
+                        <Box
+                          component="img"
+                          src={p.images[0]}
+                          alt={p.name}
+                          sx={{
+                            width: 44,
+                            height: 44,
+                            objectFit: "cover",
+                            borderRadius: 1.5,
+                            border: 1,
+                            borderColor: "divider",
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 1.5,
+                            bgcolor: "action.hover",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Typography variant="caption" color="text.disabled">
+                            No img
+                          </Typography>
+                        </Box>
+                      )}
+                    </td>
+                    <td style={{ padding: "10px 16px", maxWidth: 200 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {p.name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ fontFamily: "monospace" }}
+                      >
+                        {p.slug}
+                      </Typography>
+                    </td>
+                    <td style={{ padding: "10px 16px" }}>
+                      <Typography variant="body2">{getCategoryName(p)}</Typography>
+                    </td>
+                    <td style={{ padding: "10px 16px" }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        ₹{(
+                          p.price ??
+                          (p.sizePrices ? Object.values(p.sizePrices)[0] : 0) ??
+                          0
+                        ).toFixed(2)}
+                      </Typography>
+                    </td>
+                    <td style={{ padding: "10px 16px" }}>
+                      <Chip
+                        label={p.stock}
+                        size="small"
+                        color={p.stock > 0 ? "default" : "error"}
+                        variant="outlined"
+                      />
+                    </td>
+                    <td style={{ padding: "10px 16px" }}>
+                      {p.badge ? (
+                        <Chip
+                          label={p.badge}
+                          size="small"
+                          color={p.badge === "BEST SELLER" ? "warning" : "success"}
+                        />
+                      ) : (
+                        <Typography variant="caption" color="text.disabled">
+                          None
+                        </Typography>
+                      )}
+                    </td>
+                    <td style={{ padding: "10px 16px" }}>
+                      <Tooltip
+                        title={p.isActive ? "Click to deactivate" : "Click to activate"}
+                      >
+                        <Switch
+                          size="small"
+                          checked={p.isActive}
+                          disabled={togglingId === p._id}
+                          onChange={() => handleToggle(p)}
+                          color="success"
+                        />
+                      </Tooltip>
+                    </td>
+                    <td style={{ padding: "10px 16px" }}>
+                      <Stack direction="row" spacing={0.5}>
+                        <Tooltip title="Edit product">
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => router.push(`/admin/products/edit/${p._id}`)}
+                          >
+                            <EditOutlinedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete product">
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => setDeleteTarget(p)}
+                          >
+                            <DeleteOutlineRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Stack>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Box>
         )}
-      </AdminModal>
+      </Box>
 
-
+      {/* Delete Confirm */}
       <ConfirmDialog
-        open={Boolean(deleteProduct)}
-        title="Delete product?"
-        description={`This will remove ${deleteProduct?.name ?? "this product"} from the admin mock data for this session.`}
-        onCancel={() => setDeleteProduct(null)}
-        onConfirm={handleDelete}
+        open={Boolean(deleteTarget)}
+        title="Delete Product?"
+        description={`Are you sure you want to permanently delete "${deleteTarget?.name}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
       />
-    </>
+    </Box>
   );
 }

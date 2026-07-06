@@ -8,8 +8,13 @@ import { useContentModule } from '@/hooks/useContent';
 import { ZeroPlasticMandateSkeleton } from '../Loader/SectionSkeletons';
 
 export default function ZeroPlasticMandate() {
-  const { isLoading } = useContentModule("sustainability");
+  const { data: moduleData, isLoading } = useContentModule("sustainability");
   if (isLoading) return <ZeroPlasticMandateSkeleton />;
+
+  const record = moduleData?.records?.find(r => r.id === "zero-plastic");
+  const showSectionField = record?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   return (
     <ZeroPlasticMandateWrapper>

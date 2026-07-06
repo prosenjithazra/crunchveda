@@ -36,23 +36,37 @@ export default function HeritageTimeline() {
 
   if (isLoading) return <HeritageTimelineSkeleton />;
 
-  const heading = sectionData?.content?.heading || "Our Heritage Journey";
-  const description = sectionData?.content?.description || "Tracing our roots back to the finest organic orchards.";
-  const eventsRaw = (sectionData?.content?.events as string) || "";
+  const showSection = sectionData?.content?.showSection ?? true;
+  if (!showSection) return null;
+
+  const content = sectionData?.content || {};
+  const heading = content.sectionTitle || content.heading || "Our Heritage Journey";
+  const description = content.sectionDescription || content.description || "Tracing our roots back to the finest organic orchards.";
 
   let events = defaultEvents;
-  if (eventsRaw && eventsRaw.trim()) {
-    const lines = eventsRaw.split("\n").filter(Boolean);
-    events = lines.map((line, idx) => {
-      const parts = line.split("|");
-      return {
-        id: idx + 1,
-        year: parts[0]?.trim() || "",
-        title: parts[1]?.trim() || "",
-        desc: parts[2]?.trim() || "",
-        align: parts[3]?.trim() || (idx % 2 === 0 ? "left" : "right")
-      };
-    });
+  if (Array.isArray(content.milestones) && content.milestones.length > 0) {
+    events = content.milestones.map((m: any, idx: number) => ({
+      id: idx + 1,
+      year: m.year || "",
+      title: m.title || "",
+      desc: m.description || m.desc || "",
+      align: m.align || (idx % 2 === 0 ? "left" : "right")
+    }));
+  } else {
+    const eventsRaw = (content.events as string) || "";
+    if (eventsRaw && eventsRaw.trim()) {
+      const lines = eventsRaw.split("\n").filter(Boolean);
+      events = lines.map((line, idx) => {
+        const parts = line.split("|");
+        return {
+          id: idx + 1,
+          year: parts[0]?.trim() || "",
+          title: parts[1]?.trim() || "",
+          desc: parts[2]?.trim() || "",
+          align: parts[3]?.trim() || (idx % 2 === 0 ? "left" : "right")
+        };
+      });
+    }
   }
 
   return (

@@ -129,7 +129,7 @@ export default function ProductDetailsBottom({ product }: Props) {
             <Box component="h2" className="pairs_title">
               Pairs Well With
             </Box>
-            <Link href="/product" className="explore_link">
+            <Link href="/products" className="explore_link">
               Explore Shop →
             </Link>
           </Box>
@@ -140,7 +140,7 @@ export default function ProductDetailsBottom({ product }: Props) {
               return (
                 <Link
                   key={item.id}
-                  href={`/product/${item.id}`}
+                  href={`/products/${item.id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Box className="pair_card">

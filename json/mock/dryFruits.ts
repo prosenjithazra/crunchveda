@@ -8,10 +8,11 @@ export interface DryFruitProduct {
   description: string;
   image: string;
   gallery: string[];
-  badge?: "ORGANIC" | "BEST SELLER";
+  badge?: string;
   dietary: string[];
   sizePrices: Record<string, number>;
   defaultSize: string;
+  stock?: number;
 }
 
 export const dryFruits: DryFruitProduct[] = [

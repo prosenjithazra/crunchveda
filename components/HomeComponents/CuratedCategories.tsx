@@ -14,12 +14,12 @@ import { useCategories } from '@/hooks/useProducts';
 import { CuratedCategoriesSkeleton } from '../Loader/SectionSkeletons';
 
 const defaultCategories = [
-  { title: "Almonds", count: "12 ITEMS", image: assets.almonds, href: "/product?category=almonds" },
-  { title: "Cashews", count: "8 ITEMS", image: assets.cashews, href: "/product?category=cashews" },
-  { title: "Pistachios", count: "10 ITEMS", image: assets.pistachios, href: "/product?category=pistachios" },
-  { title: "Walnuts", count: "6 ITEMS", image: assets.walnuts, href: "/product?category=walnuts" },
-  { title: "Dates", count: "15 ITEMS", image: assets.dates, href: "/product?category=dates" },
-  { title: "Seeds", count: "9 ITEMS", image: assets.seeds, href: "/product?category=seeds" }
+  { title: "Almonds", count: "", image: assets.almonds, href: "/products?category=almonds" },
+  { title: "Cashews", count: "", image: assets.cashews, href: "/products?category=cashews" },
+  { title: "Pistachios", count: "", image: assets.pistachios, href: "/products?category=pistachios" },
+  { title: "Walnuts", count: "", image: assets.walnuts, href: "/products?category=walnuts" },
+  { title: "Dates", count: "", image: assets.dates, href: "/products?category=dates" },
+  { title: "Seeds", count: "", image: assets.seeds, href: "/products?category=seeds" }
 ];
 
 export default function CuratedCategories() {
@@ -28,18 +28,30 @@ export default function CuratedCategories() {
 
   if (sectionLoading || categoriesLoading) return <CuratedCategoriesSkeleton />;
 
-  const heading = sectionData?.content?.heading || "Curated Categories";
+  const showSection = sectionData?.content?.showSection ?? true;
+  if (!showSection) return null;
 
-  let categories: Array<{ title: string; count: string; image: string; href: string }> = defaultCategories;
-  if (categoriesData?.data && categoriesData.data.length > 0) {
-    categories = categoriesData.data.map((cat) => ({
+  const heading = sectionData?.content?.heading || "Curated Categories";
+  const cmsCards = sectionData?.content?.cards || "";
+  const cmsImageSet = sectionData?.content?.imageSet || "";
+
+  let categories: Array<{ title: string; count: string; image: string; href: string }> = [];
+
+  const categoriesList = Array.isArray(categoriesData?.data)
+    ? categoriesData.data
+    : ((categoriesData?.data as any)?.categories || []);
+
+  if (categoriesList && categoriesList.length > 0) {
+    categories = categoriesList.map((cat: any) => ({
       title: cat.name,
-      count: cat.productCount !== undefined
-        ? `${cat.productCount} ITEM${cat.productCount !== 1 ? 'S' : ''}`
-        : "0 ITEMS",
+      count: "",
       image: cat.image || assets.almonds,
-      href: `/product?category=${encodeURIComponent(cat.name)}`
+      href: `/products?category=${encodeURIComponent(cat.name)}`
     }));
+  }
+
+  if (categories.length === 0) {
+    categories = defaultCategories;
   }
 
   return (
@@ -67,9 +79,6 @@ export default function CuratedCategories() {
                     </Box>
                     <Typography variant='h4' className='category_title'>
                       {category.title}
-                    </Typography>
-                    <Typography variant='body2' className='category_count'>
-                      {category.count}
                     </Typography>
                   </Link>
                 </Box>
@@ -110,9 +119,6 @@ export default function CuratedCategories() {
                     </Box>
                     <Typography variant='h4' className='category_title'>
                       {category.title}
-                    </Typography>
-                    <Typography variant='body2' className='category_count'>
-                      {category.count}
                     </Typography>
                   </Link>
                 </Box>

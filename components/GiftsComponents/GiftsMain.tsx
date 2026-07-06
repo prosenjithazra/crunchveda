@@ -50,7 +50,7 @@ export default function GiftsMain() {
         {/* The Executive Section */}
         <Box className="executive_header">
           <Typography variant="h2">The Executive</Typography>
-          <Link href="/product?category=gifting" className="explore_link">
+          <Link href="/products?category=gifting" className="explore_link">
             Explore The Set 
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}>
               <line x1="5" y1="12" x2="19" y2="12"></line>

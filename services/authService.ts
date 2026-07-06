@@ -1,24 +1,42 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://192.168.6.128:5000/api";
 
 export type UserProfile = {
   id: string;
+  _id?: string;
   name: string;
   email: string;
   role: "admin" | "customer";
   createdAt: string;
+  avatar?: string;
+  phone: string;
+  cartItems?: Array<{ product: string; quantity: number; _id?: string }>;
 };
 
 export type AuthResponse = {
   success: boolean;
   message: string;
+  token?: string;
+  tocken?: string;
   data: {
-    user: {
+    id?: string;
+    name?: string;
+    email?: string;
+    role?: "admin" | "customer";
+    avatar?: string;
+    phone?: string;
+    createdAt?: string;
+    token?: string;
+    tocken?: string;
+    user?: {
       id: string;
       name: string;
       email: string;
       role: "admin" | "customer";
+      avatar?: string;
+      phone: string;
+      createdAt?: string;
     };
-    accessToken: string;
+    accessToken?: string;
   };
 };
 

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Container, Typography, Button, IconButton } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { Box, Container, Typography, Button, IconButton, CircularProgress } from "@mui/material";
 import { assets } from "@/json/assest";
 import { CartMainWrapper } from "@/styles/StyledComponents/CartMainWrapper";
 import WhatsAppIcon from "@/ui/Icons/WhatsAppIcon";
@@ -11,16 +12,10 @@ import MinusIcon from "@/ui/Icons/MinusIcon";
 import PlusIcon from "@/ui/Icons/PlusIcon";
 import TrashIcon from "@/ui/Icons/TrashIcon";
 import LockIcon from "@/ui/Icons/LockIcon";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { toast } from "react-hot-toast";
 
-interface CartItem {
-  id: string;
-  name: string;
-  badge: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { cartService, type CartItem } from "@/services/cartService";
 
 interface UpsellItem {
   id: string;
@@ -30,24 +25,58 @@ interface UpsellItem {
 }
 
 export default function CartMain() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "strawberries",
-      name: "Artisanal Forest Strawberries",
-      badge: "SEASONAL SELECTION",
-      price: 18.0,
-      quantity: 2,
-      image: assets.strawberries,
-    },
-    {
-      id: "olive_oil",
-      name: "Cold-Pressed Heritage Olive Oil",
-      badge: "ESTATE BOTTLED",
-      price: 45.0,
-      quantity: 1,
-      image: assets.oliveOil,
-    },
-  ]);
+  const router = useRouter();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    cartService.getCart().then((items) => {
+      if (!active) return;
+      // If DB/LocalStorage is empty, seed defaults
+      if (items.length === 0) {
+        const defaultItems: CartItem[] = [
+          {
+            id: "strawberries",
+            name: "Artisanal Forest Strawberries",
+            badge: "SEASONAL SELECTION",
+            price: 18.0,
+            quantity: 2,
+            image: assets.strawberries,
+            size: "250g",
+          },
+          {
+            id: "olive_oil",
+            name: "Cold-Pressed Heritage Olive Oil",
+            badge: "ESTATE BOTTLED",
+            price: 45.0,
+            quantity: 1,
+            image: assets.oliveOil,
+            size: "500ml",
+          },
+        ];
+        setCartItems(defaultItems);
+        cartService.saveLocalFallback(defaultItems);
+        // Sync defaults to DB asynchronously
+        defaultItems.forEach(item => {
+          cartService.updateItem(item.id, item.quantity, item.size, item.price);
+        });
+      } else {
+        setCartItems(items);
+        cartService.saveLocalFallback(items);
+      }
+      setIsLoaded(true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const saveCart = (items: CartItem[]) => {
+    setCartItems(items);
+    cartService.saveLocalFallback(items);
+  };
 
   const upsellProducts: UpsellItem[] = [
     {
@@ -70,59 +99,71 @@ export default function CartMain() {
     },
   ];
 
-  const handleIncrease = (id: string) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
-      ),
-    );
-  };
-
-  const handleDecrease = (id: string) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item,
-      ),
-    );
-  };
-
-  const handleRemove = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-    toast.success("Item removed from basket");
-  };
-
-  const handleAddUpsell = (upsell: UpsellItem) => {
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === upsell.id);
-      if (existing) {
-        toast.success(`Incremented quantity of ${upsell.name}`);
-        return prev.map((item) =>
-          item.id === upsell.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        );
-      } else {
-        toast.success(`Added ${upsell.name} to basket`);
-        let badgeText = "UPSELL EXCLUSIVE";
-        if (upsell.id === "fleur_de_sel") badgeText = "HERITAGE SALT";
-        if (upsell.id === "wildflower_honey") badgeText = "ORGANIC HONEY";
-        if (upsell.id === "sourdough_bread") badgeText = "DAILY FRESH";
-
-        return [
-          ...prev,
-          {
-            id: upsell.id,
-            name: upsell.name,
-            badge: badgeText,
-            price: upsell.price,
-            quantity: 1,
-            image: upsell.image,
-          },
-        ];
+  const handleIncrease = async (id: string, size: string) => {
+    const updated = cartItems.map((item) => {
+      if (item.id === id && item.size === size) {
+        const newQty = item.quantity + 1;
+        cartService.updateItem(id, newQty, size, item.price);
+        return { ...item, quantity: newQty };
       }
+      return item;
     });
+    saveCart(updated);
+  };
+
+  const handleDecrease = async (id: string, size: string) => {
+    const updated = cartItems.map((item) => {
+      if (item.id === id && item.size === size && item.quantity > 1) {
+        const newQty = item.quantity - 1;
+        cartService.updateItem(id, newQty, size, item.price);
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    });
+    saveCart(updated);
+  };
+
+  const handleRemove = async (id: string, size: string) => {
+    const updated = cartItems.filter((item) => !(item.id === id && item.size === size));
+    saveCart(updated);
+    toast.success("Item removed from basket");
+    await cartService.removeItem(id, size);
+  };
+
+  const handleAddUpsell = async (upsell: UpsellItem) => {
+    let updated: CartItem[] = [];
+    const size = "Regular";
+    const existing = cartItems.find((item) => item.id === upsell.id && item.size === size);
+
+    if (existing) {
+      toast.success(`Incremented quantity of ${upsell.name}`);
+      const newQty = existing.quantity + 1;
+      updated = cartItems.map((item) =>
+        item.id === upsell.id && item.size === size
+          ? { ...item, quantity: newQty }
+          : item
+      );
+      cartService.updateItem(upsell.id, newQty, size, upsell.price);
+    } else {
+      toast.success(`Added ${upsell.name} to basket`);
+      let badgeText = "UPSELL EXCLUSIVE";
+      if (upsell.id === "fleur_de_sel") badgeText = "HERITAGE SALT";
+      if (upsell.id === "wildflower_honey") badgeText = "ORGANIC HONEY";
+      if (upsell.id === "sourdough_bread") badgeText = "DAILY FRESH";
+
+      const newItem = {
+        id: upsell.id,
+        name: upsell.name,
+        badge: badgeText,
+        price: upsell.price,
+        quantity: 1,
+        image: upsell.image,
+        size,
+      };
+      updated = [...cartItems, newItem];
+      cartService.updateItem(upsell.id, 1, size, upsell.price);
+    }
+    saveCart(updated);
   };
 
   // Calculations
@@ -139,24 +180,7 @@ export default function CartMain() {
       toast.error("Your basket is empty!");
       return;
     }
-    const itemsText = cartItems
-      .map(
-        (item) =>
-          `• ${item.quantity} x ${item.name} (${item.badge}) - $${(
-            item.price * item.quantity
-          ).toFixed(2)}`,
-      )
-      .join("\n");
-    const checkoutMessage = `Hi, I would like to place an order for my Harvest Basket:\n\n${itemsText}\n\nSubtotal: $${subtotal.toFixed(
-      2,
-    )}\nShipping: $${shipping.toFixed(2)}\nTax: $${tax.toFixed(
-      2,
-    )}\nTotal: $${total.toFixed(2)}\n\nPlease assist me with checking out. Thank you!`;
-
-    window.open(
-      `https://wa.me/+91908430340?text=${encodeURIComponent(checkoutMessage)}`,
-      "_blank",
-    );
+    router.push("/checkout");
   };
 
   return (
@@ -174,7 +198,11 @@ export default function CartMain() {
         <Box className="cart_layout">
           {/* Left: Cart items */}
           <Box className="items_column">
-            {cartItems.length === 0 ? (
+            {!isLoaded ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+                <CircularProgress color="primary" />
+              </Box>
+            ) : cartItems.length === 0 ? (
               <Box
                 sx={{
                   background: "#FFF",
@@ -197,7 +225,7 @@ export default function CartMain() {
                   Your basket is currently empty.
                 </Box>
                 <Link
-                  href="/product"
+                  href="/products"
                   style={{
                     display: "inline-block",
                     padding: "12px 24px",
@@ -213,7 +241,7 @@ export default function CartMain() {
               </Box>
             ) : (
               cartItems.map((item) => (
-                <Box className="cart_item_card" key={item.id}>
+                <Box className="cart_item_card" key={`${item.id}-${item.size}`}>
                   {/* Image */}
                   <Box className="item_image">
                     <Image
@@ -228,14 +256,14 @@ export default function CartMain() {
                   <Box className="item_details">
                     <Box className="item_badge">{item.badge}</Box>
                     <Typography variant="h3" className="item_name">
-                      {item.name}
+                      {item.name} {item.size && `(${item.size})`}
                     </Typography>
 
                     {/* Actions Row */}
                     <Box className="item_actions">
                       <Box className="cart_quantity">
                         <IconButton
-                          onClick={() => handleDecrease(item.id)}
+                          onClick={() => handleDecrease(item.id, item.size)}
                           disabled={item.quantity <= 1}
                           aria-label="Decrease quantity"
                           disableRipple
@@ -246,7 +274,7 @@ export default function CartMain() {
                           {String(item.quantity).padStart(2, "0")}
                         </Box>
                         <IconButton
-                          onClick={() => handleIncrease(item.id)}
+                          onClick={() => handleIncrease(item.id, item.size)}
                           aria-label="Increase quantity"
                           disableRipple
                         >
@@ -263,7 +291,7 @@ export default function CartMain() {
 
                     <Button
                       className="remove_btn"
-                      onClick={() => handleRemove(item.id)}
+                      onClick={() => handleRemove(item.id, item.size)}
                       disableRipple
                     >
                       <TrashIcon />
@@ -309,13 +337,14 @@ export default function CartMain() {
                 color="primary"
                 disableRipple
                 onClick={handleCheckout}
-                endIcon={<WhatsAppIcon />}
+                endIcon={<ArrowForwardIcon />}
                 fullWidth
+                sx={{marginBottom:'10px'}}
               >
-                Proceed to WhatsApp Order
+                Proceed to Checkout
               </Button>
 
-              <Link href="/product" className="continue_browsing_btn">
+              <Link href="/products" className="continue_browsing_btn">
                 Continue Browsing
               </Link>
 

@@ -7,8 +7,9 @@ export type AdminSectionField =
   | {
       id: string;
       label: string;
-      type: "text" | "textarea" | "image" | "number";
+      type: "text" | "textarea" | "image" | "number" | "video";
       value: string;
+      file?: File;
     }
   | {
       id: string;
@@ -61,7 +62,7 @@ const today = "2026-06-11";
 const field = (
   id: string,
   label: string,
-  type: "text" | "textarea" | "image" | "number",
+  type: "text" | "textarea" | "image" | "number" | "video",
   value: string
 ): AdminSectionField => ({ id, label, type, value });
 
@@ -96,40 +97,74 @@ export const adminModules: AdminModule[] = [
     pageType: "Content",
     records: [
       createContentRecord("home-hero", "Home hero banner", "Hero section", [
-        field("eyebrow", "Small title", "text", "CRAFTING AGRICULTURAL EXCELLENCE"),
-        field("headline", "H1 headline", "text", "Premium Dry Fruits Delivered Fresh"),
-        field("description", "Hero paragraph", "textarea", "Experience the pinnacle of nutrition with our hand-picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe."),
-        field("primaryCtaLabel", "Primary CTA label", "text", "Explore Collection"),
-        field("primaryCtaHref", "Primary CTA link", "text", "/product"),
-        field("image", "Hero background image", "image", assets.homeBannerImg),
+        field("bannerImage", "Banner image", "image", assets.homeBannerImg),
+        field("bannerVideo", "Banner video", "video", ""),
+        field("bannerSubTitle", "Banner subtitle", "text", "CRAFTING AGRICULTURAL EXCELLENCE"),
+        field("bannerTitle", "Banner title", "text", "Premium Dry Fruits Delivered Fresh"),
+        field("bannerDescription", "Banner description", "textarea", "Experience the pinnacle of nutrition with our hand-picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe."),
         toggleField("showSection", "Show hero section", true),
       ]),
       createContentRecord("home-categories", "Curated categories carousel", "Category cards", [
         field("heading", "Section heading", "text", "Curated Categories"),
-        field("cards", "Category cards", "textarea", "Almonds | 12 ITEMS | /product?category=almonds\nCashews | 8 ITEMS | /product?category=cashews\nPistachios | 10 ITEMS | /product?category=pistachios\nWalnuts | 6 ITEMS | /product?category=walnuts\nDates | 15 ITEMS | /product?category=dates\nSeeds | 9 ITEMS | /product?category=seeds"),
+        field("cards", "Category cards", "textarea", "Almonds | /products?category=almonds\nCashews | /products?category=cashews\nPistachios | /products?category=pistachios\nWalnuts | /products?category=walnuts\nDates | /products?category=dates\nSeeds | /products?category=seeds"),
         field("imageSet", "Image paths", "textarea", `${assets.almonds}\n${assets.cashews}\n${assets.pistachios}\n${assets.walnuts}\n${assets.dates}\n${assets.seeds}`),
+        toggleField("showSection", "Show categories section", true),
       ]),
       createContentRecord("home-best-selling", "Best selling products", "Product card section", [
         field("eyebrow", "Small title", "text", "CROWD FAVORITES"),
         field("heading", "Section heading", "text", "Best Selling Products"),
         field("viewAllLabel", "View all label", "text", "View All Products"),
-        field("viewAllHref", "View all link", "text", "/product"),
+        field("viewAllHref", "View all link", "text", "/products"),
         field("products", "Featured product cards", "textarea", "Jumbo Cashews | $18.50 | Organic | 250g, 500g, 1kg | WhatsApp enabled\nRaw California Almonds | $18.50 | Best Seller | 100g, 250g, 500g, 1kg | WhatsApp enabled\nArtisanal Chilean Walnuts | $21.99 | No badge | 500g | WhatsApp disabled\nTurkish Salted Pistachios | $27.50 | No badge | 100g, 500g | WhatsApp disabled"),
+        toggleField("showSection", "Show best selling section", true),
       ]),
       createContentRecord("home-features", "Feature promise band", "Feature cards", [
         field("features", "Feature cards", "textarea", "100% Organic | Sourced from certified organic farms committed to sustainable heritage agriculture.\nPremium Quality | Every batch undergoes rigorous quality checks for size, freshness, and nutrient density.\nEco-Fast Delivery | Sustainable carbon-neutral shipping ensures your health arrives at your doorstep swiftly.\nArtisanal Packing | Breathable, eco-friendly packaging designed to maintain crunch and essential oils."),
+        toggleField("showSection", "Show features section", true),
       ]),
       createContentRecord("home-gift-banner", "Gift banner", "Banner CTA", [
-        field("eyebrow", "Small title", "text", "GIFT OF HEALTH"),
-        field("heading", "Banner heading", "text", "Premium Curated Gift Boxes"),
-        field("description", "Banner paragraph", "textarea", "Celebrate special moments with our elegant gift hampers. Perfect for corporate gifting or cherished family traditions."),
-        field("ctaLabel", "CTA label", "text", "Customize Your Box"),
-        field("ctaHref", "CTA link", "text", "/gifts"),
-        field("image", "Background image", "image", assets.giftBannerBg),
+        field("sectionLabel",       "Small title (label)",   "text",     "GIFT OF HEALTH"),
+        field("sectionTitle",       "Banner heading",        "text",     "Premium Curated Gift Boxes"),
+        field("sectionDescription", "Banner paragraph",      "textarea", "Celebrate special moments with our elegant gift hampers. Perfect for corporate gifting or cherished family traditions."),
+        field("buttonText",         "CTA button label",      "text",     "Customize Your Box"),
+        field("buttonLink",         "CTA button link",       "text",     "/gift-boxes"),
+        field("backgroundImage",    "Background image",      "image",    assets.giftBannerBg),
+        toggleField("showSection",  "Show gift banner section", true),
+      ]),
+      createContentRecord("home-product-details", "Product details section", "Product details", [
+        field("walnutEyebrow", "Walnut Eyebrow", "text", "NATURAL SUPERFOOD"),
+        field("walnutHeading", "Walnut Heading", "text", "The Brain-Boosting Power of Walnuts"),
+        field("walnutDescription", "Walnut Description", "textarea", "Rich in omega-3 fatty acids and antioxidants, our Chilean walnuts are more than just a snack. They are essential fuel for cognitive health and heart vitality."),
+        field("walnutBullets", "Walnut Bullets (one per line)", "textarea", "High in Omega-3 DHA\nSupports Heart Health\nNatural Energy Booster"),
+        field("walnutImage", "Walnut Image", "image", assets.walnutDetail),
+        field("almondEyebrow", "Almond Eyebrow", "text", "IMMUNE SUPPORT"),
+        field("almondHeading", "Almond Heading", "text", "Almonds: Nature's Daily Multi-Vitamin"),
+        field("almondDescription", "Almond Description", "textarea", "Packed with Vitamin E, magnesium, and protein, our California almonds help maintain healthy skin and a robust immune system with every crunch."),
+        field("almondBullets", "Almond Bullets (one per line)", "textarea", "Rich in Vitamin E\nHigh Fiber Content\nPromotes Skin Health"),
+        field("almondImage", "Almond Image", "image", assets.almondDetail),
+        toggleField("showSection", "Show product details section", true),
+      ]),
+      createContentRecord("home-timeline", "Heritage timeline section", "Heritage Timeline", [
+        field("heading", "Section heading", "text", "Our Heritage Journey"),
+        field("description", "Section description", "textarea", "Tracing our roots back to the finest organic orchards."),
+        field("milestones", "Timeline milestones", "textarea", "1994 | The Seed is Sown | Founded as a small family orchard in the foothills, focused on traditional farming methods. | left\n2008 | Organic Certification | One of the first in the region to achieve global 100% organic certification for all our produce. | right\n2024 | NutriHarvest Global | Launching our digital experience to deliver premium health directly to your doorstep worldwide. | left"),
+        toggleField("showSection", "Show heritage journey timeline", true),
       ]),
       createContentRecord("home-faq", "Frequently asked questions", "FAQ accordion", [
         field("heading", "Section heading", "text", "Frequently Asked Questions"),
-        field("faqItems", "FAQ items", "textarea", "How do you ensure the freshness of your dry fruits? | We source directly from selected farms during peak harvest season.\nAre your products completely organic? | Yes, our entire curated selection is 100% organic and pesticide-free.\nWhat is your shipping policy? | Orders are processed within 24 hours and delivery typically takes 2-4 business days."),
+        field("faqs", "FAQ items", "textarea", "How do you ensure the freshness of your dry fruits? | We source directly from selected farms during peak harvest season.\nAre your products completely organic? | Yes, our entire curated selection is 100% organic and pesticide-free.\nWhat is your shipping policy? | Orders are processed within 24 hours and delivery typically takes 2-4 business days."),
+        toggleField("showSection", "Show FAQ section", true),
+      ]),
+      createContentRecord("home-instagram", "Instagram Reels section", "Instagram Reels", [
+        field("heading", "Section heading", "text", "NutriHarvest Life"),
+        field("description", "Section subtitle", "text", "Follow our journey on Instagram"),
+        field("reels", "Instagram reels", "textarea", JSON.stringify([
+          { image: "/assets/instagram_1.png", link: "https://instagram.com", alt: "Smoothie bowl breakfast" },
+          { image: "/assets/instagram_2.png", link: "https://instagram.com", alt: "Pouring walnuts into jar" },
+          { image: "/assets/instagram_3.png", link: "https://instagram.com", alt: "Citrus fruits flat lay" },
+          { image: "/assets/instagram_4.png", link: "https://instagram.com", alt: "Stacked roasted cashews" }
+        ])),
+        toggleField("showSection", "Show Instagram section", true),
       ]),
     ],
   },
@@ -144,10 +179,12 @@ export const adminModules: AdminModule[] = [
         field("eyebrow", "Subtitle", "text", "The Essence of Earth"),
         field("headline", "H1 headline", "text", "Curated Collections"),
         field("description", "Intro paragraph", "textarea", "Explore our meticulously sourced selection of nature's most exquisite offerings. From the golden dunes of heritage date palms to the ancient groves of artisanal oils, every harvest tells a story of provenance and passion."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("categories-grid", "Collection cards", "Category grid", [
-        field("cards", "Collection cards", "textarea", "Premium Dates | Signature Selection | Heritage varieties hand-plucked from the sun-drenched oases of the Middle East. | /product?category=dates\nExotic Nuts |  | Sustainably sourced, slow-roasted perfection. | /product?category=nuts\nAncient Grains |  | Heirloom grains from untouched soils. | /product?category=grains\nArtisanal Oils |  | Cold-pressed liquid gold for the discerning palate. | /product?category=oils"),
+        field("cards", "Collection cards", "textarea", "Premium Dates | Signature Selection | Heritage varieties hand-plucked from the sun-drenched oases of the Middle East. | /products?category=dates\nExotic Nuts |  | Sustainably sourced, slow-roasted perfection. | /products?category=nuts\nAncient Grains |  | Heirloom grains from untouched soils. | /products?category=grains\nArtisanal Oils |  | Cold-pressed liquid gold for the discerning palate. | /products?category=oils"),
         field("imageSet", "Image paths", "textarea", `${assets.dates}\n${assets.exoticNuts}\n${assets.ancientGrains}\n${assets.oliveOil}`),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("categories-gifting", "Artisanal gifting banner", "Banner CTA", [
         field("eyebrow", "Eyebrow", "text", "NEW IN EARTH"),
@@ -155,18 +192,20 @@ export const adminModules: AdminModule[] = [
         field("heading", "Heading", "text", "Artisanal Gifting"),
         field("description", "Description", "textarea", "Thoughtfully curated hampers that celebrate the art of giving and the bounty of nature."),
         field("ctaLabel", "CTA label", "text", "Explore Gift Sets"),
-        field("ctaHref", "CTA link", "text", "/product?category=gifting"),
+        field("ctaHref", "CTA link", "text", "/products?category=gifting"),
         field("image", "Banner image", "image", assets.artisanalGifting),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("categories-features", "Assurance feature row", "Feature cards", [
         field("features", "Feature cards", "textarea", "Ethically Sourced | Working directly with small-scale farmers to ensure fair practices and superior quality.\nCertified Organic | Every product is tested for purity and maintains the highest organic certifications.\nGlobal Excellence | Premium logistics ensuring freshness from our soil to your doorstep."),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
   {
     id: "products",
     title: "Product Listing Page",
-    route: "/product",
+    route: "/products",
     description: "Manage product listing page copy, filter options, sort options, card rules, WhatsApp CTA text, and pagination settings.",
     pageType: "Commerce",
     records: [
@@ -174,6 +213,7 @@ export const adminModules: AdminModule[] = [
         field("breadcrumbLabel", "Breadcrumb label", "text", "Collections"),
         field("headline", "H1 headline", "text", "Dry Fruit Collections"),
         field("description", "Intro paragraph", "textarea", "Artisanal selections sourced from the finest orchards globally. Each harvest is hand-picked, ensuring peak nutritional density and superior flavor profiles."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("product-filters", "Filter sidebar", "Filter settings", [
         field("categories", "Category filter options", "textarea", "Premium Almonds\nExotic Cashews\nWalnut Kernels\nCalifornia Pistachios\nDates & Figs"),
@@ -182,19 +222,21 @@ export const adminModules: AdminModule[] = [
         field("priceMax", "Maximum price", "number", "100"),
         field("sortOptions", "Sort options", "textarea", "Premium First\nPrice: Low to High\nPrice: High to Low\nName: A-Z"),
         field("itemsPerPage", "Items per page", "number", "6"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("product-card-rules", "Product card display rules", "Card settings", [
         toggleField("showRating", "Show rating", true),
         toggleField("showWishlist", "Show wishlist button", true),
         toggleField("showWhatsApp", "Show WhatsApp action", true),
         toggleField("showSizePills", "Show size pills", true),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
   {
     id: "product-detail",
     title: "Product Details Page",
-    route: "/product/[slug]",
+    route: "/products/[slug]",
     description: "Manage the reusable detail page fields: gallery, badges, pricing blocks, package options, trust badges, WhatsApp CTA, and detail panels.",
     pageType: "Commerce",
     records: [
@@ -202,6 +244,7 @@ export const adminModules: AdminModule[] = [
         field("breadcrumbLabel", "Breadcrumb label", "text", "Collections"),
         field("galleryImages", "Gallery images", "textarea", "Use product.gallery image paths from the product record. Add one path per line for future API integration."),
         toggleField("showThumbnails", "Show thumbnails", true),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("detail-main-info", "Product information panel", "Product detail content", [
         field("badgeRules", "Badge rules", "textarea", "Organic badge when product.badge is ORGANIC\nBest Seller badge when product.badge is BEST SELLER\nAlways show Premium Grade badge"),
@@ -210,10 +253,12 @@ export const adminModules: AdminModule[] = [
         field("cartCta", "Cart CTA label", "text", "Add to Cart"),
         field("whatsAppCta", "WhatsApp CTA label", "text", "Order on WhatsApp"),
         field("responseNote", "Response note", "text", "Typical response time · 1–3 mins"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("detail-trust-bottom", "Trust and bottom sections", "Trust panels", [
         field("trustItems", "Trust items", "textarea", "100% Organic | Farm-to-table cultivation\nDirect Trade | Sourced with heritage"),
         field("bottomSections", "Bottom sections", "textarea", "Origin story\nStorage instructions\nNutrition facts\nRelated products"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -228,6 +273,7 @@ export const adminModules: AdminModule[] = [
         field("eyebrow", "Section tag", "text", "Curated Excellence"),
         field("headline", "H1 headline", "text", "The Season's Finest"),
         field("description", "Hero paragraph", "textarea", "A limited-batch selection of the Earth's most exceptional yields. From sun-drenched estates to remote forest canopies, we bring you the pinnacle of artisanal cultivation, meticulously verified for provenance, purity, and peak flavor profile."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("best-featured", "Featured product row", "Featured product", [
         field("image", "Featured image", "image", assets.bestSellerDates),
@@ -238,11 +284,13 @@ export const adminModules: AdminModule[] = [
         field("description", "Product story", "textarea", "Harvested from the Jericho Valley, these King of Dates are hand-picked at peak ripeness."),
         field("checklist", "Checklist items", "textarea", "Single-Estate Origin\n100% Pure Organic"),
         field("ctaLabel", "CTA label", "text", "Add To Harvest"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("best-collection", "The Collection grid", "Product cards", [
         field("heading", "Section heading", "text", "The Collection"),
         field("viewAllLabel", "View all label", "text", "View All Shop"),
         field("cards", "Collection cards", "textarea", "Raw Forest Honey | $45.00 | Acacia & Tupelo | 500g | Limited Batch\nArtisanal Walnuts | $28.00 | Shelled | 750g\nExotic Fruit Mix | $34.00 | Dehydrated | 400g"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -257,12 +305,14 @@ export const adminModules: AdminModule[] = [
         field("eyebrow", "Subtitle", "text", "Artisanal Gifting"),
         field("headline", "H1 headline", "text", "Curated with\nIntention."),
         field("description", "Intro paragraph", "textarea", "Discover our message of special celebrations, unique business appreciation, and hand-selected gestures for every occasion."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("gifts-executive", "Executive gift set", "Gift cards", [
         field("heading", "Section heading", "text", "The Executive"),
         field("exploreLabel", "Explore link label", "text", "Explore The Set"),
         field("largeCard", "Large gift card", "textarea", "The Signature | The Founder's Reserve | Handmade wood chest with gourmet dried fruits, chocolate, wildflower honey & olive oil. | Read details"),
         field("smallCards", "Small gift cards", "textarea", "Royal Harvest | A sampling box of raw honey, medjool dates & handpicked nuts.\nThe Tea Botanical | Loose leaf organic herbal tea selection with handmade tea infuser."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("gifts-custom-chest", "Custom chest banner", "Banner CTA", [
         field("eyebrow", "Banner subtitle", "text", "Made For You"),
@@ -271,18 +321,21 @@ export const adminModules: AdminModule[] = [
         field("ctaLabel", "CTA label", "text", "Start building"),
         field("ctaHref", "CTA link", "text", "/categories"),
         field("image", "Banner image", "image", assets.customChestBg),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("gifts-collections", "Heritage and seasonal collections", "Product columns", [
         field("heritageHeading", "Left column heading", "text", "The Heritage"),
         field("heritageItems", "Heritage items", "textarea", "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | $110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | $75.00"),
         field("seasonalHeading", "Right column heading", "text", "The Seasonal"),
         field("seasonalItems", "Seasonal items", "textarea", "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | $120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | $95.00"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("gifts-concierge", "Gift concierge", "Lead form", [
         field("heading", "Form heading", "text", "Gift Concierge"),
         field("description", "Form description", "textarea", "Need help sending gifts for your team or event? Our concierge service provides personalized guidance."),
         field("emailPlaceholder", "Email placeholder", "text", "Your Email Address"),
         field("submitLabel", "Submit button label", "text", "Inquire"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -298,6 +351,7 @@ export const adminModules: AdminModule[] = [
         field("headline", "H1 headline", "text", "Cultivating Legacy Through the Seasons"),
         field("description", "Hero paragraph", "textarea", "A century of dedication to the soil, the seed, and the harvest. The story of our organic stewardship."),
         field("image", "Hero image", "image", assets.aboutBanner),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("about-stewardship", "Stewardship narrative", "Split section", [
         field("eyebrow", "Small title", "text", "Our Roots"),
@@ -307,11 +361,26 @@ export const adminModules: AdminModule[] = [
         field("image", "Section image", "image", assets.stewardshipFarmer),
         field("badgeNumber", "Floating badge number", "text", "100+"),
         field("badgeText", "Floating badge text", "text", "Years of Tradition"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("about-journey", "Artisanal journey", "Process cards", [
         field("eyebrow", "Small title", "text", "Our Process"),
         field("heading", "Section heading", "text", "The Artisanal Journey"),
         field("steps", "Process cards", "textarea", "Seed Heritage | The finest seed, hand-selected to reflect archaeological history and botanical purity.\nMineral Enrichment | Curating balanced ecosystem compounds, enriching soil nutrients.\nMaster Curation | Only the pinnacle of the harvest is selected."),
+        toggleField("showSection", "Show section", true),
+      ]),
+      createContentRecord("about-quote", "Quote banner", "Quote", [
+        field("quote", "Quote text", "textarea", "Nature doesn't rush, yet everything is accomplished. We've learned that by respecting the clock of the seasons, we achieve a quality that technology simply cannot replicate."),
+        field("author", "Author", "text", "— ALBERT CHEN, CHIEF FIELD WARDEN"),
+        toggleField("showSection", "Show section", true),
+      ]),
+      createContentRecord("about-charter", "Sustainability charter", "Charter grid", [
+        field("heading", "Heading", "text", "The Sustainability Charter"),
+        field("description", "Description", "textarea", "Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance."),
+        field("reportLabel", "Report button label", "text", "Read Our Full Report"),
+        field("reportHref", "Report button link", "text", "#report"),
+        field("charters", "Charters (Title | Description)", "textarea", "Water Safety | Closed-loop irrigation systems that reduce water by 45 percent.\nCO2 Reduction | Solar-driven greenhouses and active low-emission transportation.\nSoil Security | No synthetic chemicals, preserving natural biodiversity.\nOrganic Grades | Rigorous testing protocols for all farm operations."),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -328,27 +397,32 @@ export const adminModules: AdminModule[] = [
         field("description", "Hero paragraph", "textarea", "Beyond standard agriculture, we are a family-held steward of the land, preserving the patient wisdom of nature."),
         field("ctaLabel", "CTA label", "text", "Discover The Promise"),
         field("image", "Hero image", "image", assets.storyHeroBg),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("story-legacy", "Legacy split section", "Split content", [
         field("eyebrow", "Small title", "text", "The Beginning"),
         field("heading", "Section heading", "text", "The Legacy of Soil and Spirit"),
         field("body", "Body copy", "textarea", "Our story began in 1924, on a small patch of untouched soil that whispered of potential.\nToday, NutriHarvest stands as a beacon of high-end agricultural craft."),
         field("image", "Section image", "image", assets.storyLegacySoil),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("story-philosophy", "Minimal intervention philosophy", "Card grid", [
         field("heading", "Section heading", "text", "Minimal Intervention Philosophy"),
         field("description", "Intro copy", "textarea", "We believe the finest produce is born from where the human hand is lightest, guiding nature without forcing it."),
         field("cards", "Philosophy cards", "textarea", "Biodynamic Balance | Aligning harvests close with celestial cycles.\nPure Sourcing | Only 2% of global harvests meet our criteria.\nArtisanal Curation | Every batch is hand-inspected and packed with care."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("story-timeline", "Stewardship timeline", "Timeline", [
         field("heading", "Section heading", "text", "A Century of Stewardship"),
         field("items", "Timeline items", "textarea", "1924 | The Founding Soil | The first 40 acres are purchased in Oregon.\n1968 | Organic Pioneer | One of the first certified organic estates in the region.\n2024 | The Global Standard | Combining artisanal precision with ecological stewardship."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("story-cta", "Taste the Provenance CTA", "CTA banner", [
         field("heading", "CTA heading", "text", "Taste the Provenance"),
         field("description", "CTA description", "textarea", "Experience the culmination of our century-long journey through our curated seasonal collections."),
         field("primaryCta", "Primary CTA", "text", "Explore Collections | /categories"),
         field("secondaryCta", "Secondary CTA", "text", "Our Sustainability Promise | /about-us"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -365,17 +439,20 @@ export const adminModules: AdminModule[] = [
         field("description", "Hero description", "textarea", "We believe luxury is keeping the integrity of the soil, the purity of the food, and the transparency of the journey."),
         field("image", "Hero image", "image", assets.sustainabilityHeroBg),
         field("quote", "Quote text", "textarea", "We do not inherit the earth from our ancestors, we borrow it from our children."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("regenerative", "Regenerative practices", "Split section", [
         field("eyebrow", "Section tag", "text", "Regenerative Practices"),
         field("heading", "Section heading", "text", "Healing the Planet Through Agriculture"),
         field("features", "Feature rows", "textarea", "Living Soils | Our No-Till philosophy protects complex fungal networks.\nHeritage Seeds | We use heirloom, non-GMO, open-pollinated seeds."),
         field("image", "Crop image", "image", assets.storyLegacySoil),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("zero-plastic", "Zero Plastic Mandate", "Card grid", [
         field("heading", "Section heading", "text", "Zero Plastic Mandate"),
         field("description", "Intro paragraph", "textarea", "Every NutriHarvest vessel is designed to respect the environment, using glass, biodegradable mycelium, and vegetable-inked paper."),
         field("cards", "Packaging cards", "textarea", "Infinitely Recyclable | Flint Glass Vases\n100% Compostable | Mycelium Buffers\nSoy-Based Ink | Vegetable Dyes"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("climate-delivery", "Climate neutral delivery", "Stats and CTA", [
         field("stats", "Stats cards", "textarea", "12k+ | Trees Planted\n100% | Offset\nNet Zero | Carbon Footprint"),
@@ -384,6 +461,7 @@ export const adminModules: AdminModule[] = [
         field("description", "Delivery description", "textarea", "Our carbon footprint is tracked from farm to gate. All shipments are offset through verified carbon-offset projects."),
         field("ctaLabel", "CTA label", "text", "View Impact Report"),
         field("ctaHref", "CTA link", "text", "#"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -399,6 +477,7 @@ export const adminModules: AdminModule[] = [
         field("headline", "H1 headline", "text", "How may we assist your journey?"),
         field("description", "Hero paragraph", "textarea", "Whether you are seeking a rare harvest or require personalized nutritional guidance, our concierge team is at your disposal."),
         field("image", "Hero image", "image", assets.contactHeroShirt),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("contact-presence", "Global presence details", "Contact info", [
         field("heading", "Section heading", "text", "Global Presence"),
@@ -408,6 +487,7 @@ export const adminModules: AdminModule[] = [
         field("email", "Enquiry email", "text", "concierge@nutriharvest.com"),
         field("phone", "Phone number", "text", "+44 (0) 20 7946 0123"),
         field("socialLinks", "Social links", "textarea", "INSTAGRAM | https://instagram.com\nLINKEDIN | https://linkedin.com"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("contact-form", "Send a message form", "Form fields", [
         field("heading", "Form heading", "text", "Send a Message"),
@@ -419,12 +499,14 @@ export const adminModules: AdminModule[] = [
         field("messageLabel", "Message label", "text", "Your Message"),
         field("messagePlaceholder", "Message placeholder", "text", "How can we help cultivate your experience?"),
         field("submitLabel", "Submit label", "text", "Submit Request"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("contact-support", "Support center cards", "Support cards", [
         field("eyebrow", "Section tag", "text", "Knowledge Base"),
         field("heading", "Section heading", "text", "Support Center"),
         field("browseLabel", "Browse link label", "text", "Browse All Topics"),
         field("cards", "Support cards", "textarea", "Logistics | Global carbon-neutral shipping routes and delivery timelines.\nAuthenticity | Trace your harvest back to its original organic soil.\nReturns | Our uncompromising policy on quality and artisanal satisfaction."),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -438,12 +520,14 @@ export const adminModules: AdminModule[] = [
       createContentRecord("cart-title", "Cart title block", "Page header", [
         field("headline", "H1 headline", "text", "Harvest Basket"),
         field("description", "Subtitle", "textarea", "Review your selected artisanal produce before checkout."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("cart-items", "Default cart items", "Cart products", [
         field("items", "Default items", "textarea", "Artisanal Forest Strawberries | SEASONAL SELECTION | $18.00 | Qty 2\nCold-Pressed Heritage Olive Oil | ESTATE BOTTLED | $45.00 | Qty 1"),
         field("emptyTitle", "Empty state text", "text", "Your basket is currently empty."),
         field("emptyCtaLabel", "Empty CTA label", "text", "Browse Products"),
-        field("emptyCtaHref", "Empty CTA link", "text", "/product"),
+        field("emptyCtaHref", "Empty CTA link", "text", "/products"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("cart-summary", "Summary and checkout", "Summary panel", [
         field("summaryTitle", "Summary title", "text", "Summary"),
@@ -452,9 +536,11 @@ export const adminModules: AdminModule[] = [
         field("checkoutLabel", "Checkout CTA label", "text", "Checkout via WhatsApp"),
         field("secureLabel", "Secure note", "text", "Secure manual checkout via WhatsApp concierge."),
         field("taxRate", "Mock tax rate percent", "number", "5.55"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("cart-upsell", "Upsell products", "Upsell cards", [
         field("items", "Upsell items", "textarea", "Infused Fleur de Sel | $12.00\nRaw Wildflower Honey | $22.00\nStone-Baked Sourdough | $9.00"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -469,10 +555,12 @@ export const adminModules: AdminModule[] = [
         field("items", "Saved items", "textarea", "DESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | $32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | $32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | $32.00"),
         field("clearAllLabel", "Clear all label", "text", "Clear All"),
         field("moveAllLabel", "Move all label", "text", "Move All to Basket"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("saved-recommendations", "Recommendation list", "Recommendations", [
         field("heading", "Recommendation heading", "text", "You May Also Like"),
         field("items", "Recommendation items", "textarea", "Jumbo Cashews\nMamra Almonds\nKashmiri Walnuts\nForest Berry Mix"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -489,10 +577,12 @@ export const adminModules: AdminModule[] = [
         field("description", "Header description", "textarea", "Your trust is the foundation of our heritage. This policy outlines how NutriHarvest gathers, processes, and protects your information."),
         field("effectiveLabel", "Effective label", "text", "Effective Date"),
         field("effectiveDate", "Effective date", "text", "Oct 2024"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("privacy-sections", "Policy sections", "Legal content", [
         field("quickNav", "Quick nav items", "textarea", "01 | Data Collection | data-collection\n02 | Cookie Usage | cookie-usage\n03 | Data Sharing | data-sharing\n04 | Data Security & Rights | data-rights"),
         field("sections", "Policy body sections", "textarea", "01 | Data Collection | We collect personal coordinates such as name, email, and phone descriptors.\n02 | Cookie Usage | NutriHarvest utilizes cookies and local browser storage to streamline user selections.\n03 | Data Sharing | We do not rent, sell, or disclose your data to third-party advertising companies.\n04 | Data Security & Rights | You can request access, corrections, or deletion of your profile data."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("privacy-sidebar", "Policy sidebar and service block", "Sidebar content", [
         field("conciergeTitle", "Concierge card title", "text", "Questions regarding our terms?"),
@@ -501,6 +591,7 @@ export const adminModules: AdminModule[] = [
         field("serviceHeading", "Service heading", "text", "Unrivaled Service"),
         field("email", "Contact email", "text", "concierge@nutriharvest.com"),
         field("phone", "Contact phone", "text", "1.800.HERITAGE"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },
@@ -517,10 +608,12 @@ export const adminModules: AdminModule[] = [
         field("description", "Header description", "textarea", "Welcome to NutriHarvest. These terms outline the rules and regulations for the use of our high-end artisanal estate and provisions platform."),
         field("effectiveLabel", "Effective label", "text", "Effective Date"),
         field("effectiveDate", "Effective date", "text", "Oct 2024"),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("terms-sections", "Terms sections", "Legal content", [
         field("quickNav", "Quick nav items", "textarea", "01 | Use of Site | use-of-site\n02 | Product Authenticity | product-authenticity\n03 | Intellectual Property | intellectual-property\n04 | Liability | liability"),
         field("sections", "Terms body sections", "textarea", "01 | Use of Site | You warrant that you are at least 18 years of age or supervised by a guardian.\n02 | Product Authenticity | All product descriptions and images are subject to change without notice.\n03 | Intellectual Property | All site content is the property of NutriHarvest or its suppliers.\n04 | Liability | NutriHarvest provides the site on an as-is and as-available basis."),
+        toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("terms-sidebar", "Terms sidebar and service block", "Sidebar content", [
         field("conciergeTitle", "Concierge card title", "text", "Questions regarding our terms?"),
@@ -529,6 +622,7 @@ export const adminModules: AdminModule[] = [
         field("serviceHeading", "Service heading", "text", "Unrivaled Service"),
         field("email", "Contact email", "text", "concierge@nutriharvest.com"),
         field("phone", "Contact phone", "text", "1.800.HERITAGE"),
+        toggleField("showSection", "Show section", true),
       ]),
     ],
   },

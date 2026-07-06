@@ -141,12 +141,6 @@ export default function AdminLoginPage() {
           <Button type="submit" variant="contained" color="primary" disabled={loading} fullWidth>
             {loading ? "Signing in..." : "Login to dashboard"}
           </Button>
-
-          <Box sx={{ p: 2, borderRadius: 2, bgcolor: "customColors.lightCream" }}>
-            <Typography variant="caption" color="text.secondary">
-              Demo credentials: admin@crunchveda.com / adminpassword123
-            </Typography>
-          </Box>
         </Stack>
       </Paper>
     </Stack>

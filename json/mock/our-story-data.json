@@ -1,0 +1,269 @@
+{
+  "id": "our-story",
+  "moduleId": "our-story",
+  "title": "Our Story Page",
+  "route": "/our-story",
+  "description": "Manage story hero, legacy split section, philosophy cards, stewardship timeline, and final CTA banner.",
+  "pageType": "Content",
+  "records": [
+    {
+      "id": "story-hero",
+      "title": "Sint et non magnam q",
+      "type": "Unde velit in non q",
+      "status": "Published",
+      "updatedAt": "2026-07-06",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Hero subtitle",
+          "type": "text",
+          "value": "Exercitation omnis i"
+        },
+        {
+          "id": "headline",
+          "label": "H1 headline",
+          "type": "text",
+          "value": "Vel eius qui corpori"
+        },
+        {
+          "id": "description",
+          "label": "Hero paragraph",
+          "type": "textarea",
+          "value": "Duis et laborum volu"
+        },
+        {
+          "id": "ctaLabel",
+          "label": "CTA label",
+          "type": "text",
+          "value": "Aut nulla magnam nem"
+        },
+        {
+          "id": "image",
+          "label": "Hero image",
+          "type": "image",
+          "value": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783323119403_story_hero_bg_oQZB17TAA.png"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "story-legacy",
+      "title": "Legacy split section",
+      "type": "Split content",
+      "status": "Published",
+      "updatedAt": "2026-07-06",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Small title",
+          "type": "text",
+          "value": "Est molestias et qui"
+        },
+        {
+          "id": "heading",
+          "label": "Section heading",
+          "type": "text",
+          "value": "A vel enim aliquip s"
+        },
+        {
+          "id": "body",
+          "label": "Body copy",
+          "type": "textarea",
+          "value": "Totam nihil ut rem e"
+        },
+        {
+          "id": "image",
+          "label": "Section image",
+          "type": "image",
+          "value": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783324952684_sourdough_bread_daew_-k3c.png"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "story-philosophy",
+      "title": "Minimal intervention philosophy",
+      "type": "Card grid",
+      "status": "Published",
+      "updatedAt": "2026-07-06",
+      "fields": [
+        {
+          "id": "heading",
+          "label": "Section heading",
+          "type": "text",
+          "value": "Beatae cumque dolore"
+        },
+        {
+          "id": "description",
+          "label": "Section description",
+          "type": "textarea",
+          "value": "Aliquip iusto exerci"
+        },
+        {
+          "id": "cards",
+          "label": "Philosophy cards",
+          "type": "textarea",
+          "value": [
+            {
+              "title": "Architecto quo iusto",
+              "description": "Facilis in ipsam ips"
+            },
+            {
+              "title": "Laboris reiciendis d",
+              "description": "Sed sunt voluptatem"
+            },
+            {
+              "title": "Itaque aliquip neque",
+              "description": "Consequuntur quo lib"
+            }
+          ]
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "story-timeline",
+      "title": "Stewardship timeline",
+      "type": "Timeline",
+      "status": "Published",
+      "updatedAt": "2026-07-06",
+      "fields": [
+        {
+          "id": "heading",
+          "label": "Section heading",
+          "type": "text",
+          "value": "Nam proident maiore"
+        },
+        {
+          "id": "milestones",
+          "label": "Milestones",
+          "type": "textarea",
+          "value": [
+            {
+              "year": "1994",
+              "title": "Voluptas nemo est a",
+              "description": "Tenetur omnis aliqui",
+              "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783330527471_dates_category_t1RQM2A06.png"
+            },
+            {
+              "year": "1999",
+              "title": "Exercitationem velit",
+              "description": "Quos facere ullamco ",
+              "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783330534068_instagram_3_cV2sWA8Nr.png"
+            },
+            {
+              "year": "1992",
+              "title": "Molestiae et a cupid",
+              "description": "Qui in repellendus ",
+              "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783330540882_pistachios_product_dCXOaz58A.png"
+            }
+          ]
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "story-cta",
+      "title": "Taste the Provenance CTA",
+      "type": "CTA banner",
+      "status": "Published",
+      "updatedAt": "2026-06-11",
+      "fields": [
+        {
+          "id": "heading",
+          "label": "CTA heading",
+          "type": "text",
+          "value": "Taste the Provenance"
+        },
+        {
+          "id": "description",
+          "label": "CTA description",
+          "type": "textarea",
+          "value": "Experience the culmination of our century-long journey through our curated seasonal collections."
+        },
+        {
+          "id": "primaryCta",
+          "label": "Primary CTA",
+          "type": "text",
+          "value": "Explore Collections | /categories"
+        },
+        {
+          "id": "secondaryCta",
+          "label": "Secondary CTA",
+          "type": "text",
+          "value": "Our Sustainability Promise | /about-us"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    }
+  ],
+  "philosophy": {
+    "sectionTitle": "Beatae cumque dolore",
+    "sectionDescription": "Aliquip iusto exerci",
+    "philosophies": [
+      {
+        "icon": "",
+        "title": "Architecto quo iusto",
+        "description": "Facilis in ipsam ips"
+      },
+      {
+        "icon": "",
+        "title": "Laboris reiciendis d",
+        "description": "Sed sunt voluptatem"
+      },
+      {
+        "icon": "",
+        "title": "Itaque aliquip neque",
+        "description": "Consequuntur quo lib"
+      }
+    ]
+  },
+  "stewardship": {
+    "sectionTitle": "Nam proident maiore",
+    "milestones": [
+      {
+        "year": "1994",
+        "title": "Voluptas nemo est a",
+        "description": "Tenetur omnis aliqui",
+        "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783330527471_dates_category_t1RQM2A06.png"
+      },
+      {
+        "year": "1999",
+        "title": "Exercitationem velit",
+        "description": "Quos facere ullamco ",
+        "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783330534068_instagram_3_cV2sWA8Nr.png"
+      },
+      {
+        "year": "1992",
+        "title": "Molestiae et a cupid",
+        "description": "Qui in repellendus ",
+        "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783330540882_pistachios_product_dCXOaz58A.png"
+      }
+    ]
+  }
+}

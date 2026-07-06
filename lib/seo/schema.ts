@@ -8,7 +8,7 @@ export const websiteSchema = {
   description: siteSeo.description,
   potentialAction: {
     "@type": "SearchAction",
-    target: `${siteSeo.url}/product?search={search_term_string}`,
+    target: `${siteSeo.url}/products?search={search_term_string}`,
     "query-input": "required name=search_term_string",
   },
 };
@@ -119,7 +119,7 @@ export const createProductSchema = (product: {
   },
   offers: {
     "@type": "Offer",
-    url: absoluteUrl(`/product/${product.id}`),
+    url: absoluteUrl(`/products/${product.id}`),
     priceCurrency: "USD",
     price: product.sizePrices[product.defaultSize],
     availability: "https://schema.org/InStock",

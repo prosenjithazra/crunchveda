@@ -18,24 +18,37 @@ export default function HomeBanner() {
   const showSection = sectionData?.content?.showSection ?? true;
   if (!showSection) return null;
 
-  const eyebrow = sectionData?.content?.eyebrow || "CRAFTING AGRICULTURAL EXCELLENCE";
-  const headline = sectionData?.content?.headline || "Premium Dry Fruits Delivered Fresh";
-  const description = sectionData?.content?.description || "Experience the pinnacle of nutrition with our hand- picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.";
+  const eyebrow = sectionData?.content?.bannerSubTitle || sectionData?.content?.eyebrow || "CRAFTING AGRICULTURAL EXCELLENCE";
+  const headline = sectionData?.content?.bannerTitle || sectionData?.content?.headline || "Premium Dry Fruits Delivered Fresh";
+  const description = sectionData?.content?.bannerDescription || sectionData?.content?.description || "Experience the pinnacle of nutrition with our hand- picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.";
   const primaryCtaLabel = sectionData?.content?.primaryCtaLabel || "Explore Collection";
-  const primaryCtaHref = sectionData?.content?.primaryCtaHref || "/product";
-  const image = sectionData?.content?.image || assets.homeBannerImg;
+  const primaryCtaHref = sectionData?.content?.primaryCtaHref || "/products";
+  const image = (sectionData?.content?.bannerImage || sectionData?.content?.image || assets.homeBannerImg).replace(/%22$/, "").replace(/"$/, "");
+  const bannerVideo = (sectionData?.content?.bannerVideo || "").trim().replace(/%22$/, "").replace(/"$/, "");
 
   return (
     <HomeBannerWrapper>
-      <Image
-        src={image}
-        alt={headline}
-        title={headline}
-        width={8000}
-        height={6000}
-        className="bannerImg"
-        priority
-      />
+      {bannerVideo ? (
+        <video
+          src={bannerVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="bannerImg"
+          style={{ pointerEvents: "none" }}
+        />
+      ) : (
+        <Image
+          src={image}
+          alt={headline}
+          title={headline}
+          width={8000}
+          height={6000}
+          className="bannerImg"
+          priority
+        />
+      )}
       <Container fixed>
         <Box className="bannerTxtBoxWrapper">
           <Typography variant="body1" className="cmnSmallTitle">

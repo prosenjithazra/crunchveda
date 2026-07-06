@@ -50,12 +50,12 @@ export const HeaderWrapper = styled("header")`
     .logoBox {
       position: relative;
       a {
-        max-width: 200px;
+        max-width: 180px;
         line-height: 0;
         font-size: 0;
 
         @media (max-width: 1199px) {
-          max-width: 160px;
+          max-width: 140px;
         }
         @media (max-width: 599px) {
           max-width: 120px;
@@ -116,7 +116,10 @@ export const HeaderWrapper = styled("header")`
     .wrapper_rightListBox {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      @media(max-width:899px){
+        gap:6px;
+      }
       .searchBtn {
         padding: 10px;
         border-radius: 50%;
@@ -127,6 +130,7 @@ export const HeaderWrapper = styled("header")`
       .cartBtn {
         padding: 0;
         position: relative;
+        margin-right:10px;
         span {
           position: absolute;
           right: -6px;
@@ -145,8 +149,21 @@ export const HeaderWrapper = styled("header")`
         }
       }
       .whatsAppBtn {
-        @media (max-width: 599px) {
-          display: none;
+        svg{
+          display:none;
+        }
+        @media (max-width: 1199px) {
+          svg{
+            display:block;
+          }
+          font-size:0;
+          border-radius:50%;
+          font-size:0;
+          padding:0;
+          width: 40px;
+          height: 40px;
+          min-width: 40px;
+          min-height: 40px;
         }
       }
     }

@@ -10,8 +10,13 @@ import { useContentModule } from '@/hooks/useContent';
 import { RegenerativeAgricultureSkeleton } from '../Loader/SectionSkeletons';
 
 export default function RegenerativeAgriculture() {
-  const { isLoading } = useContentModule("sustainability");
+  const { data: moduleData, isLoading } = useContentModule("sustainability");
   if (isLoading) return <RegenerativeAgricultureSkeleton />;
+
+  const record = moduleData?.records?.find(r => r.id === "regenerative");
+  const showSectionField = record?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   return (
     <RegenerativeAgricultureWrapper>

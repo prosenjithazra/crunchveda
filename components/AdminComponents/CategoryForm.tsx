@@ -50,8 +50,8 @@ export default function CategoryForm({ existing }: CategoryFormProps) {
     image: existing?.image ?? "",
     isActive: existing?.isActive ?? true,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (key: keyof CategoryPayload, value: string | boolean) => {
@@ -65,24 +65,14 @@ export default function CategoryForm({ existing }: CategoryFormProps) {
     });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("image", file);
-    setUploading(true);
-    try {
-      const res = await fetch(`${API_URL}/upload/image`, { method: "POST", body: formData });
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Upload failed");
-      setForm(prev => ({ ...prev, image: result.data.url }));
-      toast.success("Image uploaded successfully!");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Image upload failed");
-    } finally {
-      setUploading(false);
-    }
+    setImageFile(file);
+    // Generate a temporary local URL for preview
+    setForm(prev => ({ ...prev, image: URL.createObjectURL(file) }));
+    toast.success("Image selected!");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,11 +84,23 @@ export default function CategoryForm({ existing }: CategoryFormProps) {
 
     setSubmitting(true);
     try {
+      const formData = new FormData();
+      formData.append("name", form.name.trim());
+      formData.append("slug", form.slug.trim());
+      formData.append("description", form.description.trim());
+      formData.append("isActive", String(form.isActive));
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      } else if (form.image) {
+        formData.append("image", form.image);
+      }
+
       if (isEdit && existing) {
-        await categoryService.update(existing._id, form);
+        await categoryService.update(existing._id, formData);
         toast.success(`"${form.name}" updated successfully.`);
       } else {
-        await categoryService.create(form);
+        await categoryService.create(formData);
         toast.success(`"${form.name}" created successfully.`);
       }
       router.push("/admin/categories");
@@ -204,32 +206,23 @@ export default function CategoryForm({ existing }: CategoryFormProps) {
                 onChange={handleImageUpload}
               />
               <Box
-                onClick={() => !uploading && fileRef.current?.click()}
+                onClick={() => fileRef.current?.click()}
                 sx={{
                   p: 2.5,
                   border: "1px dashed",
                   borderColor: "primary.main",
                   borderRadius: 2,
                   bgcolor: "customColors.lightCream",
-                  cursor: uploading ? "not-allowed" : "pointer",
+                  cursor: "pointer",
                   textAlign: "center",
                   "&:hover": { bgcolor: "action.hover" },
                 }}
               >
                 <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", justifyContent: "center" }}>
-                  {uploading ? (
-                    <>
-                      <CircularProgress size={20} />
-                      <Typography variant="body2" color="text.secondary">Uploading to Cloudinary…</Typography>
-                    </>
-                  ) : (
-                    <>
-                      <CloudUploadOutlinedIcon color="primary" />
-                      <Typography variant="body2" color="primary" sx={{ fontWeight: 600 }}>
-                        Click to upload image to Cloudinary
-                      </Typography>
-                    </>
-                  )}
+                  <CloudUploadOutlinedIcon color="primary" />
+                  <Typography variant="body2" color="primary" sx={{ fontWeight: 600 }}>
+                    Click to choose category image
+                  </Typography>
                 </Stack>
               </Box>
 

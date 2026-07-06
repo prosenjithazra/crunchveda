@@ -60,22 +60,22 @@ export const categories = [
   {
     name: "Vegetables",
     image: assets.vegetables,
-    href: "/product?category=vegetables"
+    href: "/products?category=vegetables"
   },
   {
     name: "Fruit",
     image: assets.berries,
-    href: "/product?category=fruit"
+    href: "/products?category=fruit"
   },
   {
     name: "Herbs",
     image: assets.herbs,
-    href: "/product?category=herbs"
+    href: "/products?category=herbs"
   },
   {
     name: "Grains",
     image: assets.grains,
-    href: "/product?category=grains"
+    href: "/products?category=grains"
   }
 ];
 

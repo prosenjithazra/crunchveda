@@ -51,11 +51,11 @@ function parseCategoryCards(cardsStr: string, imagesStr: string, isGrid: boolean
         image,
       };
     } else {
-      // Title | Subtitle / Item Count | Link
+      // Title | Link
       return {
         title: parts[0] || "",
-        subtitle: parts[1] || "",
-        link: parts[2] || "",
+        subtitle: "",
+        link: parts[1] || "",
         image,
       };
     }
@@ -67,7 +67,7 @@ function serializeCategoryCards(cards: CategoryCard[], isGrid: boolean): { cards
     if (isGrid) {
       return `${c.title} | ${c.subtitle} | ${c.description} | ${c.link}`;
     } else {
-      return `${c.title} | ${c.subtitle} | ${c.link}`;
+      return `${c.title} | ${c.link}`;
     }
   });
   const imageLines = cards.map(c => c.image);
@@ -100,7 +100,7 @@ function CardImageUploader({
 
     setUploading(true);
     try {
-      const res = await fetch(`${API_URL}/upload/image`, {
+      const res = await fetch("/api/upload/image", {
         method: "POST",
         body: formData,
       });
@@ -198,9 +198,9 @@ export default function CategoryCardsEditor({ record, onChange }: CategoryCardsE
   const addCard = () => {
     const newCard: CategoryCard = {
       title: "New Category",
-      subtitle: isGrid ? "Signature Selection" : "0 ITEMS",
+      subtitle: isGrid ? "Signature Selection" : "",
       description: isGrid ? "Description goes here" : undefined,
-      link: "/product?category=new",
+      link: "/products?category=new",
       image: "",
     };
     saveCards([...cards, newCard]);
@@ -278,7 +278,7 @@ export default function CategoryCardsEditor({ record, onChange }: CategoryCardsE
             </Stack>
 
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: isGrid ? 4 : 6 }}>
                 <TextField
                   fullWidth
                   required
@@ -288,16 +288,18 @@ export default function CategoryCardsEditor({ record, onChange }: CategoryCardsE
                   onChange={e => updateCardField(idx, "title", e.target.value)}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label={isGrid ? "Subtitle" : "Item Count (e.g. 12 ITEMS)"}
-                  value={card.subtitle}
-                  onChange={e => updateCardField(idx, "subtitle", e.target.value)}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
+              {isGrid && (
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    label="Subtitle"
+                    value={card.subtitle}
+                    onChange={e => updateCardField(idx, "subtitle", e.target.value)}
+                  />
+                </Grid>
+              )}
+              <Grid size={{ xs: 12, md: isGrid ? 4 : 6 }}>
                 <TextField
                   fullWidth
                   size="small"

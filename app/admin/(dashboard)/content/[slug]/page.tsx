@@ -4,6 +4,10 @@ import { adminContentService } from "@/services/admin/contentService";
 export default async function AdminContentPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
+  if (slug === "home") {
+    redirect("/admin/content/home/home-hero");
+  }
+
   try {
     const moduleData = await adminContentService.getModuleById(slug);
     if (moduleData && moduleData.records && moduleData.records.length > 0) {

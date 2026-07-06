@@ -7,18 +7,18 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function EditCategoryPage({ params }: { params: { id: string } }) {
+export default function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params);
   const [category, setCategory] = React.useState<ICategory | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [notFound, setNotFound] = React.useState(false);
 
   React.useEffect(() => {
-    // We fetch all and find the one matching the id (the GET /categories API filters by slug,
-    // so we get all and filter client-side)
+    // Fetch all categories and find the one matching the id
     let active = true;
     categoryService.getAll().then(list => {
       if (!active) return;
-      const found = list.find(c => c._id === params.id);
+      const found = list.find(c => c._id === id);
       if (found) {
         setCategory(found);
       } else {
@@ -32,7 +32,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
       setNotFound(true);
     });
     return () => { active = false; };
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return (

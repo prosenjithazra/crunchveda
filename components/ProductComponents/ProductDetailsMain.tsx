@@ -17,6 +17,8 @@ import { ProductDetailsMainWrapper } from "@/styles/StyledComponents/ProductDeta
 import ProductDetailsBottom from "./ProductDetailsBottom";
 import { DryFruitProduct } from "@/json/mock/dryFruits";
 import { toast } from "react-hot-toast";
+import { getBadgeInfo } from "@/services/productService";
+import { cartService } from "@/services/cartService";
 
 interface Props {
   product: DryFruitProduct;
@@ -44,8 +46,41 @@ export default function ProductDetailsMain({ product }: Props) {
     setQuantity((prev) => prev + 1);
   };
 
-  const handleAddToCart = () => {
-    toast.success(`Added ${quantity} x ${product.name} (${selectedSize} Pack) to cart!`);
+  const handleAddToCart = async () => {
+    try {
+      const currentCart = await cartService.getCart();
+      const existing = currentCart.find(
+        (item) => item.id === product._id && item.size === selectedSize
+      );
+      const existingQty = existing ? existing.quantity : 0;
+      const newQty = existingQty + quantity;
+
+      const updatedQty = await cartService.updateItem(product._id, newQty, selectedSize, price);
+
+      let updatedCart = [...currentCart];
+      if (existing) {
+        updatedCart = currentCart.map((item) =>
+          item.id === product._id && item.size === selectedSize
+            ? { ...item, quantity: updatedQty }
+            : item
+        );
+      } else {
+        updatedCart.push({
+          id: product._id,
+          name: product.name,
+          badge: product.badge || "Organic Collection",
+          price,
+          quantity: updatedQty,
+          image: product.images?.[0] || product.image || "/assets/images/placeholder.jpg",
+          size: selectedSize,
+        });
+      }
+      cartService.saveLocalFallback(updatedCart);
+
+      toast.success(`Added ${quantity} x ${product.name} (${selectedSize} Pack) to cart!`);
+    } catch (e) {
+      toast.error("Failed to add product to cart");
+    }
   };
 
   const handleWhatsApp = () => {
@@ -66,9 +101,10 @@ export default function ProductDetailsMain({ product }: Props) {
     },
   ];
 
+  const badgeInfo = getBadgeInfo(product.badge);
   const badges = [
-    ...(product.badge ? [{ text: product.badge === "ORGANIC" ? "Organic" : "Best Seller", cls: product.badge === "ORGANIC" ? "badge_grade" : "badge_reserve" }] : []),
-    { text: "Premium Grade", cls: product.badge === "ORGANIC" ? "badge_reserve" : "badge_grade" },
+    ...(badgeInfo ? [{ text: badgeInfo.text, cls: badgeInfo.type === "organic" ? "badge_grade" : "badge_reserve" }] : []),
+    { text: "Premium Grade", cls: badgeInfo?.type === "organic" ? "badge_reserve" : "badge_grade" },
   ];
 
   return (
@@ -79,7 +115,7 @@ export default function ProductDetailsMain({ product }: Props) {
           <Box className="breadcrumb_box">
             <Link href="/">Home</Link>
             <span>/</span>
-            <Link href="/product">Collections</Link>
+            <Link href="/products">Collections</Link>
             <span>/</span>
             <span style={{ opacity: 1, color: "inherit" }}>{product.name}</span>
           </Box>
@@ -213,33 +249,58 @@ export default function ProductDetailsMain({ product }: Props) {
                   })}
                 </Box>
 
+                {/* Stock Status Details */}
+                {product.stock !== undefined && (
+                  <Box sx={{ mb: 2.5, mt: 1, display: "flex", alignItems: "center", gap: "8px" }}>
+                    {product.stock <= 0 ? (
+                      <Box sx={{ color: "error.main", fontSize: "14px", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Box component="span" sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "error.main", display: "inline-block" }} />
+                        Out of Stock
+                      </Box>
+                    ) : product.stock < 10 ? (
+                      <Box sx={{ color: "error.main", fontSize: "14px", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Box component="span" sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "error.main", display: "inline-block" }} />
+                        Order Soon – Limited Quantity Left (Only {product.stock} items remaining)
+                      </Box>
+                    ) : (
+                      <Box sx={{ color: "success.main", fontSize: "14px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Box component="span" sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "success.main", display: "inline-block" }} />
+                        In Stock ({product.stock} items available)
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
                 {/* Quantity Selector & Add to Cart Button */}
                 <Box className="action_row">
                   <Box className="quantity_selector">
                     <IconButton 
                       onClick={handleDecrease} 
-                      disabled={quantity <= 1}
+                      disabled={product.stock !== undefined && product.stock <= 0 || quantity <= 1}
                       aria-label="Decrease quantity"
                       disableRipple
                     >
                       <MinusIcon />
                     </IconButton>
-                    <Box className="qty_value">{quantity}</Box>
+                    <Box className="qty_value">{product.stock !== undefined && product.stock <= 0 ? 0 : quantity}</Box>
                     <IconButton 
                       onClick={handleIncrease}
+                      disabled={product.stock !== undefined && product.stock <= 0}
                       aria-label="Increase quantity"
                       disableRipple
                     >
                       <PlusIcon />
                     </IconButton>
-                  </Box>                  <Button
+                  </Box>
+                  <Button
                     variant="contained"
                     color="primary"
                     disableRipple
                     onClick={handleAddToCart}
-                    startIcon={<CartIcon iconColor='white' />}
+                    disabled={product.stock !== undefined && product.stock <= 0}
+                    startIcon={!(product.stock !== undefined && product.stock <= 0) && <CartIcon iconColor='white' />}
                   >
-                    Add to Cart
+                    {product.stock !== undefined && product.stock <= 0 ? 'Sold Out' : 'Add to Cart'}
                   </Button>
                 </Box>
 

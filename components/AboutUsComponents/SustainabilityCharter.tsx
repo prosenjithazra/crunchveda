@@ -38,6 +38,9 @@ export default function SustainabilityCharter() {
   if (isLoading) return <SustainabilityCharterSkeleton />;
 
   const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
+  const showSectionField = charterRecord?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {
     const field = charterRecord?.fields?.find(f => f.id === fieldId);

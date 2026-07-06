@@ -15,12 +15,16 @@ export default function GiftBanner() {
 
   if (isLoading) return <GiftBannerSkeleton />;
 
-  const eyebrow = sectionData?.content?.eyebrow || "GIFT OF HEALTH";
-  const heading = sectionData?.content?.heading || "Premium Curated Gift Boxes";
-  const description = sectionData?.content?.description || "Celebrate special moments with our elegant gift hampers. Perfect for corporate gifting or cherished family traditions.";
-  const ctaLabel = sectionData?.content?.ctaLabel || "Customize Your Box";
-  const ctaHref = sectionData?.content?.ctaHref || "/gifts";
-  const image = sectionData?.content?.image || assets.giftBannerBg;
+  const showSection = sectionData?.content?.showSection ?? true;
+  if (!showSection) return null;
+
+  const content = sectionData?.content || {};
+  const eyebrow = content.sectionLabel || content.eyebrow || "GIFT OF HEALTH";
+  const heading = content.sectionTitle || content.heading || "Premium Curated Gift Boxes";
+  const description = content.sectionDescription || content.description || "Celebrate special moments with our elegant gift hampers. Perfect for corporate gifting or cherished family traditions.";
+  const ctaLabel = content.buttonText || content.ctaLabel || "Customize Your Box";
+  const ctaHref = content.buttonLink || content.ctaHref || "/gifts";
+  const image = content.backgroundImage || content.image || assets.giftBannerBg;
 
   return (
     <GiftBannerWrapper>

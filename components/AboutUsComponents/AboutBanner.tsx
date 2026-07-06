@@ -12,6 +12,9 @@ export default function AboutBanner() {
   if (isLoading) return <AboutBannerSkeleton />;
 
   const bannerRecord = moduleData?.records?.find(r => r.id === "about-banner");
+  const showSectionField = bannerRecord?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {
     const field = bannerRecord?.fields?.find(f => f.id === fieldId);

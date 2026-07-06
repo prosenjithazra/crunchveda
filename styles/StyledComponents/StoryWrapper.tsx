@@ -5,7 +5,7 @@ export const StoryWrapper = styled("div")`
   position: relative;
   width: 100%;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
-
+  padding-bottom: 80px;
   /* ── 1. Hero Banner ── */
   .story_hero {
     position: relative;
@@ -16,12 +16,14 @@ export const StoryWrapper = styled("div")`
     justify-content: center;
     text-align: center;
     overflow: hidden;
-    
-    @media(max-width: 899px) {
+
+    @media (max-width: 899px) {
       height: 520px;
+      padding-bottom: 60px;
     }
-    @media(max-width: 599px) {
+    @media (max-width: 599px) {
       height: 460px;
+      padding-bottom: 40px;
     }
 
     .hero_bg {
@@ -31,7 +33,7 @@ export const StoryWrapper = styled("div")`
       width: 100%;
       height: 100%;
       z-index: 1;
-      
+
       img {
         object-fit: cover;
         width: 100%;
@@ -81,13 +83,13 @@ export const StoryWrapper = styled("div")`
         margin-bottom: 20px;
         color: ${({ theme }) => theme.palette.common.white};
 
-        @media(max-width: 1199px) {
+        @media (max-width: 1199px) {
           font-size: 44px;
         }
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           font-size: 36px;
         }
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 28px;
         }
       }
@@ -100,21 +102,18 @@ export const StoryWrapper = styled("div")`
         margin-bottom: 32px;
         max-width: 540px;
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 14px;
           margin-bottom: 24px;
         }
       }
-
-      }
     }
   }
-
   /* ── 2. Legacy Section ── */
   .legacy_section {
     padding: 100px 0;
-    
-    @media(max-width: 899px) {
+
+    @media (max-width: 899px) {
       padding: 60px 0;
     }
 
@@ -136,10 +135,10 @@ export const StoryWrapper = styled("div")`
       color: ${({ theme }) => theme.palette.primary.main};
       margin-bottom: 24px;
 
-      @media(max-width: 899px) {
+      @media (max-width: 899px) {
         font-size: 32px;
       }
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         font-size: 26px;
       }
     }
@@ -178,14 +177,14 @@ export const StoryWrapper = styled("div")`
     padding: 100px 0;
     text-align: center;
 
-    @media(max-width: 899px) {
+    @media (max-width: 899px) {
       padding: 60px 0;
     }
 
     .philosophy_header {
       max-width: 680px;
       margin: 0 auto 56px auto;
-      
+
       h2 {
         font-family: ${playFair.style.fontFamily};
         font-size: 36px;
@@ -193,7 +192,7 @@ export const StoryWrapper = styled("div")`
         color: ${({ theme }) => theme.palette.primary.main};
         margin-bottom: 16px;
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 28px;
         }
       }
@@ -204,7 +203,7 @@ export const StoryWrapper = styled("div")`
         line-height: 1.6;
         color: ${({ theme }) => theme.palette.customColors.textColor};
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 14px;
         }
       }
@@ -217,9 +216,11 @@ export const StoryWrapper = styled("div")`
       height: 100%;
       text-align: left;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 
-      @media(max-width: 1199px) {
+      @media (max-width: 1199px) {
         padding: 32px 24px;
       }
 
@@ -227,7 +228,8 @@ export const StoryWrapper = styled("div")`
         width: 52px;
         height: 52px;
         border-radius: 50%;
-        background-color: ${({ theme }) => theme.palette.customColors.lightGreen};
+        background-color: ${({ theme }) =>
+          theme.palette.customColors.lightGreen};
         color: ${({ theme }) => theme.palette.primary.main};
         display: flex;
         align-items: center;
@@ -267,7 +269,7 @@ export const StoryWrapper = styled("div")`
   .timeline_section {
     padding: 100px 0;
 
-    @media(max-width: 899px) {
+    @media (max-width: 899px) {
       padding: 60px 0;
     }
 
@@ -275,7 +277,7 @@ export const StoryWrapper = styled("div")`
       text-align: center;
       margin-bottom: 80px;
 
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         margin-bottom: 40px;
       }
 
@@ -286,7 +288,7 @@ export const StoryWrapper = styled("div")`
         color: ${({ theme }) => theme.palette.primary.main};
         margin: 0;
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 28px;
         }
       }
@@ -299,7 +301,7 @@ export const StoryWrapper = styled("div")`
 
       /* Center Line */
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         bottom: 0;
@@ -308,7 +310,7 @@ export const StoryWrapper = styled("div")`
         background-color: ${({ theme }) => theme.palette.divider};
         z-index: 1;
 
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           left: 20px;
         }
       }
@@ -321,7 +323,7 @@ export const StoryWrapper = styled("div")`
       align-items: center;
       margin-bottom: 96px;
 
-      @media(max-width: 899px) {
+      @media (max-width: 899px) {
         flex-direction: column;
         align-items: flex-start;
         padding-left: 48px;
@@ -336,7 +338,7 @@ export const StoryWrapper = styled("div")`
       &:nth-of-type(even) {
         flex-direction: row-reverse;
 
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           flex-direction: column;
         }
 
@@ -344,10 +346,10 @@ export const StoryWrapper = styled("div")`
           padding-left: 0;
           padding-right: 64px;
 
-          @media(max-width: 1199px) {
+          @media (max-width: 1199px) {
             padding-right: 40px;
           }
-          @media(max-width: 899px) {
+          @media (max-width: 899px) {
             padding-right: 0;
           }
         }
@@ -363,11 +365,12 @@ export const StoryWrapper = styled("div")`
         height: 12px;
         border-radius: 50%;
         background-color: ${({ theme }) => theme.palette.secondary.light};
-        border: 4px solid ${({ theme }) => theme.palette.customColors.lightCream};
+        border: 4px solid
+          ${({ theme }) => theme.palette.customColors.lightCream};
         box-shadow: 0 0 0 1px ${({ theme }) => theme.palette.divider};
         z-index: 2;
 
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           left: 20px;
           top: 24px;
           transform: translate(-50%, 0);
@@ -378,10 +381,10 @@ export const StoryWrapper = styled("div")`
         width: 45%;
         padding-left: 64px;
 
-        @media(max-width: 1199px) {
+        @media (max-width: 1199px) {
           padding-left: 40px;
         }
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           width: 100%;
           padding-left: 0;
           margin-bottom: 24px;
@@ -403,7 +406,7 @@ export const StoryWrapper = styled("div")`
           color: ${({ theme }) => theme.palette.primary.main};
           margin-bottom: 16px;
 
-          @media(max-width: 599px) {
+          @media (max-width: 599px) {
             font-size: 22px;
           }
         }
@@ -419,7 +422,7 @@ export const StoryWrapper = styled("div")`
       .timeline_image_col {
         width: 45%;
 
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           width: 100%;
           max-width: 480px;
         }
@@ -431,7 +434,8 @@ export const StoryWrapper = styled("div")`
           border-radius: 20px;
           overflow: hidden;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-          background-color: ${({ theme }) => theme.palette.customColors.greyLightBg};
+          background-color: ${({ theme }) =>
+            theme.palette.customColors.greyLightBg};
 
           img {
             width: 100%;
@@ -452,13 +456,12 @@ export const StoryWrapper = styled("div")`
     padding: 80px;
     text-align: center;
     overflow: hidden;
-    margin-bottom: 20px;
     box-shadow: 0 12px 40px rgba(11, 32, 19, 0.15);
 
-    @media(max-width: 899px) {
+    @media (max-width: 899px) {
       padding: 60px 40px;
     }
-    @media(max-width: 599px) {
+    @media (max-width: 599px) {
       border-radius: 20px;
       padding: 48px 24px;
     }
@@ -477,7 +480,7 @@ export const StoryWrapper = styled("div")`
         margin-bottom: 16px;
         color: ${({ theme }) => theme.palette.common.white};
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 30px;
         }
       }
@@ -489,7 +492,7 @@ export const StoryWrapper = styled("div")`
         opacity: 0.9;
         margin-bottom: 36px;
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 14px;
           margin-bottom: 28px;
         }
@@ -500,13 +503,11 @@ export const StoryWrapper = styled("div")`
         justify-content: center;
         gap: 16px;
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           flex-direction: column;
           gap: 12px;
           align-items: stretch;
         }
-
-      }
       }
     }
   }

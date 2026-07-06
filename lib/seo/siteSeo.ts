@@ -142,7 +142,7 @@ export const publicPagesSeo: PageSeoConfig[] = [
     image: "/assets/artisanal_gifting.png",
   },
   {
-    path: "/product",
+    path: "/products",
     title: "Dry Fruit Collections | Organic Nuts & Premium Snacks",
     description:
       "Shop premium almonds, cashews, walnuts, pistachios, dates, figs, and organic dry fruit blends from NutriHarvest.",
@@ -206,6 +206,14 @@ export const publicPagesSeo: PageSeoConfig[] = [
     image: "/assets/strawberries.png",
   },
   {
+    path: "/checkout",
+    title: "Checkout | NutriHarvest",
+    description:
+      "Provide your delivery information and confirm your organic harvest orders for manual WhatsApp checkout.",
+    keywords: ["checkout", "confirm order", "shipping details"],
+    image: "/assets/strawberries.png",
+  },
+  {
     path: "/saved",
     title: "Saved Products | NutriHarvest Wishlist",
     description:
@@ -228,6 +236,22 @@ export const publicPagesSeo: PageSeoConfig[] = [
       "Review NutriHarvest terms and conditions for website use, product authenticity, intellectual property, and liability.",
     keywords: ["NutriHarvest terms", "terms and conditions", "product authenticity"],
     image: "/assets/best_seller_orchard.png",
+  },
+  {
+    path: "/login",
+    title: "Sign In / Join NutriHarvest | Premium Dry Fruits & Nuts",
+    description:
+      "Log in or register for a NutriHarvest account to track orders, save items to your wishlist, and manage your delivery details.",
+    keywords: ["login nutriharvest", "create account", "user register"],
+    image: "/assets/homeBannerImg.png",
+  },
+  {
+    path: "/profile",
+    title: "My Account | NutriHarvest Dashboard",
+    description:
+      "Manage your personal details, order history, address details, and settings on your NutriHarvest profile dashboard.",
+    keywords: ["user profile", "nutriharvest account", "my orders"],
+    image: "/assets/dates_category.png",
   },
 ];
 

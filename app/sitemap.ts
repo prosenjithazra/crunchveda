@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const productRoutes = dryFruits.map(product => ({
-    url: `${siteSeo.url}/product/${product.id}`,
+    url: `${siteSeo.url}/products/${product.id}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.7,

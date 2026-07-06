@@ -15,7 +15,9 @@ import { useCategories } from '@/hooks/useProducts';
 
 export default function CategoriesMain() {
   const { data: categoriesData, isLoading } = useCategories();
-  const categories = categoriesData?.data || [];
+  const categories = Array.isArray(categoriesData?.data)
+    ? categoriesData.data
+    : ((categoriesData?.data as any)?.categories || []);
 
   return (
     <CategoriesMainWrapper>
@@ -50,7 +52,7 @@ export default function CategoriesMain() {
               </Typography>
             </Grid>
           ) : (
-            categories.map((cat, idx) => {
+            categories.map((cat: any, idx: number) => {
               let mdSize = 6;
               let cardClass = "medium_card";
               if (idx % 4 === 0) {
@@ -63,7 +65,7 @@ export default function CategoriesMain() {
 
               return (
                 <Grid size={{ xs: 12, md: mdSize }} key={cat._id}>
-                  <Link href={`/product?category=${encodeURIComponent(cat.name)}`} className={`category_card ${cardClass}`}>
+                  <Link href={`/products?category=${encodeURIComponent(cat.name)}`} className={`category_card ${cardClass}`}>
                     {idx === 0 && <Box className="card_badge">Signature Selection</Box>}
                     <Box className="card_bg">
                       <Image
@@ -117,7 +119,7 @@ export default function CategoriesMain() {
                   color="primary"
                   disableRipple
                   component={Link}
-                  href="/product?category=gifting"
+                  href="/products?category=gifting"
                 >
                   Explore Gift Sets
                 </Button>

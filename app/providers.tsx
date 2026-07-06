@@ -5,6 +5,7 @@ import AppThemeProvider from '@/mui-theme/AppThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as React from 'react';
 import { Toaster } from 'react-hot-toast';
+import { useInitializeAuth } from '@/hooks/useAuth';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,9 +17,15 @@ const queryClient = new QueryClient({
   },
 });
 
+function AuthInitializer() {
+  useInitializeAuth();
+  return null;
+}
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthInitializer />
       <AppThemeProvider>
         <Toaster
           position='top-center'

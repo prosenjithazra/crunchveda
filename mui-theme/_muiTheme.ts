@@ -1,4 +1,4 @@
-import { PaletteMode } from "@mui/material";
+import { colors, PaletteMode } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import type { ThemeOptions } from "@mui/material/styles";
 import { Outfit, Playfair_Display } from "next/font/google";
@@ -36,7 +36,7 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
         fontSize: "64px",
         lineHeight: "1.2",
         fontWeight: "600",
-        letterSpacing:'-1.28px',
+        letterSpacing: "-1.28px",
         fontFamily: [`${playFair.style.fontFamily}`].join(","),
         "@media(max-width:1199px)": {
           fontSize: "48px",
@@ -48,7 +48,7 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
         "@media(max-width:599px)": {
           fontSize: "32px",
         },
-         "@media(max-width:479px)": {
+        "@media(max-width:479px)": {
           fontSize: "30px",
         },
       },
@@ -208,10 +208,11 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
                 padding: "14px 29px",
                 lineHeight: 1.135,
                 textTransform: "none",
-                fontFamily:outFit.style.fontFamily,
-                color:theme.palette.common.white,
-                "@media(max-width: 1199px)":{
-                    padding: "12px 20px",
+                fontFamily: outFit.style.fontFamily,
+                color: theme.palette.common.white,
+                "@media(max-width: 1199px)": {
+                  padding: "12px 20px",
+                  borderRadius: "6px",
                 },
 
                 "&:hover": {
@@ -233,9 +234,39 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
                 padding: "14px 29px",
                 lineHeight: 1.1,
                 textTransform: "none",
+                "@media(max-width: 1199px)": {
+                  padding: "12px 20px",
+                  borderRadius: "6px",
+                },
+
+                "&:hover": {
+                  background: theme.palette.secondary.light,
+                  color:`${theme.palette.common.white}!important`
+                },
+              };
+            }
+            if (
+              ownerState.variant === "outlined" &&
+              ownerState.color === "primary"
+            ) {
+              return {
+                background: 'transparent',
+                border: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: "15px",
+                fontWeight: 500,
+                fontSize: "14px",
+                color: theme.palette.primary.main,
+                padding: "14px 29px",
+                lineHeight: 1.1,
+                textTransform: "none",
+                "@media(max-width: 1199px)": {
+                  padding: "12px 20px",
+                  borderRadius: "6px",
+                },
 
                 "&:hover": {
                   background: theme.palette.primary.dark,
+                  color: `${theme.palette.common.white} !important`,
                 },
               };
             }

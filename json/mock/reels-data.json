@@ -1,0 +1,22 @@
+{
+  "sectionTitle": "Trending Reels",
+  "sectionDescription": "Discover our products in action through these short videos",
+  "reels": [
+    {
+      "reelsVideo": "https://youtu.be/EngW7tLk6R8?si=50kZ3tK0oa_qycQa",
+      "reelsImage": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783325130463_best_seller_fruit_kwaPBSOsu.png"
+    },
+    {
+      "reelsVideo": "https://www.instagram.com/reel/DabecYeyRoO/?igsh=a3k3b3JmcGJ3bGZ0",
+      "reelsImage": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783325162117_sustainability_dyes_LsWn_4VId.png"
+    },
+    {
+      "reelsVideo": "https://www.instagram.com/reel/DabecYeyRoO/?igsh=a3k3b3JmcGJ3bGZ0",
+      "reelsImage": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783325166884_instagram_1_hdzR76fid.png"
+    },
+    {
+      "reelsVideo": "https://www.instagram.com/reel/DabecYeyRoO/?igsh=a3k3b3JmcGJ3bGZ0",
+      "reelsImage": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783325170609_wildflower_honey_cKoOpkZoe.png"
+    }
+  ]
+}

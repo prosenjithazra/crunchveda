@@ -13,6 +13,9 @@ export default function SustainabilityHero() {
   if (isLoading) return <SustainabilityHeroSkeleton />;
 
   const heroRecord = moduleData?.records?.find(r => r.id === "sustainability-hero");
+  const showSectionField = heroRecord?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {
     const field = heroRecord?.fields?.find(f => f.id === fieldId);

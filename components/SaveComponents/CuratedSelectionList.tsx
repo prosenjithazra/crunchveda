@@ -111,7 +111,7 @@ export default function CuratedSelectionList({
           <Typography variant="body1">
             Explore our collections and save your favorite organic selections.
           </Typography>
-          <Link href="/product" className="explore_btn">
+          <Link href="/products" className="explore_btn">
             Explore Collections
           </Link>
         </Box>

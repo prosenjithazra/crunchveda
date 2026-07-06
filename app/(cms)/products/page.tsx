@@ -2,15 +2,22 @@ import ProductUI from '@/components/ProductComponents/ProductUI'
 import JsonLd from '@/components/SEO/JsonLd'
 import { createBreadcrumbSchema } from '@/lib/seo/schema'
 import { createPageMetadata, getPageSeo } from '@/lib/seo/siteSeo'
-import React from 'react'
+import React, { Suspense } from 'react'
 
-export const metadata = createPageMetadata(getPageSeo('/product'));
+export const metadata = createPageMetadata(getPageSeo('/products'));
 
 export default function Page() {
   return (
     <>
-      <JsonLd data={createBreadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Products', path: '/product' }])} />
-      <ProductUI/>
+      <JsonLd data={createBreadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Products', path: '/products' }])} />
+      <Suspense fallback={
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+          Loading products...
+        </div>
+      }>
+        <ProductUI/>
+      </Suspense>
     </>
   )
 }
+

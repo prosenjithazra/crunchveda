@@ -13,8 +13,10 @@ import WhatsAppIcon from '@/ui/Icons/WhatsAppIcon';
 import { BestSellingProductsWrapper } from '@/styles/StyledComponents/BestSellingProductsWrapper';
 import { useHomeSection } from '@/hooks/useContent';
 import { useBestsellers } from '@/hooks/useProducts';
-import { mapApiProductToUi } from '@/services/productService';
+import { mapApiProductToUi, getBadgeInfo } from '@/services/productService';
 import { BestSellingProductsSkeleton } from '../Loader/SectionSkeletons';
+import { toast } from 'react-hot-toast';
+import { cartService } from '@/services/cartService';
 
 const defaultProducts = [
   {
@@ -26,7 +28,8 @@ const defaultProducts = [
     sizes: ["250g", "500g", "1kg"],
     defaultSize: "500g",
     hasWhatsApp: true,
-    href: "/product/jumbo-cashews"
+    href: "/products/jumbo-cashews",
+    stock: 10,
   },
   {
     id: "2",
@@ -37,7 +40,8 @@ const defaultProducts = [
     sizes: ["100g","250g", "500g", "1kg"],
     defaultSize: "500g",
     hasWhatsApp: true,
-    href: "/product/california-almonds"
+    href: "/products/california-almonds",
+    stock: 10,
   },
   {
     id: "3",
@@ -48,7 +52,8 @@ const defaultProducts = [
     sizes: ["500g"],
     defaultSize: "500g",
     hasWhatsApp: false,
-    href: "/product/walnut-halves"
+    href: "/products/walnut-halves",
+    stock: 10,
   },
   {
     id: "4",
@@ -59,7 +64,8 @@ const defaultProducts = [
     sizes: ["100g","500g"],
     defaultSize: "500g",
     hasWhatsApp: false,
-    href: "/product/iranian-pistachios"
+    href: "/products/iranian-pistachios",
+    stock: 10,
   }
 ];
 
@@ -70,10 +76,66 @@ export default function BestSellingProducts() {
 
   if (sectionLoading || bestsellersLoading) return <BestSellingProductsSkeleton />;
 
+  const showSection = sectionData?.content?.showSection ?? true;
+  if (!showSection) return null;
+
   const eyebrow = sectionData?.content?.eyebrow || "CROWD FAVORITES";
-  const heading = sectionData?.content?.heading || "Best Selling Products";
+  const heading = sectionData?.content?.sectionTitle || sectionData?.content?.heading || "Best Selling Products";
   const viewAllLabel = sectionData?.content?.viewAllLabel || "View All Products";
-  const viewAllHref = sectionData?.content?.viewAllHref || "/product";
+  const viewAllHref = sectionData?.content?.viewAllHref || "/products";
+  const cmsProductsText = sectionData?.content?.products || "";
+
+  // WhatsApp Inquiry Link Generator
+  const handleWhatsAppInquiry = (title: string, size: string) => {
+    const text = `Hi, I am interested in purchasing ${title} (${size}) from your Best Seller Collections.`;
+    const encodedText = encodeURIComponent(text);
+    window.open(`https://wa.me/+1234567890?text=${encodedText}`, "_blank");
+  };
+
+  // Add to Cart handler
+  const handleAddToCart = async (
+    productId: string,
+    title: string,
+    size: string,
+    priceVal: number,
+    image: string,
+    badgeText: string
+  ) => {
+    try {
+      const currentCart = await cartService.getCart();
+      const existing = currentCart.find(
+        (item) => item.id === productId && item.size === size
+      );
+      const existingQty = existing ? existing.quantity : 0;
+      const newQty = existingQty + 1;
+
+      const updatedQty = await cartService.updateItem(productId, newQty, size, priceVal);
+
+      let updatedCart = [...currentCart];
+      if (existing) {
+        updatedCart = currentCart.map((item) =>
+          item.id === productId && item.size === size
+            ? { ...item, quantity: updatedQty }
+            : item
+        );
+      } else {
+        updatedCart.push({
+          id: productId,
+          name: title,
+          badge: badgeText || "Organic Selection",
+          price: priceVal,
+          quantity: updatedQty,
+          image: image || "/assets/images/placeholder.jpg",
+          size,
+        });
+      }
+      cartService.saveLocalFallback(updatedCart);
+
+      toast.success(`Added ${title} (${size}) to cart!`);
+    } catch (e) {
+      toast.error("Failed to add product to cart");
+    }
+  };
 
   let products: Array<{
     id: string;
@@ -85,28 +147,34 @@ export default function BestSellingProducts() {
     defaultSize: string;
     hasWhatsApp: boolean;
     href: string;
-  }> = defaultProducts;
-  if (bestsellersData?.data && bestsellersData.data.length > 0) {
-    products = bestsellersData.data.map((p) => {
+    sizePrices?: Record<string, number>;
+    stock?: number;
+  }> = [];
+
+  const sourceProducts = sectionData?.content?.selectedProducts || bestsellersData?.data || [];
+
+  if (sourceProducts.length > 0) {
+    products = sourceProducts.map((p: any) => {
       const uiProd = mapApiProductToUi(p);
-      const price = uiProd.sizePrices[uiProd.defaultSize] || 0;
+      const priceVal = uiProd.sizePrices[uiProd.defaultSize] ?? Object.values(uiProd.sizePrices)[0] ?? 0;
       return {
         id: p._id,
         title: uiProd.name,
-        price: price ? `$${price.toFixed(2)}` : "$0.00",
+        price: priceVal ? `₹${priceVal.toFixed(2)}` : "₹0.00",
         image: uiProd.image || assets.cashewsProduct,
-        badge: uiProd.badge
-          ? {
-              text: uiProd.badge === "BEST SELLER" ? "Best Seller" : "Organic",
-              type: uiProd.badge === "BEST SELLER" ? "bestseller" : "organic"
-            }
-          : null,
+        badge: getBadgeInfo(uiProd.badge),
         sizes: Object.keys(uiProd.sizePrices),
         defaultSize: uiProd.defaultSize,
         hasWhatsApp: true,
-        href: `/product/${uiProd.id}`
+        href: `/products/${uiProd.id}`,
+        sizePrices: uiProd.sizePrices,
+        stock: uiProd.stock,
       };
     });
+  }
+
+  if (products.length === 0) {
+    products = defaultProducts;
   }
 
   const handleSizeChange = (productId: string, size: string) => {
@@ -115,6 +183,9 @@ export default function BestSellingProducts() {
 
   const renderProductCard = (product: typeof products[0]) => {
     const selectedSize = selectedSizes[product.id] || product.defaultSize;
+    const priceVal = product.sizePrices ? (product.sizePrices[selectedSize] ?? Object.values(product.sizePrices)[0] ?? 0) : null;
+    const formattedPrice = priceVal !== null ? `₹${priceVal.toFixed(2)}` : product.price;
+    const isOutOfStock = product.stock !== undefined && product.stock <= 0;
 
     return (
       <Box className='product_card'>
@@ -141,8 +212,14 @@ export default function BestSellingProducts() {
         </Link>
 
         <Typography variant='h4' className='product_price'>
-          {product.price}
+          {formattedPrice}
         </Typography>
+
+        {product.stock !== undefined && product.stock > 0 && product.stock < 10 && (
+          <Typography className='limited_stock_label' sx={{ color: 'error.main', fontSize: '11px', fontWeight: 600, mt: 0.5, mb: 0.5 }}>
+            Order Soon – Limited Quantity Left
+          </Typography>
+        )}
 
         <Box className='product_sizes'>
           {product.sizes.map((size) => (
@@ -161,15 +238,18 @@ export default function BestSellingProducts() {
           <Button
             variant='contained'
             className='add_cart_btn'
-            startIcon={<ShopingBagIcon />}
+            startIcon={!isOutOfStock && <ShopingBagIcon />}
+            onClick={() => handleAddToCart(product.id, product.title, selectedSize, priceVal || 0, product.image, product.badge?.text || "")}
             disableRipple
+            disabled={isOutOfStock}
           >
-            Add to Cart
+            {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
           </Button>
           <Button
             variant='contained'
             className='whatsapp_btn'
             startIcon={<WhatsAppIcon />}
+            onClick={() => handleWhatsAppInquiry(product.title, selectedSize)}
             disableRipple
             disabled={!product.hasWhatsApp}
           >

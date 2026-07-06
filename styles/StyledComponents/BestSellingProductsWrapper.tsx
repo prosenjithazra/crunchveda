@@ -114,7 +114,11 @@ export const BestSellingProductsWrapper = styled("section")`
     overflow: hidden;
     margin-bottom: 20px;
     background: ${({ theme }) => theme.palette.common.white};
-
+    a{
+      width: 100%;
+      height: 100%;
+      line-height: 0;
+    }
     img {
       width: 100%;
       height: 100%;
@@ -141,13 +145,23 @@ export const BestSellingProductsWrapper = styled("section")`
     text-transform: uppercase;
 
     &.badge_organic {
-      background: ${({ theme }) => theme.palette.warning.light};
-      color: ${({ theme }) => theme.palette.primary.dark};
+      background: ${({ theme }) => theme.palette.success.light};
+      color: ${({ theme }) => theme.palette.common.white};
     }
 
     &.badge_bestseller {
-      background: ${({ theme }) => theme.palette.secondary.main}22;
-      color: ${({ theme }) => theme.palette.secondary.main};
+      background: ${({ theme }) => theme.palette.secondary.light};
+      color: ${({ theme }) => theme.palette.common.white};
+    }
+
+    &.badge_discount {
+      background: rgba(47, 128, 237, 0.677);
+      color: ${({ theme }) => theme.palette.common.white};
+    }
+
+    &.badge_toprated {
+      background: rgba(224, 82, 82, 0.677);
+      color: ${({ theme }) => theme.palette.common.white};
     }
   }
 
@@ -234,8 +248,15 @@ export const BestSellingProductsWrapper = styled("section")`
       height: 18px;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: ${({ theme }) => theme.palette.secondary.dark};
+    }
+
+    &:disabled {
+      background: ${({ theme }) => theme.palette.action.disabledBackground};
+      color: ${({ theme }) => theme.palette.text.disabled};
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 

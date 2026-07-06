@@ -2,6 +2,7 @@
 
 import { adminAuthService, type AdminSession } from "@/services/admin/authService";
 import { assets } from "@/json/assest";
+import { adminModules, type AdminModule } from "@/json/mock/admin";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import {
@@ -76,6 +77,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [openModules, setOpenModules] = React.useState<Record<string, boolean>>({});
 
   const { data: modules = [] } = useContentModules();
+
+  const sidebarModules = React.useMemo<AdminModule[]>(() => {
+    if (!modules.length) return adminModules;
+
+    const mergedModules: AdminModule[] = modules.map(moduleData => {
+      const moduleId = moduleData.moduleId || moduleData.id;
+      const fallbackModule = adminModules.find(item => item.id === moduleId || item.moduleId === moduleId);
+
+      return {
+        ...fallbackModule,
+        ...moduleData,
+        id: moduleData.id || fallbackModule?.id || moduleId,
+        moduleId,
+        title: moduleData.title || fallbackModule?.title || moduleId,
+        records: moduleData.records?.length ? moduleData.records : fallbackModule?.records || [],
+      };
+    });
+
+    adminModules.forEach(fallbackModule => {
+      const exists = mergedModules.some(moduleData => (moduleData.moduleId || moduleData.id) === fallbackModule.id);
+      if (!exists) {
+        mergedModules.push(fallbackModule);
+      }
+    });
+
+    return mergedModules;
+  }, [modules]);
 
   const [prevPathname, setPrevPathname] = React.useState(pathname);
   if (pathname !== prevPathname) {
@@ -279,7 +307,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </Typography>
 
         {/* Dynamic Pages/Modules */}
-        {modules.map(moduleData => {
+        {sidebarModules.map(moduleData => {
           const mId = moduleData.moduleId || moduleData.id;
           const Icon = moduleIconMap[mId] || ArticleOutlinedIcon;
           const isOpen = Boolean(openModules[mId]);
@@ -428,12 +456,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <Divider />
       <Stack spacing={1.5} sx={{ p: 2 }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-          <Avatar sx={{ bgcolor: "primary.main", width: 38, height: 38 }}>N</Avatar>
+          <Avatar sx={{ bgcolor: "primary.main", width: 38, height: 38 }}>{session?.name.charAt(0).toUpperCase()}</Avatar>
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="body2" noWrap sx={{ fontWeight: 700 }}>
+            <Typography variant="body2" noWrap sx={{ fontWeight: 700, lineHeight:'1' }}>
               {session?.name}
             </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap>
+            <Typography variant="caption" color="text.secondary" noWrap sx={{lineHeight:'1'}}>
               {session?.role}
             </Typography>
           </Box>

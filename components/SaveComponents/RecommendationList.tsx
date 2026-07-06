@@ -9,25 +9,25 @@ const recommendations = [
     title: "Roasted Almonds",
     price: 18.00,
     image: assets.roastedAlmonds,
-    href: "/product/roasted-almonds"
+    href: "/products/roasted-almonds"
   },
   {
     title: "Dried Tomatoes",
     price: 22.00,
     image: assets.driedTomatoes,
-    href: "/product/dried-tomatoes"
+    href: "/products/dried-tomatoes"
   },
   {
     title: "Orchard Tea",
     price: 24.00,
     image: assets.orchardTea,
-    href: "/product/orchard-tea"
+    href: "/products/orchard-tea"
   },
   {
     title: "Aged Reserve",
     price: 35.00,
     image: assets.agedReserve,
-    href: "/product/aged-reserve"
+    href: "/products/aged-reserve"
   }
 ];
 
@@ -39,7 +39,7 @@ export default function RecommendationList() {
           <Typography variant="h2">
             You might also love
           </Typography>
-          <Link href="/product" className="explore_link">
+          <Link href="/products" className="explore_link">
             Explore Collections
           </Link>
         </Box>

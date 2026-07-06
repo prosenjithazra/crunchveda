@@ -30,6 +30,9 @@ export default function ArtisanalJourney() {
   if (isLoading) return <ArtisanalJourneySkeleton />;
 
   const journeyRecord = moduleData?.records?.find(r => r.id === "about-journey");
+  const showSectionField = journeyRecord?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {
     const field = journeyRecord?.fields?.find(f => f.id === fieldId);

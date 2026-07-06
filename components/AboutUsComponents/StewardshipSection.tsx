@@ -11,7 +11,10 @@ export default function StewardshipSection() {
   const { data: moduleData, isLoading } = useContentModule("about-us");
   if (isLoading) return <StewardshipSectionSkeleton />;
 
-  const rootsRecord = moduleData?.records?.find(r => r.id === "about-roots");
+  const rootsRecord = moduleData?.records?.find(r => r.id === "about-stewardship" || r.id === "about-roots");
+  const showSectionField = rootsRecord?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {
     const field = rootsRecord?.fields?.find(f => f.id === fieldId);

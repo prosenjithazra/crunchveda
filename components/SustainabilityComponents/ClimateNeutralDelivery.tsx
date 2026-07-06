@@ -7,8 +7,13 @@ import { useContentModule } from '@/hooks/useContent';
 import { ClimateNeutralDeliverySkeleton } from '../Loader/SectionSkeletons';
 
 export default function ClimateNeutralDelivery() {
-  const { isLoading } = useContentModule("sustainability");
+  const { data: moduleData, isLoading } = useContentModule("sustainability");
   if (isLoading) return <ClimateNeutralDeliverySkeleton />;
+
+  const record = moduleData?.records?.find(r => r.id === "climate-delivery");
+  const showSectionField = record?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   return (
     <ClimateNeutralDeliveryWrapper>

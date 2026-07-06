@@ -12,6 +12,10 @@ import {
   ListItem,
   Stack,
   Typography,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useState, useEffect } from "react";
@@ -28,11 +32,13 @@ import HomeIcon from "@/ui/Icons/HomeIcon";
 import ShopingBagIcon from "@/ui/Icons/ShopingBagIcon";
 import HeartBtnIcon from "@/ui/Icons/HeartBtnIcon";
 import WhatsAppIcon from "@/ui/Icons/WhatsAppIcon";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useUser, useLogout } from "@/hooks/useAuth";
+import { cartService } from "@/services/cartService";
 
 const navItems = [
   { label: "Home", href: "/" },
-  { label: "Products", href: "/product" },
+  { label: "Products", href: "/products" },
   { label: "Categories", href: "/categories" },
   { label: "Our Story", href: "/our-story" },
   { label: "About Us", href: "/about-us" },
@@ -47,7 +53,7 @@ const mobileMenuData = [
   },
   {
     iconPath: <ShopingBagIcon />,
-    href: "/product",
+    href: "/products",
     label: "Shop",
   },
   {
@@ -64,9 +70,86 @@ const mobileMenuData = [
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrollDir, setScrollDir] = useState<"up" | "down" | "top">("top");
+
+  const { user } = useUser();
+  const logoutMutation = useLogout();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.push("/login");
+      },
+    });
+    handleMenuClose();
+  };
+
+  const dynamicMobileMenu = [
+    {
+      iconPath: <HomeIcon />,
+      href: "/",
+      label: "Home",
+    },
+    {
+      iconPath: <ShopingBagIcon />,
+      href: "/products",
+      label: "Shop",
+    },
+    {
+      iconPath: <HeartBtnIcon />,
+      href: "/saved",
+      label: "Saved",
+    },
+    {
+      iconPath: <WhatsAppIcon />,
+      href: "/contact-us",
+      label: "Contact",
+    },
+  ];
+
+  const [cartCount, setCartCount] = useState(0);
+
+  // Sync cart item count
+  useEffect(() => {
+    let active = true;
+
+    const fetchCount = async () => {
+      try {
+        const items = await cartService.getCart();
+        if (!active) return;
+        const total = items.reduce((sum, item) => sum + item.quantity, 0);
+        setCartCount(total);
+      } catch (err) {
+        console.error("Failed to load header cart count:", err);
+      }
+    };
+
+    fetchCount();
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("cartUpdated", fetchCount);
+    }
+
+    return () => {
+      active = false;
+      if (typeof window !== "undefined") {
+        window.removeEventListener("cartUpdated", fetchCount);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -145,7 +228,7 @@ export function Header() {
                 href="/cart"
               >
                 <CartIcon />
-                <Typography variant="caption">0</Typography>
+                <Typography variant="caption">{cartCount}</Typography>
               </IconButton>
               <Button
                 variant="contained"
@@ -153,8 +236,136 @@ export function Header() {
                 disableRipple
                 className="whatsAppBtn"
               >
+                <WhatsAppIcon />
                 Order on WhatsApp
               </Button>
+              {user ? (
+                <>
+                  <IconButton
+                    onClick={handleAvatarClick}
+                    size="small"
+                    sx={{ p: 0.5 }}
+                    aria-controls={isMenuOpen ? "account-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={isMenuOpen ? "true" : undefined}
+                  >
+                    <Avatar
+                      src={user.avatar || undefined}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        bgcolor: "primary.main",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        border: "2px solid",
+                        borderColor: "primary.light",
+                      }}
+                    >
+                      {user.name
+                        ? user.name
+                            .split(" ")
+                            .map((n: string) => n[0])
+                            .join("")
+                            .toUpperCase()
+                            .slice(0, 2)
+                        : "U"}
+                    </Avatar>
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={isMenuOpen}
+                    onClose={handleMenuClose}
+                    onClick={handleMenuClose}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                    slotProps={{
+                      paper: {
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter: "drop-shadow(0px 8px 16px rgba(0,0,0,0.08))",
+                          mt: 1.5,
+                          borderRadius: 3,
+                          border: "1px solid",
+                          borderColor: "divider",
+                          minWidth: 200,
+                          bgcolor: "background.paper",
+                          "&::before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                            borderLeft: "1px solid",
+                            borderTop: "1px solid",
+                            borderColor: "divider",
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    <Box sx={{ px: 2, py: 1.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, color: "primary.main" }}
+                      >
+                        {user.name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "text.secondary", display: "block" }}
+                      >
+                        {user.email}
+                      </Typography>
+                    </Box>
+                    <Divider />
+                    <MenuItem
+                      component={Link}
+                      href="/profile"
+                      sx={{ fontSize: "14px", py: 1, fontWeight: 600 }}
+                    >
+                      My Profile
+                    </MenuItem>
+                    {user.role === "admin" && (
+                      <MenuItem
+                        component={Link}
+                        href="/admin"
+                        sx={{ fontSize: "14px", py: 1, fontWeight: 600 }}
+                      >
+                        Admin Dashboard
+                      </MenuItem>
+                    )}
+                    <Divider />
+                    <MenuItem
+                      onClick={handleLogout}
+                      sx={{
+                        fontSize: "14px",
+                        py: 1,
+                        fontWeight: 600,
+                        color: "error.main",
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  disableRipple
+                  component={Link}
+                  href="/login"
+                >
+                  Login
+                </Button>
+              )}
             </Box>
           </Box>
         </Container>
@@ -229,13 +440,87 @@ export function Header() {
                 {item.label}
               </Typography>
             ))}
+            <Divider />
+            {user ? (
+              <Stack spacing={2}>
+                <Stack
+                  direction="row"
+                  spacing={1.5}
+                  sx={{ alignItems: "center" }}
+                >
+                  <Avatar
+                    src={user.avatar || undefined}
+                    sx={{ width: 40, height: 40, bgcolor: "primary.main" }}
+                  >
+                    {user.name ? user.name[0].toUpperCase() : "U"}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                      {user.name}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "text.secondary" }}
+                    >
+                      {user.email}
+                    </Typography>
+                  </Box>
+                </Stack>
+                <Button
+                  variant="outlined"
+                  component={Link}
+                  href="/profile"
+                  onClick={() => setIsOpen(false)}
+                  fullWidth
+                  sx={{
+                    borderRadius: "20px",
+                    textTransform: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  My Profile
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  fullWidth
+                  sx={{
+                    borderRadius: "20px",
+                    textTransform: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  Logout
+                </Button>
+              </Stack>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                component={Link}
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                fullWidth
+                sx={{
+                  borderRadius: "20px",
+                  textTransform: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Login
+              </Button>
+            )}
           </Stack>
         </Drawer>
       </HeaderWrapper>
       <MobileMenuWrapper>
         <Box className="mobileMenuListBox">
           <List disablePadding>
-            {mobileMenuData.map((item) => (
+            {dynamicMobileMenu.map((item) => (
               <ListItem key={item.label} disablePadding>
                 <Link href={item.href}>
                   <i>{item.iconPath}</i>

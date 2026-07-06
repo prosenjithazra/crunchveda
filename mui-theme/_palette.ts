@@ -3,7 +3,7 @@ import { Palette } from '@mui/material';
 
 export const palette = (mode: Palette['mode']): Palette => {
   // ** Vars
-  const whiteColor = '#FFF';
+  const whiteColor = '#FFFFFF';
   const lightColor = '#5F5E59'; // Hex equivalent of '47, 43, 61'
   const darkColor = '#1C1C18'; // Hex equivalent of '208, 212, 241'
   const darkPaperBgColor = '#2F3349';

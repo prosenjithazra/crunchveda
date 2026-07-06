@@ -1,7 +1,7 @@
 import type { ICategory } from "@/types/category";
 import { adminAuthService } from "./authService";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_URL = "/api";
 
 export type CategoryPayload = {
   name: string;
@@ -12,45 +12,59 @@ export type CategoryPayload = {
 };
 
 export const categoryService = {
+  /** Fetch all categories (proxy normalizes both backend response shapes) */
   getAll: async (): Promise<ICategory[]> => {
     const res = await fetch(`${API_URL}/categories?all=true`, { cache: "no-store" });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Failed to fetch categories");
-    return data.data;
+    // Proxy always returns flat { success: true, data: [...] }
+    // but we handle both just in case
+    return Array.isArray(data.data)
+      ? data.data
+      : (data.data?.categories || []);
   },
 
-  create: async (payload: CategoryPayload): Promise<ICategory> => {
+  /** Create a new category */
+  create: async (payload: FormData | CategoryPayload): Promise<ICategory> => {
     const session = adminAuthService.getSession();
     const token = session?.token || "";
+    const isFormData = payload instanceof FormData;
+
     const res = await fetch(`${API_URL}/categories`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(payload),
+      body: isFormData ? payload : JSON.stringify(payload),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Failed to create category");
-    return data.data;
+    // Proxy returns { success: true, data: <categoryObject> }
+    return data.data?.category || data.data;
   },
 
-  update: async (id: string, payload: Partial<CategoryPayload>): Promise<ICategory> => {
+  /** Update an existing category by ID */
+  update: async (id: string, payload: FormData | Partial<CategoryPayload>): Promise<ICategory> => {
     const session = adminAuthService.getSession();
     const token = session?.token || "";
+    const isFormData = payload instanceof FormData;
+
     const res = await fetch(`${API_URL}/categories/${id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(payload),
+      body: isFormData ? payload : JSON.stringify(payload),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "Failed to update category");
-    return data.data;
+    // Proxy returns { success: true, data: <categoryObject> }
+    return data.data?.category || data.data;
   },
 
+  /** Delete a category by ID */
   remove: async (id: string): Promise<void> => {
     const session = adminAuthService.getSession();
     const token = session?.token || "";

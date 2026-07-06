@@ -10,6 +10,9 @@ export default function QuoteSection() {
   if (isLoading) return <QuoteSectionSkeleton />;
 
   const quoteRecord = moduleData?.records?.find(r => r.id === "about-quote");
+  const showSectionField = quoteRecord?.fields?.find(f => f.id === "showSection");
+  const showSection = showSectionField ? showSectionField.value !== false : true;
+  if (!showSection) return null;
 
   const getFieldValue = (fieldId: string, defaultValue: string): string => {
     const field = quoteRecord?.fields?.find(f => f.id === fieldId);

@@ -1,112 +1,952 @@
 {
-	"info": {
-		"_postman_id": "c138b029-9e8a-4ab0-b492-b430e3b97063",
-		"name": "CrunchVeda CMS API",
-		"description": "Postman Collection to test all live CRUD API endpoints for the CrunchVeda CMS pages.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Get All Modules",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/api/content/modules",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"content",
-						"modules"
-					]
-				},
-				"description": "Retrieves all modules. On first run, it seeds default configurations into MongoDB."
-			},
-			"response": []
-		},
-		{
-			"name": "Get Homepage Module",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/api/content/modules/home",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"content",
-						"modules",
-						"home"
-					]
-				},
-				"description": "Retrieves the content sections specific to the homepage module."
-			},
-			"response": []
-		},
-		{
-			"name": "Save/Update Hero Section",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"moduleId\": \"home\",\n  \"section\": {\n    \"id\": \"home-hero\",\n    \"title\": \"Home hero banner\",\n    \"type\": \"Hero section\",\n    \"status\": \"Published\",\n    \"fields\": [\n      {\n        \"id\": \"eyebrow\",\n        \"label\": \"Small title\",\n        \"type\": \"text\",\n        \"value\": \"CRAFTING AGRICULTURAL EXCELLENCE\"\n      },\n      {\n        \"id\": \"headline\",\n        \"label\": \"H1 headline\",\n        \"type\": \"text\",\n        \"value\": \"Premium Dry Fruits Delivered Fresh & Organic\"\n      },\n      {\n        \"id\": \"description\",\n        \"label\": \"Hero paragraph\",\n        \"type\": \"textarea\",\n        \"value\": \"Experience the pinnacle of nutrition with our hand-picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.\"\n      },\n      {\n        \"id\": \"primaryCtaLabel\",\n        \"label\": \"Primary CTA label\",\n        \"type\": \"text\",\n        \"value\": \"Explore Collection\"\n      },\n      {\n        \"id\": \"primaryCtaHref\",\n        \"label\": \"Primary CTA link\",\n        \"type\": \"text\",\n        \"value\": \"/product\"\n      },\n      {\n        \"id\": \"image\",\n        \"label\": \"Hero background image\",\n        \"type\": \"image\",\n        \"value\": \"/assets/homeBannerImg.png\"\n      },\n      {\n        \"id\": \"showSection\",\n        \"label\": \"Show hero section\",\n        \"type\": \"toggle\",\n        \"value\": true\n      }\n    ]\n  }\n}"
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/content/sections",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"content",
-						"sections"
-					]
-				},
-				"description": "Saves or updates a content section layout inside a module."
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Section",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/api/content/modules/home/sections/section-test",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"content",
-						"modules",
-						"home",
-						"sections",
-						"section-test"
-					]
-				},
-				"description": "Removes a specific section configuration from a module by ID."
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "c138b029-9e8a-4ab0-b492-b430e3b97063",
+    "name": "CrunchVeda – Complete API Collection",
+    "description": "Complete Postman Collection covering all API endpoints for CrunchVeda: Auth, Categories, Products, Orders, Reviews, Upload, and CMS Content management. Covers both public CMS pages and Admin Dashboard operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "",
+      "type": "string",
+      "description": "Paste your JWT access token here after login"
+    },
+    {
+      "key": "CATEGORY_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "PRODUCT_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "PRODUCT_SLUG",
+      "value": "mamra-almonds",
+      "type": "string"
+    },
+    {
+      "key": "CATEGORY_SLUG",
+      "value": "almonds",
+      "type": "string"
+    },
+    {
+      "key": "ORDER_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "REVIEW_ID",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"securepassword123\",\n  \"role\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/register",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user. Role can be 'customer' or 'admin'. Returns an accessToken and sets a refreshToken HttpOnly cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@crunchveda.com\",\n  \"password\": \"adminpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/login",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticate user. Returns accessToken in response body and sets refreshToken in HttpOnly cookie. Copy the accessToken into the ACCESS_TOKEN variable."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/auth/refresh",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "Uses the refreshToken HttpOnly cookie to issue a new accessToken. No body required."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/auth/logout",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Clears the refreshToken HttpOnly cookie, effectively logging out the user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/auth/me",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Validates the JWT and returns the currently authenticated user's profile."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📂 Categories",
+      "item": [
+        {
+          "name": "Get All Categories (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/categories",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories"]
+            },
+            "description": "Fetches all active categories. Each category includes a productCount field aggregated from the products collection."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories (Admin - All)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/categories?all=true",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "all",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Fetches ALL categories including inactive/draft ones. Used by the admin dashboard."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/categories/{{CATEGORY_SLUG}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories", "{{CATEGORY_SLUG}}"]
+            },
+            "description": "Retrieves a single category by its slug, including its active productCount."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/categories/{{CATEGORY_SLUG}}/products?page=1&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories", "{{CATEGORY_SLUG}}", "products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Returns paginated products belonging to the specified category slug."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Almonds\",\n  \"slug\": \"premium-almonds\",\n  \"description\": \"Hand-picked almonds from the finest orchards.\",\n  \"image\": \"https://res.cloudinary.com/crunchveda/image/upload/almonds.jpg\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/categories",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories"]
+            },
+            "description": "Creates a new category. Requires admin JWT. Slug must be unique."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Almonds (Updated)\",\n  \"description\": \"Updated description for almonds category.\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/categories/{{CATEGORY_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories", "{{CATEGORY_ID}}"]
+            },
+            "description": "Updates an existing category by MongoDB _id. Payload is partial — only include fields to change."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/categories/{{CATEGORY_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["categories", "{{CATEGORY_ID}}"]
+            },
+            "description": "Deletes a category. IMPORTANT: Will fail with 400 if any active products are still linked to this category. Reassign or deactivate those products first."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛒 Products",
+      "item": [
+        {
+          "name": "Get All Products (Public, Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/products?page=1&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Returns paginated list of active products with their category populated."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Products (Admin - All, Search, Filter)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/products?all=true&page=1&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "all", "value": "true" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "category", "value": "", "disabled": true }
+              ]
+            },
+            "description": "Admin: returns ALL products (active + inactive). Optionally filter with: search=term, category=slug|id. Enable/disable the optional query params above."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bestseller Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/products/bestsellers",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "bestsellers"]
+            },
+            "description": "Returns active products whose badge matches 'BEST SELLER' (case-insensitive regex)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/products/category/{{CATEGORY_SLUG}}?page=1&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "category", "{{CATEGORY_SLUG}}"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Returns active products in the given category (by slug). Paginated."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_SLUG}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_SLUG}}"]
+            },
+            "description": "Returns a single product by slug, with category populated. Used by product detail page."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mamra Almonds\",\n  \"slug\": \"mamra-almonds\",\n  \"description\": \"Hand-picked premium Mamra almonds from Kashmir. Known for their rich taste and high oil content.\",\n  \"price\": 1500,\n  \"stock\": 100,\n  \"images\": [\n    \"https://res.cloudinary.com/crunchveda/image/upload/mamra1.jpg\",\n    \"https://res.cloudinary.com/crunchveda/image/upload/mamra2.jpg\"\n  ],\n  \"category\": \"{{CATEGORY_ID}}\",\n  \"badge\": \"BEST SELLER\",\n  \"dietary\": [\"Organic\", \"Raw\", \"Gluten-Free\"],\n  \"sizePrices\": {\n    \"100g\": 350,\n    \"250g\": 800,\n    \"500g\": 1500,\n    \"1kg\": 2800\n  },\n  \"defaultSize\": \"250g\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/products",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products"]
+            },
+            "description": "Creates a new product. category must be a valid MongoDB ObjectId. Slug must be unique."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mamra Almonds – Premium Grade\",\n  \"price\": 1650,\n  \"stock\": 75,\n  \"badge\": \"ORGANIC\",\n  \"isActive\": true,\n  \"sizePrices\": {\n    \"100g\": 400,\n    \"250g\": 900,\n    \"500g\": 1650,\n    \"1kg\": 3000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_ID}}"]
+            },
+            "description": "Updates an existing product by MongoDB _id. Payload is partial — only include fields you want to change. isActive can be used to toggle visibility."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_ID}}"]
+            },
+            "description": "Permanently deletes a product by MongoDB _id. Consider setting isActive: false instead to soft-delete."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📦 Orders",
+      "item": [
+        {
+          "name": "Create Order (Customer/Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"product\": \"{{PRODUCT_ID}}\",\n      \"quantity\": 2,\n      \"price\": 1500,\n      \"size\": \"500g\"\n    }\n  ],\n  \"shippingAddress\": \"42 Baner Road, Pune, Maharashtra 411045, India\",\n  \"totalAmount\": 3000\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders"]
+            },
+            "description": "Places a new order. Verifies product stock before creating. Automatically deducts stock from each product. paymentStatus defaults to 'pending'."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Orders (Customer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/my-orders?page=1&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "my-orders"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Returns paginated order history for the currently logged-in user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Returns a specific order. Accessible by the order owner or an admin. Returns 403 if accessed by another user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders?page=1&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Admin only: returns all orders on the platform with user and product details populated."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shipped\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/status",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "status"]
+            },
+            "description": "Admin only: updates order status. Valid values: pending | confirmed | shipped | delivered | cancelled. Setting 'cancelled' returns stock. Setting 'delivered' auto-marks paymentStatus as 'paid'."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "⭐ Reviews",
+      "item": [
+        {
+          "name": "Get Reviews for a Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/reviews?product={{PRODUCT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["reviews"],
+              "query": [
+                {
+                  "key": "product",
+                  "value": "{{PRODUCT_ID}}",
+                  "description": "MongoDB ObjectId of the product"
+                }
+              ]
+            },
+            "description": "Returns all reviews for a specific product, sorted newest first. The product query param is required and must be a valid ObjectId."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Review (Private)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": \"{{PRODUCT_ID}}\",\n  \"rating\": 5,\n  \"comment\": \"Absolutely incredible taste! Fresh and crunchy. Will definitely order again.\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/reviews",
+              "host": ["{{BASE_URL}}"],
+              "path": ["reviews"]
+            },
+            "description": "Submits a review. A user can only review each product once (enforced by DB index). Automatically updates the product's average rating and count."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Review (Owner or Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/reviews/{{REVIEW_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["reviews", "{{REVIEW_ID}}"]
+            },
+            "description": "Deletes a review by ID. Only the review author or an admin can delete. Automatically recalculates the product's average rating after deletion."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🖼️ Upload",
+      "item": [
+        {
+          "name": "Upload Image to Cloudinary (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text",
+                "description": "Required in production. Bypassed in development mode."
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select an image file (jpg, png, webp, etc.) — max 5MB"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/upload/image",
+              "host": ["{{BASE_URL}}"],
+              "path": ["upload", "image"]
+            },
+            "description": "Uploads an image file to Cloudinary under the 'crunchveda' folder. Returns the secure Cloudinary URL and publicId. In development, auth middleware is bypassed. In production, requires admin JWT."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 CMS Content – Modules",
+      "item": [
+        {
+          "name": "Get All Modules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/modules",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "modules"]
+            },
+            "description": "Retrieves all CMS content modules (home, categories, products, best-seller, gifts, about-us, our-story, sustainability, contact-us, cart, saved, privacy-policy, terms-condition). On first run, seeds default configurations into MongoDB."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Module by ID (e.g. home)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/modules/home",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "modules", "home"]
+            },
+            "description": "Retrieves a specific content module by its moduleId (e.g. home, categories, best-seller, gifts, about-us, our-story, sustainability, contact-us, cart, saved). Returns all section records with fields."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Section by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/modules/home/sections/home-hero",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "modules", "home", "sections", "home-hero"]
+            },
+            "description": "Retrieves a single section from a module. Returns section data plus a 'content' key-value map parsed from all fields (convenient for frontend rendering without looping)."
+          },
+          "response": []
+        },
+        {
+          "name": "Save / Create Section (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"moduleId\": \"home\",\n  \"section\": {\n    \"id\": \"home-hero\",\n    \"title\": \"Home hero banner\",\n    \"type\": \"Hero section\",\n    \"status\": \"Published\",\n    \"fields\": [\n      {\n        \"id\": \"eyebrow\",\n        \"label\": \"Small title\",\n        \"type\": \"text\",\n        \"value\": \"CRAFTING AGRICULTURAL EXCELLENCE\"\n      },\n      {\n        \"id\": \"headline\",\n        \"label\": \"H1 headline\",\n        \"type\": \"text\",\n        \"value\": \"Premium Dry Fruits Delivered Fresh & Organic\"\n      },\n      {\n        \"id\": \"description\",\n        \"label\": \"Hero paragraph\",\n        \"type\": \"textarea\",\n        \"value\": \"Experience the pinnacle of nutrition with our hand-picked selection of gourmet dry fruits, sourced directly from the finest organic orchards across the globe.\"\n      },\n      {\n        \"id\": \"primaryCtaLabel\",\n        \"label\": \"Primary CTA label\",\n        \"type\": \"text\",\n        \"value\": \"Explore Collection\"\n      },\n      {\n        \"id\": \"primaryCtaHref\",\n        \"label\": \"Primary CTA link\",\n        \"type\": \"text\",\n        \"value\": \"/product\"\n      },\n      {\n        \"id\": \"image\",\n        \"label\": \"Hero background image\",\n        \"type\": \"image\",\n        \"value\": \"/assets/homeBannerImg.png\"\n      },\n      {\n        \"id\": \"showSection\",\n        \"label\": \"Show hero section\",\n        \"type\": \"toggle\",\n        \"value\": true\n      }\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/content/sections",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "sections"]
+            },
+            "description": "Creates a new section or updates an existing one (upsert by section.id). This is the primary CMS editor save endpoint used by the Admin Dashboard."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Section Fields (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Home hero banner\",\n  \"type\": \"Hero section\",\n  \"status\": \"Published\",\n  \"fields\": [\n    {\n      \"id\": \"eyebrow\",\n      \"label\": \"Small title\",\n      \"type\": \"text\",\n      \"value\": \"UPDATED CRAFTING AGRICULTURAL EXCELLENCE\"\n    },\n    {\n      \"id\": \"headline\",\n      \"label\": \"H1 headline\",\n      \"type\": \"text\",\n      \"value\": \"Premium Organic Dry Fruits – Farm to Table\"\n    },\n    {\n      \"id\": \"showSection\",\n      \"label\": \"Show hero section\",\n      \"type\": \"toggle\",\n      \"value\": true\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/content/modules/home/sections/home-hero",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "modules", "home", "sections", "home-hero"]
+            },
+            "description": "RESTful update: updates the section specified by :moduleId and :sectionId in the URL. The body does not need moduleId or section.id — they are inferred from the URL. Same upsert logic as POST /sections."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Section",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/modules/home/sections/home-hero",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "modules", "home", "sections", "home-hero"]
+            },
+            "description": "Removes a specific section from a module. The section is identified by :moduleId and :sectionId in the URL. This action is permanent — section must be re-created via POST /sections if needed."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏠 CMS Content – Homepage Sections",
+      "item": [
+        {
+          "name": "Get Home Hero",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/hero",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "hero"]
+            },
+            "description": "Returns the hero section for the homepage with a content key-value map (eyebrow, headline, description, primaryCtaLabel, primaryCtaHref, image, showSection)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Categories Section",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/categories",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "categories"]
+            },
+            "description": "Returns the Curated Categories carousel section data for the homepage."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Best Selling Section",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/best-selling",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "best-selling"]
+            },
+            "description": "Returns the Best Selling Products section data for the homepage."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Features Section",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/features",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "features"]
+            },
+            "description": "Returns the Feature Promise Band section (organic/quality/delivery/packing cards)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Gift Banner",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/gift-banner",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "gift-banner"]
+            },
+            "description": "Returns the Gift Banner CTA section data for the homepage."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Product Details Section",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/product-details",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "product-details"]
+            },
+            "description": "Returns the Product Details split section (Walnut & Almond features) for the homepage."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/timeline",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "timeline"]
+            },
+            "description": "Returns the Heritage Timeline section data for the homepage."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home FAQ",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/content/home/faq",
+              "host": ["{{BASE_URL}}"],
+              "path": ["content", "home", "faq"]
+            },
+            "description": "Returns the FAQ Accordion section data for the homepage."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }

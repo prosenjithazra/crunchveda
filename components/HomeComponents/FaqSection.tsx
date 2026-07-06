@@ -32,27 +32,38 @@ export default function FaqSection() {
 
   if (isLoading) return <FaqSectionSkeleton />;
 
+  const showSection = sectionData?.content?.showSection ?? true;
+  if (!showSection) return null;
+
   const handleToggle = (index: number) => {
     setActiveId(activeId === index ? null : index);
   };
 
-  const heading = sectionData?.content?.heading || "Frequently Asked Questions";
-  const faqItemsRaw = (sectionData?.content?.faqItems as string) || "";
+  const content = sectionData?.content || {};
+  const heading = content.sectionTitle || content.heading || "Frequently Asked Questions";
 
   let faqs = faqData;
-  if (faqItemsRaw && faqItemsRaw.trim()) {
-    const parsedFaqs = faqItemsRaw
-      .split("\n")
-      .map(line => {
-        const parts = line.split("|");
-        return {
-          question: parts[0]?.trim() || "",
-          answer: parts[1]?.trim() || ""
-        };
-      })
-      .filter((f): f is FaqItem => Boolean(f.question && f.answer));
-    if (parsedFaqs.length > 0) {
-      faqs = parsedFaqs;
+  if (Array.isArray(content.faqs) && content.faqs.length > 0) {
+    faqs = content.faqs.map((f: any) => ({
+      question: f.question || "",
+      answer: f.answer || ""
+    }));
+  } else {
+    const faqItemsRaw = (content.faqItems as string) || "";
+    if (faqItemsRaw && faqItemsRaw.trim()) {
+      const parsedFaqs = faqItemsRaw
+        .split("\n")
+        .map(line => {
+          const parts = line.split("|");
+          return {
+            question: parts[0]?.trim() || "",
+            answer: parts[1]?.trim() || ""
+          };
+        })
+        .filter((f): f is FaqItem => Boolean(f.question && f.answer));
+      if (parsedFaqs.length > 0) {
+        faqs = parsedFaqs;
+      }
     }
   }
 
@@ -84,8 +95,10 @@ export default function FaqSection() {
                   </Box>
                 </button>
                 <Box className="faq_content_wrapper">
-                  <Box className="faq_content">
-                    {item.answer}
+                  <Box className="faq_content_subwrapper">
+                    <Box className="faq_content">
+                      {item.answer}
+                    </Box>
                   </Box>
                 </Box>
               </Box>

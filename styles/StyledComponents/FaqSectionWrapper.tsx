@@ -105,15 +105,18 @@ export const FaqSectionWrapper = styled("section")`
   }
 
   .faq_content_wrapper {
-    max-height: 0;
-    opacity: 0;
+    display: grid;
+    grid-template-rows: 0fr;
     overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+    transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .faq_item.active .faq_content_wrapper {
-    max-height: 500px;
-    opacity: 1;
+    grid-template-rows: 1fr;
+  }
+
+  .faq_content_subwrapper {
+    overflow: hidden;
   }
 
   .faq_content {
