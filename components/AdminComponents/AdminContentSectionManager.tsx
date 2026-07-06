@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import AdminBreadcrumb from "./AdminBreadcrumb";
 import AdminPageHeader from "./AdminPageHeader";
-import { SectionFieldEditor, FeatureItemsEditor, TimelineItemsEditor, FaqItemsEditor, InstagramReelsEditor, PhilosophyItemsEditor } from "./AdminFormFields";
+import { SectionFieldEditor, FeatureItemsEditor, TimelineItemsEditor, FaqItemsEditor, InstagramReelsEditor, PhilosophyItemsEditor, type PhilosophyItem } from "./AdminFormFields";
 import CategoryCardsEditor from "./CategoryCardsEditor";
 import { adminModules } from "@/json/mock/admin";
 
@@ -28,7 +28,7 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
   const [timelineItems, setTimelineItems] = React.useState<Array<{ year: string; title: string; description: string; image?: string; _id?: string }>>([])
   const [faqItems, setFaqItems] = React.useState<Array<{ question: string; answer: string }>>([]);
   const [reelsItems, setReelsItems] = React.useState<Array<{ image: string; link: string; alt: string }>>([]);
-  const [philosophyItems, setPhilosophyItems] = React.useState<Array<{ title: string; description: string }>>([]);;
+  const [philosophyItems, setPhilosophyItems] = React.useState<PhilosophyItem[]>([]);
 
   const [prevParams, setPrevParams] = React.useState({ moduleId, sectionId });
     if (moduleId !== prevParams.moduleId || sectionId !== prevParams.sectionId) {
@@ -144,12 +144,19 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
 
           const cardsField = philosophySection.fields?.find(f => f.id === "cards");
           if (cardsField && Array.isArray(cardsField.value) && (cardsField.value as any[]).length > 0) {
-            setPhilosophyItems(cardsField.value as Array<{ title: string; description: string }>);
+            setPhilosophyItems(
+              (cardsField.value as any[]).map((item: any) => ({
+                icon: item.icon || "🌿",
+                title: item.title || "",
+                description: item.description || "",
+                _id: item._id,
+              }))
+            );
           } else {
             setPhilosophyItems([
-              { title: "Biodynamic Balance", description: "Aligning harvests close with celestial cycles to ensure the highest potential energy and energetic purity." },
-              { title: "Pure Sourcing", description: "Only 2% of global harvests meet our criteria for soil cleanliness, mineral depth, and certified pure origin." },
-              { title: "Artisanal Curation", description: "Every batch is hand-inspected, air-cured slowly, and packed in protective glass to preserve the sensory richness." }
+              { icon: "🌿", title: "Biodynamic Balance", description: "Aligning harvests close with celestial cycles to ensure the highest potential energy and energetic purity." },
+              { icon: "🌿", title: "Pure Sourcing", description: "Only 2% of global harvests meet our criteria for soil cleanliness, mineral depth, and certified pure origin." },
+              { icon: "🌿", title: "Artisanal Curation", description: "Every batch is hand-inspected, air-cured slowly, and packed in protective glass to preserve the sensory richness." }
             ]);
           }
         })

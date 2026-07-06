@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService, UserProfile } from "../services/authService";
 import { useEffect } from "react";
@@ -5,9 +6,11 @@ import { useEffect } from "react";
 export function useRegister() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: Record<string, unknown>) => authService.register(payload),
+    mutationFn: (payload: Record<string, unknown>) =>
+      authService.register(payload),
     onSuccess: (data) => {
-      const token = data.token || data.tocken || data.data?.accessToken || data.data?.token;
+      const token =
+        data.token || data.tocken || data.data?.accessToken || data.data?.token;
       let user = data.data?.user || (data.data?.email ? data.data : null);
       if (user) {
         user = { ...user, id: user.id || user._id };
@@ -32,9 +35,11 @@ export function useRegister() {
 export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (payload: Record<string, unknown>) => authService.login(payload),
+    mutationFn: (payload: Record<string, unknown>) =>
+      authService.login(payload),
     onSuccess: (data) => {
-      const token = data.token || data.tocken || data.data?.accessToken || data.data?.token;
+      const token =
+        data.token || data.tocken || data.data?.accessToken || data.data?.token;
       let user = data.data?.user || (data.data?.email ? data.data : null);
       if (user) {
         user = { ...user, id: user.id || user._id };
@@ -89,11 +94,16 @@ export function useGetMe(token: string, enabled = true) {
 }
 
 export function useUser() {
-  const { data: user, isLoading, refetch } = useQuery<UserProfile | null>({
+  const {
+    data: user,
+    isLoading,
+    refetch,
+  } = useQuery<UserProfile | null>({
     queryKey: ["user"],
     queryFn: async () => {
       if (typeof window === "undefined") return null;
-      const token = localStorage.getItem("token") || localStorage.getItem("tocken");
+      const token =
+        localStorage.getItem("token") || localStorage.getItem("tocken");
       if (!token) return null;
 
       try {
@@ -108,10 +118,10 @@ export function useUser() {
         console.error("useUser fetch failed:", err);
         // Handle expired token
         if (
-          err.message && 
-          (err.message.includes("401") || 
-           err.message.toLowerCase().includes("unauthorized") ||
-           err.message.toLowerCase().includes("jwt expired"))
+          err.message &&
+          (err.message.includes("401") ||
+            err.message.toLowerCase().includes("unauthorized") ||
+            err.message.toLowerCase().includes("jwt expired"))
         ) {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -153,25 +163,39 @@ export function useUser() {
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { name: string; email: string; phone: string; avatar?: string }) => {
-      const token = typeof window !== "undefined" ? (localStorage.getItem("token") || localStorage.getItem("tocken")) : null;
+    mutationFn: async (payload: {
+      name: string;
+      email: string;
+      phone: string;
+      avatar?: string;
+    }) => {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("token") || localStorage.getItem("tocken")
+          : null;
       if (!token) throw new Error("No authorization token found");
 
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/auth/me`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/auth/me`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
           },
-          body: JSON.stringify(payload),
-        });
+        );
         if (res.ok) {
           const data = await res.json();
           return data.data;
         }
       } catch (e) {
-        console.warn("Could not connect to update profile API, using local simulation:", e);
+        console.warn(
+          "Could not connect to update profile API, using local simulation:",
+          e,
+        );
       }
       return payload; // Fallback to local update
     },
@@ -205,4 +229,3 @@ export function useInitializeAuth() {
     }
   }, [queryClient]);
 }
-

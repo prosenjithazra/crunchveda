@@ -19,6 +19,7 @@ export type AuthResponse = {
   tocken?: string;
   data: {
     id?: string;
+    _id?: string;
     name?: string;
     email?: string;
     role?: "admin" | "customer";
@@ -29,6 +30,7 @@ export type AuthResponse = {
     tocken?: string;
     user?: {
       id: string;
+      _id?: string;
       name: string;
       email: string;
       role: "admin" | "customer";

@@ -19,6 +19,8 @@ import { DryFruitProduct } from "@/json/mock/dryFruits";
 import { toast } from "react-hot-toast";
 import { getBadgeInfo } from "@/services/productService";
 import { cartService } from "@/services/cartService";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
 
 interface Props {
   product: DryFruitProduct;
@@ -29,6 +31,12 @@ export default function ProductDetailsMain({ product }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mainRef = useRef<any>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const router = useRouter();
+  const { cartItems } = useCart();
+
+  const isInCart = cartItems.some(
+    (item) => item.id === (product._id || product.id) && item.size === selectedSize
+  );
 
   const sizes = Object.keys(product.sizePrices);
   const [selectedSize, setSelectedSize] = useState(product.defaultSize);
@@ -50,28 +58,28 @@ export default function ProductDetailsMain({ product }: Props) {
     try {
       const currentCart = await cartService.getCart();
       const existing = currentCart.find(
-        (item) => item.id === product._id && item.size === selectedSize
+        (item) => item.id === (product._id || product.id) && item.size === selectedSize
       );
       const existingQty = existing ? existing.quantity : 0;
       const newQty = existingQty + quantity;
 
-      const updatedQty = await cartService.updateItem(product._id, newQty, selectedSize, price);
+      const updatedQty = await cartService.updateItem(product._id || product.id, newQty, selectedSize, price);
 
       let updatedCart = [...currentCart];
       if (existing) {
         updatedCart = currentCart.map((item) =>
-          item.id === product._id && item.size === selectedSize
+          item.id === (product._id || product.id) && item.size === selectedSize
             ? { ...item, quantity: updatedQty }
             : item
         );
       } else {
         updatedCart.push({
-          id: product._id,
+          id: product._id || product.id,
           name: product.name,
           badge: product.badge || "Organic Collection",
           price,
           quantity: updatedQty,
-          image: product.images?.[0] || product.image || "/assets/images/placeholder.jpg",
+          image: product.image || "/assets/images/placeholder.jpg",
           size: selectedSize,
         });
       }
@@ -292,16 +300,29 @@ export default function ProductDetailsMain({ product }: Props) {
                       <PlusIcon />
                     </IconButton>
                   </Box>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disableRipple
-                    onClick={handleAddToCart}
-                    disabled={product.stock !== undefined && product.stock <= 0}
-                    startIcon={!(product.stock !== undefined && product.stock <= 0) && <CartIcon iconColor='white' />}
-                  >
-                    {product.stock !== undefined && product.stock <= 0 ? 'Sold Out' : 'Add to Cart'}
-                  </Button>
+                  {isInCart ? (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      disableRipple
+                      onClick={() => router.push("/cart")}
+                      startIcon={<CartIcon iconColor='white' />}
+                      sx={{ bgcolor: "#8F5E15", "&:hover": { bgcolor: "#764D0F" } }}
+                    >
+                      Go to Cart
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disableRipple
+                      onClick={handleAddToCart}
+                      disabled={product.stock !== undefined && product.stock <= 0}
+                      startIcon={!(product.stock !== undefined && product.stock <= 0) && <CartIcon iconColor='white' />}
+                    >
+                      {product.stock !== undefined && product.stock <= 0 ? 'Sold Out' : 'Add to Cart'}
+                    </Button>
+                  )}
                 </Box>
 
                 {/* WhatsApp CTA */}

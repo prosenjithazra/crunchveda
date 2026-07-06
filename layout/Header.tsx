@@ -35,6 +35,7 @@ import WhatsAppIcon from "@/ui/Icons/WhatsAppIcon";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser, useLogout } from "@/hooks/useAuth";
 import { cartService } from "@/services/cartService";
+import { useCart } from "@/contexts/CartContext";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -76,6 +77,7 @@ export function Header() {
   const [scrollDir, setScrollDir] = useState<"up" | "down" | "top">("top");
 
   const { user } = useUser();
+  const { cartCount } = useCart();
   const logoutMutation = useLogout();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -119,37 +121,6 @@ export function Header() {
       label: "Contact",
     },
   ];
-
-  const [cartCount, setCartCount] = useState(0);
-
-  // Sync cart item count
-  useEffect(() => {
-    let active = true;
-
-    const fetchCount = async () => {
-      try {
-        const items = await cartService.getCart();
-        if (!active) return;
-        const total = items.reduce((sum, item) => sum + item.quantity, 0);
-        setCartCount(total);
-      } catch (err) {
-        console.error("Failed to load header cart count:", err);
-      }
-    };
-
-    fetchCount();
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("cartUpdated", fetchCount);
-    }
-
-    return () => {
-      active = false;
-      if (typeof window !== "undefined") {
-        window.removeEventListener("cartUpdated", fetchCount);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;

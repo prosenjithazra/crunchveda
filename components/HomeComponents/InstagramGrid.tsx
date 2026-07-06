@@ -219,15 +219,17 @@ export default function InstagramGrid() {
         onClose={() => setActiveReel(null)}
         maxWidth="xs"
         fullWidth
-        PaperProps={{
-          sx: {
-            bgcolor: "#000",
-            borderRadius: 3,
-            overflow: "hidden",
-            border: "1px solid rgba(255,255,255,0.08)",
-            boxShadow: "0 32px 80px rgba(0,0,0,0.7)",
-            m: 2,
-            position: "relative"
+        slotProps={{
+          paper: {
+            sx: {
+              bgcolor: "#000",
+              borderRadius: 3,
+              overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.7)",
+              m: 2,
+              position: "relative"
+            }
           }
         }}
       >

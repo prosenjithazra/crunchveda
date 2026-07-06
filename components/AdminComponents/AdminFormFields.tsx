@@ -612,7 +612,7 @@ export function TimelineItemsEditor({
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
           Timeline Milestones
         </Typography>
@@ -635,8 +635,8 @@ export function TimelineItemsEditor({
           {/* Card Header */}
           <Stack
             direction="row"
-            alignItems="center"
             sx={{
+              alignItems: "center",
               px: 2,
               py: 1.2,
               bgcolor: "action.hover",
@@ -851,7 +851,7 @@ export function FaqItemsEditor({
 
 type ReelItem = { image: string; link: string; alt: string };
 
-type PhilosophyItem = { icon: string; title: string; description: string; _id?: string };
+export type PhilosophyItem = { icon: string; title: string; description: string; _id?: string };
 
 export function PhilosophyItemsEditor({
   value,
@@ -887,7 +887,7 @@ export function PhilosophyItemsEditor({
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
           Philosophy Cards
         </Typography>
@@ -910,8 +910,8 @@ export function PhilosophyItemsEditor({
           {/* Card Header */}
           <Stack
             direction="row"
-            alignItems="center"
             sx={{
+              alignItems: "center",
               px: 2,
               py: 1.2,
               bgcolor: "action.hover",
@@ -975,12 +975,14 @@ export function PhilosophyItemsEditor({
               value={item.icon}
               onChange={(e) => handleChange(idx, "icon", e.target.value)}
               placeholder='e.g. 🌿 or https://cdn.../leaf.svg (leave blank for default)'
-              InputProps={{
-                startAdornment: item.icon && !item.icon.startsWith("http") ? (
-                  <Box component="span" sx={{ mr: 1, fontSize: 18 }}>
-                    {item.icon}
-                  </Box>
-                ) : undefined,
+              slotProps={{
+                input: {
+                  startAdornment: item.icon && !item.icon.startsWith("http") ? (
+                    <Box component="span" sx={{ mr: 1, fontSize: 18 }}>
+                      {item.icon}
+                    </Box>
+                  ) : undefined,
+                }
               }}
             />
 

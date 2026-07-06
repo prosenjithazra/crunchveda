@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { toast } from "react-hot-toast";
 
 import { cartService, type CartItem } from "@/services/cartService";
+import { mapApiProductToUi } from "@/services/productService";
 
 interface UpsellItem {
   id: string;
@@ -29,49 +30,63 @@ export default function CartMain() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    cartService.getCart().then((items) => {
-      if (!active) return;
-      // If DB/LocalStorage is empty, seed defaults
+  const loadCart = useCallback(async () => {
+    try {
+      const items = await cartService.getCart();
       if (items.length === 0) {
-        const defaultItems: CartItem[] = [
-          {
-            id: "strawberries",
-            name: "Artisanal Forest Strawberries",
-            badge: "SEASONAL SELECTION",
-            price: 18.0,
-            quantity: 2,
-            image: assets.strawberries,
-            size: "250g",
-          },
-          {
-            id: "olive_oil",
-            name: "Cold-Pressed Heritage Olive Oil",
-            badge: "ESTATE BOTTLED",
-            price: 45.0,
-            quantity: 1,
-            image: assets.oliveOil,
-            size: "500ml",
-          },
-        ];
-        setCartItems(defaultItems);
-        cartService.saveLocalFallback(defaultItems);
-        // Sync defaults to DB asynchronously
-        defaultItems.forEach(item => {
-          cartService.updateItem(item.id, item.quantity, item.size, item.price);
-        });
+        const token = typeof window !== "undefined" ? (localStorage.getItem("token") || localStorage.getItem("tocken")) : null;
+        if (!token) {
+          const defaultItems: CartItem[] = [
+            {
+              id: "strawberries",
+              name: "Artisanal Forest Strawberries",
+              badge: "SEASONAL SELECTION",
+              price: 18.0,
+              quantity: 2,
+              image: assets.strawberries,
+              size: "250g",
+            },
+            {
+              id: "olive_oil",
+              name: "Cold-Pressed Heritage Olive Oil",
+              badge: "ESTATE BOTTLED",
+              price: 45.0,
+              quantity: 1,
+              image: assets.oliveOil,
+              size: "500ml",
+            },
+          ];
+          setCartItems(defaultItems);
+          cartService.saveLocalFallback(defaultItems);
+          // Sync defaults to DB asynchronously
+          defaultItems.forEach(item => {
+            cartService.updateItem(item.id, item.quantity, item.size, item.price);
+          });
+        } else {
+          setCartItems([]);
+        }
       } else {
         setCartItems(items);
         cartService.saveLocalFallback(items);
       }
+    } catch (error) {
+      console.error("CartMain: Failed to load cart:", error);
+    } finally {
       setIsLoaded(true);
-    });
-
-    return () => {
-      active = false;
-    };
+    }
   }, []);
+
+  useEffect(() => {
+    loadCart();
+  }, [loadCart]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.addEventListener("cartUpdated", loadCart);
+    return () => {
+      window.removeEventListener("cartUpdated", loadCart);
+    };
+  }, [loadCart]);
 
   const saveCart = (items: CartItem[]) => {
     setCartItems(items);

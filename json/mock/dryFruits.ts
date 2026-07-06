@@ -2,6 +2,7 @@ import { assets } from "@/json/assest";
 
 export interface DryFruitProduct {
   id: string;
+  _id?: string;
   name: string;
   category: string;
   rating: number;

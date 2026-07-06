@@ -283,6 +283,7 @@ export function mapApiProductToUi(apiProd: Product): DryFruitProduct {
 
   return {
     id,
+    _id: apiProd._id,
     name: apiProd.name,
     category: categoryName,
     rating: apiProd.rating?.number ?? apiProd.ratings?.average ?? 5.0,

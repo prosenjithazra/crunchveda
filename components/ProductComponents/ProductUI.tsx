@@ -3,7 +3,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
 import {
   Box,
   Container,
@@ -46,6 +47,12 @@ function ProductCard({
     : sizes[0] ?? "";
   const [selectedSize, setSelectedSize] = useState(validDefaultSize);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const router = useRouter();
+  const { cartItems } = useCart();
+
+  const isInCart = cartItems.some(
+    (item) => item.id === (product._id || product.id) && item.size === selectedSize
+  );
 
   // Safely get price — fall back to first value if selectedSize isn't in map
   const price = product.sizePrices[selectedSize] ?? Object.values(product.sizePrices)[0] ?? 0;
@@ -118,13 +125,24 @@ function ProductCard({
       <Box className="card_footer_row">
         <Box className="card_price">${price.toFixed(2)}</Box>
         <Box className="card_actions">
-          <button
-            className="action_btn btn_cart"
-            onClick={() => onAddToCart(product, selectedSize, price)}
-            title="Add to Cart"
-          >
-            <CartIcon />
-          </button>
+          {isInCart ? (
+            <button
+              className="action_btn btn_cart active"
+              onClick={() => router.push("/cart")}
+              title="Go to Cart"
+              style={{ backgroundColor: "#8F5E15", color: "white" }}
+            >
+              <CartIcon iconColor="white" />
+            </button>
+          ) : (
+            <button
+              className="action_btn btn_cart"
+              onClick={() => onAddToCart(product, selectedSize, price)}
+              title="Add to Cart"
+            >
+              <CartIcon />
+            </button>
+          )}
           <button
             className="action_btn btn_whatsapp"
             onClick={() => onWhatsAppInquiry(product, selectedSize)}
@@ -256,23 +274,23 @@ export default function ProductUI() {
     try {
       const currentCart = await cartService.getCart();
       const existing = currentCart.find(
-        (item) => item.id === product.id && item.size === size
+        (item) => item.id === (product._id || product.id) && item.size === size
       );
       const existingQty = existing ? existing.quantity : 0;
       const newQty = existingQty + 1;
 
-      const updatedQty = await cartService.updateItem(product.id, newQty, size, price);
+      const updatedQty = await cartService.updateItem(product._id || product.id, newQty, size, price);
 
       let updatedCart = [...currentCart];
       if (existing) {
         updatedCart = currentCart.map((item) =>
-          item.id === product.id && item.size === size
+          item.id === (product._id || product.id) && item.size === size
             ? { ...item, quantity: updatedQty }
             : item
         );
       } else {
         updatedCart.push({
-          id: product.id,
+          id: product._id || product.id,
           name: product.name,
           badge: product.badge || "Organic Collection",
           price,

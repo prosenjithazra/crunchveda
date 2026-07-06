@@ -39,27 +39,74 @@ const getHeaders = () => {
 export const cartService = {
   getCart: async (): Promise<CartItem[]> => {
     try {
-      const res = await fetch("/api/products/cart", {
-        headers: getHeaders(),
-        cache: "no-store",
-      });
-      if (!res.ok) throw new Error("Failed to fetch cart");
-      const json = await res.json();
-      if (json.success && Array.isArray(json.data)) {
-        return json.data.map((item: any) => ({
-          id: item.productId?._id || item.productId,
-          name: item.productId?.name || "Premium Product",
-          badge: item.productId?.badge || "CRUNCHVEDA SPECIAL",
-          price: item.price || item.productId?.price || 0,
-          quantity: item.quantity,
-          image: item.productId?.images?.[0] || item.productId?.image || "/assets/images/placeholder.jpg",
-          size: item.size || "Default",
-        }));
+      if (typeof window === "undefined") return [];
+
+      const token = localStorage.getItem("token") || localStorage.getItem("tocken");
+      if (token) {
+        const res = await fetch("/api/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data?.user?.cartItems) {
+            const dbItems = json.data.user.cartItems;
+            const resolved = await Promise.all(
+              dbItems.map(async (item: any) => {
+                let productData = item.product;
+                // If product is only ID, fetch it
+                if (typeof productData === "string") {
+                  try {
+                    const productRes = await fetch(`/api/products/${productData}`, { cache: "no-store" });
+                    if (productRes.ok) {
+                      const pJson = await productRes.json();
+                      productData = pJson?.data?.product || pJson?.data;
+                    }
+                  } catch (e) {
+                    console.error("Failed to resolve product data for ID:", productData, e);
+                  }
+                }
+
+                if (productData && typeof productData === "object") {
+                  return {
+                    id: productData._id || item.product,
+                    name: productData.name || "Premium Product",
+                    badge: productData.badge || "Organic Collection",
+                    price: item.price || productData.price || 0,
+                    quantity: item.quantity,
+                    image: productData.images?.[0] || productData.image || "/assets/images/placeholder.jpg",
+                    size: item.size || productData.defaultSize || "500g",
+                  };
+                }
+
+                return {
+                  id: item.product,
+                  name: "Premium Product",
+                  badge: "CRUNCHVEDA SPECIAL",
+                  price: item.price || 0,
+                  quantity: item.quantity,
+                  image: "/assets/images/placeholder.jpg",
+                  size: item.size || "Default",
+                };
+              })
+            );
+            return resolved;
+          }
+        }
+      }
+
+      // Guest fallback
+      const local = localStorage.getItem("cartItems");
+      if (local) {
+        try {
+          return JSON.parse(local);
+        } catch {}
       }
       return [];
     } catch (error) {
       console.error("Failed to load DB cart, falling back to local storage", error);
-      // Fallback to local storage if API is offline
       if (typeof window !== "undefined") {
         const local = localStorage.getItem("cartItems");
         if (local) {
@@ -74,7 +121,7 @@ export const cartService = {
 
   updateItem: async (productId: string, quantity: number, size?: string, price?: number): Promise<number> => {
     try {
-      const res = await fetch(`/api/products/cart/${productId}`, {
+      const res = await fetch(`/api/cart/${productId}`, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify({ quantity, size, price }),
@@ -98,7 +145,7 @@ export const cartService = {
   removeItem: async (productId: string, size?: string): Promise<void> => {
     try {
       const query = size ? `?size=${encodeURIComponent(size)}` : "";
-      await fetch(`/api/products/cart/${productId}${query}`, {
+      await fetch(`/api/cart/${productId}${query}`, {
         method: "DELETE",
         headers: getHeaders(),
       });
@@ -116,7 +163,6 @@ export const cartService = {
   saveLocalFallback: (items: CartItem[]) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("cartItems", JSON.stringify(items));
-      window.dispatchEvent(new Event("cartUpdated"));
     }
   }
 };

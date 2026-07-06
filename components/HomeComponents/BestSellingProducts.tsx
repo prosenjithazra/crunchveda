@@ -17,6 +17,8 @@ import { mapApiProductToUi, getBadgeInfo } from '@/services/productService';
 import { BestSellingProductsSkeleton } from '../Loader/SectionSkeletons';
 import { toast } from 'react-hot-toast';
 import { cartService } from '@/services/cartService';
+import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
 
 const defaultProducts = [
   {
@@ -72,6 +74,8 @@ const defaultProducts = [
 export default function BestSellingProducts() {
   const { data: sectionData, isLoading: sectionLoading } = useHomeSection("best-selling");
   const { data: bestsellersData, isLoading: bestsellersLoading } = useBestsellers();
+  const router = useRouter();
+  const { cartItems } = useCart();
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
 
   if (sectionLoading || bestsellersLoading) return <BestSellingProductsSkeleton />;
@@ -186,6 +190,9 @@ export default function BestSellingProducts() {
     const priceVal = product.sizePrices ? (product.sizePrices[selectedSize] ?? Object.values(product.sizePrices)[0] ?? 0) : null;
     const formattedPrice = priceVal !== null ? `₹${priceVal.toFixed(2)}` : product.price;
     const isOutOfStock = product.stock !== undefined && product.stock <= 0;
+    const isInCart = cartItems.some(
+      (item) => item.id === product.id && item.size === selectedSize
+    );
 
     return (
       <Box className='product_card'>
@@ -235,16 +242,29 @@ export default function BestSellingProducts() {
         </Box>
 
         <Box className='card_buttons'>
-          <Button
-            variant='contained'
-            className='add_cart_btn'
-            startIcon={!isOutOfStock && <ShopingBagIcon />}
-            onClick={() => handleAddToCart(product.id, product.title, selectedSize, priceVal || 0, product.image, product.badge?.text || "")}
-            disableRipple
-            disabled={isOutOfStock}
-          >
-            {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
-          </Button>
+          {isInCart ? (
+            <Button
+              variant='contained'
+              className='add_cart_btn'
+              sx={{ bgcolor: "#8F5E15", "&:hover": { bgcolor: "#764D0F" } }}
+              startIcon={<ShopingBagIcon />}
+              onClick={() => router.push("/cart")}
+              disableRipple
+            >
+              Go to Cart
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              className='add_cart_btn'
+              startIcon={!isOutOfStock && <ShopingBagIcon />}
+              onClick={() => handleAddToCart(product.id, product.title, selectedSize, priceVal || 0, product.image, product.badge?.text || "")}
+              disableRipple
+              disabled={isOutOfStock}
+            >
+              {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
+            </Button>
+          )}
           <Button
             variant='contained'
             className='whatsapp_btn'
