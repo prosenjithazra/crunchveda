@@ -24,20 +24,6 @@ const readLocalData = () => {
   return null;
 };
 
-const writeLocalData = (data: any) => {
-  try {
-    const dirPath = path.dirname(jsonFilePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-    fs.writeFileSync(jsonFilePath, JSON.stringify(data, null, 2), "utf8");
-    return true;
-  } catch (error) {
-    console.error("Failed to write local about-us JSON:", error);
-    return false;
-  }
-};
-
 const tryFetch = async (url: string, options?: RequestInit) => {
   try {
     const res = await fetch(url, { ...options, cache: "no-store" });
@@ -48,41 +34,25 @@ const tryFetch = async (url: string, options?: RequestInit) => {
   }
 };
 
-const mergeLocalRecords = (backendData: any, localData: any) => {
-  if (!backendData || !localData) return backendData;
-  const mergedRecords = [...(backendData.records || [])];
-  
-  if (localData.records) {
-    for (const localRec of localData.records) {
-      const idx = mergedRecords.findIndex((r: any) => r.id === localRec.id);
-      if (idx !== -1) {
-        mergedRecords[idx] = { ...mergedRecords[idx], ...localRec };
-      } else {
-        mergedRecords.push(localRec);
-      }
-    }
-  }
-  return { ...backendData, records: mergedRecords };
+const isSuccessResponse = (response: any) => {
+  return (response?.success === true || response?.status === "success") && response?.data;
 };
 
 export async function GET() {
-  const localJson = readLocalData();
-
   // 1. Try direct local Express backend /about-us
   const localDirectRes = await tryFetch(`${LOCAL_BACKEND}/about-us`);
-  if (localDirectRes?.success && localDirectRes?.data) {
-    const merged = mergeLocalRecords(localDirectRes.data, localJson);
-    return NextResponse.json({ success: true, data: merged });
+  if (isSuccessResponse(localDirectRes)) {
+    return NextResponse.json(localDirectRes);
   }
 
   // 2. Try direct remote Express backend /about-us
   const remoteDirectRes = await tryFetch(`${REMOTE_BACKEND}/about-us`);
-  if (remoteDirectRes?.success && remoteDirectRes?.data) {
-    const merged = mergeLocalRecords(remoteDirectRes.data, localJson);
-    return NextResponse.json({ success: true, data: merged });
+  if (isSuccessResponse(remoteDirectRes)) {
+    return NextResponse.json(remoteDirectRes);
   }
 
   // 3. Fallback to local JSON file
+  const localJson = readLocalData();
   if (localJson) {
     return NextResponse.json({ success: true, data: localJson });
   }
@@ -107,17 +77,6 @@ export async function PUT(request: Request) {
     return NextResponse.json({ success: false, message: "Section data with ID is required" }, { status: 400 });
   }
 
-  const options: RequestInit = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(authorization ? { Authorization: authorization } : {}),
-    },
-    body: JSON.stringify({ moduleId: "about-us", section }),
-  };
-
-  let savedToBackend = false;
-
   // Try saving to backend `/api/about-us` section endpoints if matching
   // Let's resolve the specific endpoint slug
   let backendSlug = "";
@@ -127,48 +86,55 @@ export async function PUT(request: Request) {
   else if (section.id === "about-quote") backendSlug = "quote";
   else if (section.id === "about-charter") backendSlug = "charter";
 
-  if (backendSlug) {
-    // Map section fields to body format
-    const payload: Record<string, any> = {};
-    section.fields.forEach((f: any) => {
-      payload[f.id] = f.value;
-    });
-
-    const putOptions: RequestInit = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(authorization ? { Authorization: authorization } : {}),
-      },
-      body: JSON.stringify(payload),
-    };
-
-    const localPutRes = await tryFetch(`${LOCAL_BACKEND}/about-us/${backendSlug}`, putOptions);
-    if (localPutRes?.status === "success") {
-      savedToBackend = true;
-    } else {
-      const remotePutRes = await tryFetch(`${REMOTE_BACKEND}/about-us/${backendSlug}`, putOptions);
-      if (remotePutRes?.status === "success") {
-        savedToBackend = true;
-      }
-    }
+  if (!backendSlug) {
+    return NextResponse.json(
+      { success: false, message: `Unsupported about-us section: ${section.id}` },
+      { status: 400 }
+    );
   }
 
-  // Save locally in Next.js workspace to persist edits
-  const localJson = readLocalData() || { id: "about-us", title: "About Us Page", records: [] };
-  if (!localJson.records) localJson.records = [];
-  const recordIndex = localJson.records.findIndex((r: any) => r.id === section.id);
+  // Map CMS record fields to the documented section update payloads.
+  const payload: Record<string, any> = {};
+  section.fields.forEach((f: any) => {
+    payload[f.id] = f.value;
+  });
+
+  if (backendSlug === "banner") {
+    payload.bannerLabel = payload.eyebrow || "";
+    payload.bannerTitle = payload.headline || "";
+    payload.bannerDescription = payload.description || "";
+    payload.bannerImage = payload.image || "";
+    delete payload.eyebrow;
+    delete payload.headline;
+    delete payload.description;
+    delete payload.image;
+  }
+
+  const putOptions: RequestInit = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...(authorization ? { Authorization: authorization } : {}),
+    },
+    body: JSON.stringify(payload),
+  };
+
+  const localPutRes = await tryFetch(`${LOCAL_BACKEND}/about-us/${backendSlug}`, putOptions);
+  const remotePutRes = localPutRes ? null : await tryFetch(`${REMOTE_BACKEND}/about-us/${backendSlug}`, putOptions);
+  const backendRes = localPutRes || remotePutRes;
+
+  if (!(backendRes?.status === "success" || backendRes?.success === true)) {
+    return NextResponse.json(
+      { success: false, message: `Backend failed to save ${section.title}. The public page was not updated.` },
+      { status: 502 }
+    );
+  }
+
   section.updatedAt = new Date().toISOString().slice(0, 10);
-  if (recordIndex !== -1) {
-    localJson.records[recordIndex] = { ...localJson.records[recordIndex], ...section };
-  } else {
-    localJson.records.push(section);
-  }
-  writeLocalData(localJson);
 
   return NextResponse.json({
     success: true,
     data: section,
-    savedToBackend
+    savedToBackend: true
   });
 }

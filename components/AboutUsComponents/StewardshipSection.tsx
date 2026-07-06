@@ -36,12 +36,12 @@ export default function StewardshipSection({ data }: StewardshipSectionProps) {
 
   if (data) {
     if (data.showSection === false) return null;
-    eyebrow = data.eyebrow || eyebrow;
-    heading = data.heading || heading;
-    description = data.description || description;
-    quote = data.quote || quote;
-    badgeNumber = data.badgeNumber || badgeNumber;
-    badgeText = data.badgeText || badgeText;
+    eyebrow = data.eyebrow ?? eyebrow;
+    heading = data.heading ?? heading;
+    description = data.description ?? description;
+    quote = data.quote ?? quote;
+    badgeNumber = data.badgeNumber ?? badgeNumber;
+    badgeText = data.badgeText ?? badgeText;
     image = data.image || image;
   } else {
     const rootsRecord = moduleData?.records?.find(r => r.id === "about-stewardship" || r.id === "about-roots");

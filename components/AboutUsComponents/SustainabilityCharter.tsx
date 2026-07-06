@@ -58,11 +58,11 @@ export default function SustainabilityCharter({ data }: SustainabilityCharterPro
 
   if (data) {
     if (data.showSection === false) return null;
-    heading = data.heading || heading;
-    description = data.description || description;
-    reportLabel = data.reportLabel || reportLabel;
-    reportHref = data.reportHref || reportHref;
-    chartersRaw = data.charters || "";
+    heading = data.heading ?? heading;
+    description = data.description ?? description;
+    reportLabel = data.reportLabel ?? reportLabel;
+    reportHref = data.reportHref ?? reportHref;
+    chartersRaw = data.charters ?? "";
   } else {
     const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
     const showSectionField = charterRecord?.fields?.find(f => f.id === "showSection");
@@ -81,7 +81,7 @@ export default function SustainabilityCharter({ data }: SustainabilityCharterPro
     chartersRaw = getFieldValue("charters", "");
   }
 
-  let charters = defaultCharters;
+  let charters = data ? [] : defaultCharters;
   if (chartersRaw && chartersRaw.trim()) {
     const lines = chartersRaw.split("\n").filter(Boolean);
     charters = lines.map((line, idx) => {

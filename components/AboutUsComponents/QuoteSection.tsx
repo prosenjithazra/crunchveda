@@ -24,8 +24,8 @@ export default function QuoteSection({ data }: QuoteSectionProps) {
 
   if (data) {
     if (data.showSection === false) return null;
-    quote = data.quote || quote;
-    author = data.author || author;
+    quote = data.quote ?? quote;
+    author = data.author ?? author;
   } else {
     const quoteRecord = moduleData?.records?.find(r => r.id === "about-quote");
     const showSectionField = quoteRecord?.fields?.find(f => f.id === "showSection");

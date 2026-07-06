@@ -11,12 +11,67 @@ import { useRouter } from "next/navigation";
 import AdminBreadcrumb from "./AdminBreadcrumb";
 import AdminPageHeader from "./AdminPageHeader";
 import { SectionFieldEditor, FeatureItemsEditor, TimelineItemsEditor, FaqItemsEditor, InstagramReelsEditor, PhilosophyItemsEditor, type PhilosophyItem } from "./AdminFormFields";
-import CategoryCardsEditor from "./CategoryCardsEditor";
 import { adminModules } from "@/json/mock/admin";
 
 type AdminContentSectionManagerProps = {
   moduleId: string;
   sectionId: string;
+};
+
+type JourneyCardItem = {
+  title: string;
+  description: string;
+  image: string;
+};
+
+type CharterItem = {
+  title: string;
+  description: string;
+};
+
+const parseJourneyCards = (stepsValue: unknown, imageSetValue: unknown): JourneyCardItem[] => {
+  const stepLines = String(stepsValue || "")
+    .split("\n")
+    .filter(line => line.trim() || line.includes("|"));
+  const imageLines = String(imageSetValue || "").split("\n");
+  const cardCount = Math.max(stepLines.length, imageLines.filter(Boolean).length, 1);
+
+  return Array.from({ length: cardCount }, (_, index) => {
+    const [title = "", description = ""] = (stepLines[index] || "").split("|");
+    return {
+      title: title.trim(),
+      description: description.trim(),
+      image: (imageLines[index] || "").trim(),
+    };
+  });
+};
+
+const serializeJourneySteps = (items: JourneyCardItem[]) => {
+  return items.map(item => `${item.title.trim()} | ${item.description.trim()}`).join("\n");
+};
+
+const serializeJourneyImages = (items: JourneyCardItem[]) => {
+  return items.map(item => item.image.trim()).join("\n");
+};
+
+const parseCharterItems = (chartersValue: unknown): CharterItem[] => {
+  const lines = String(chartersValue || "")
+    .split("\n")
+    .filter(line => line.trim() || line.includes("|"));
+
+  const items = lines.map(line => {
+    const [title = "", description = ""] = line.split("|");
+    return {
+      title: title.trim(),
+      description: description.trim(),
+    };
+  });
+
+  return items.length > 0 ? items : [{ title: "", description: "" }];
+};
+
+const serializeCharterItems = (items: CharterItem[]) => {
+  return items.map(item => `${item.title.trim()} | ${item.description.trim()}`).join("\n");
 };
 
 export default function AdminContentSectionManager({ moduleId, sectionId }: AdminContentSectionManagerProps) {
@@ -30,6 +85,8 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
   const [faqItems, setFaqItems] = React.useState<Array<{ question: string; answer: string }>>([]);
   const [reelsItems, setReelsItems] = React.useState<Array<{ image: string; link: string; alt: string }>>([]);
   const [philosophyItems, setPhilosophyItems] = React.useState<PhilosophyItem[]>([]);
+  const [journeyCards, setJourneyCards] = React.useState<JourneyCardItem[]>([{ title: "", description: "", image: "" }]);
+  const [charterItems, setCharterItems] = React.useState<CharterItem[]>([{ title: "", description: "" }]);
 
   const [prevParams, setPrevParams] = React.useState({ moduleId, sectionId });
     if (moduleId !== prevParams.moduleId || sectionId !== prevParams.sectionId) {
@@ -571,6 +628,15 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
                 ]);
               }
             }
+            if (rec.id === "about-journey") {
+              const stepsField = rec.fields.find(f => f.id === "steps");
+              const imageSetField = rec.fields.find(f => f.id === "imageSet");
+              setJourneyCards(parseJourneyCards(stepsField?.value, imageSetField?.value));
+            }
+            if (rec.id === "about-charter") {
+              const chartersField = rec.fields.find(f => f.id === "charters");
+              setCharterItems(parseCharterItems(chartersField?.value));
+            }
           }
         }
         setLoading(false);
@@ -659,6 +725,26 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
           ...record,
           fields: record.fields.map(f =>
             f.id === "milestones" ? { ...f, value: timelineItems as any } : f
+          ),
+        };
+      } else if (record.id === "about-journey") {
+        recordToSave = {
+          ...record,
+          fields: record.fields.map(f => {
+            if (f.id === "steps") {
+              return { ...f, value: serializeJourneySteps(journeyCards) } as AdminSectionField;
+            }
+            if (f.id === "imageSet") {
+              return { ...f, value: serializeJourneyImages(journeyCards) } as AdminSectionField;
+            }
+            return f;
+          }),
+        };
+      } else if (record.id === "about-charter") {
+        recordToSave = {
+          ...record,
+          fields: record.fields.map(f =>
+            f.id === "charters" ? { ...f, value: serializeCharterItems(charterItems) } as AdminSectionField : f
           ),
         };
       }
@@ -863,7 +949,258 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
             </>
           )}
 
-          {record.id !== "home-features" && record.id !== "home-timeline" && record.id !== "home-faq" && record.id !== "home-instagram" && record.id !== "story-philosophy" && record.id !== "story-timeline" && record.fields
+          {record.id === "about-journey" && (
+            <>
+              {record.fields
+                .filter(f => f.id === "eyebrow" || f.id === "heading" || f.id === "showSection")
+                .map(field => (
+                  <Box key={field.id}>
+                    <SectionFieldEditor field={field} onChange={handleFieldChange} />
+                  </Box>
+                ))
+              }
+              <Stack spacing={2}>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    Journey Cards
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {journeyCards.length} card{journeyCards.length !== 1 ? "s" : ""}
+                  </Typography>
+                </Stack>
+
+                {journeyCards.map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      border: "1.5px solid",
+                      borderColor: "divider",
+                      borderRadius: 2.5,
+                      overflow: "hidden",
+                      bgcolor: "background.paper",
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{
+                        alignItems: "center",
+                        px: 2,
+                        py: 1.2,
+                        bgcolor: "action.hover",
+                        borderBottom: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 24,
+                          height: 24,
+                          borderRadius: "50%",
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          mr: 1.5,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {index + 1}
+                      </Box>
+                      <Typography variant="body2" sx={{ fontWeight: 600, flex: 1 }}>
+                        {item.title || `Journey Card ${index + 1}`}
+                      </Typography>
+                      {journeyCards.length > 1 && (
+                        <Button
+                          type="button"
+                          color="error"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => setJourneyCards(prev => prev.filter((_, itemIndex) => itemIndex !== index))}
+                          sx={{ textTransform: "none", borderRadius: 2 }}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Stack spacing={2} sx={{ p: 2 }}>
+                      <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Card title"
+                            value={item.title}
+                            onChange={event => setJourneyCards(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, title: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Image URL"
+                            value={item.image}
+                            onChange={event => setJourneyCards(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, image: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Card description"
+                            value={item.description}
+                            onChange={event => setJourneyCards(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, description: event.target.value } : card
+                            )))}
+                            multiline
+                            minRows={2}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Stack>
+                  </Box>
+                ))}
+
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => setJourneyCards(prev => [...prev, { title: "", description: "", image: "" }])}
+                  sx={{ textTransform: "none", borderRadius: 2, alignSelf: "flex-start" }}
+                >
+                  Add Journey Card
+                </Button>
+              </Stack>
+            </>
+          )}
+
+          {record.id === "about-charter" && (
+            <>
+              {record.fields
+                .filter(f => f.id === "heading" || f.id === "description" || f.id === "reportLabel" || f.id === "reportHref" || f.id === "showSection")
+                .map(field => (
+                  <Box key={field.id}>
+                    <SectionFieldEditor field={field} onChange={handleFieldChange} />
+                  </Box>
+                ))
+              }
+              <Stack spacing={2}>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    Charter Items
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {charterItems.length} item{charterItems.length !== 1 ? "s" : ""}
+                  </Typography>
+                </Stack>
+
+                {charterItems.map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      border: "1.5px solid",
+                      borderColor: "divider",
+                      borderRadius: 2.5,
+                      overflow: "hidden",
+                      bgcolor: "background.paper",
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{
+                        alignItems: "center",
+                        px: 2,
+                        py: 1.2,
+                        bgcolor: "action.hover",
+                        borderBottom: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 24,
+                          height: 24,
+                          borderRadius: "50%",
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          mr: 1.5,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {index + 1}
+                      </Box>
+                      <Typography variant="body2" sx={{ fontWeight: 600, flex: 1 }}>
+                        {item.title || `Charter Item ${index + 1}`}
+                      </Typography>
+                      {charterItems.length > 1 && (
+                        <Button
+                          type="button"
+                          color="error"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => setCharterItems(prev => prev.filter((_, itemIndex) => itemIndex !== index))}
+                          sx={{ textTransform: "none", borderRadius: 2 }}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Stack spacing={2} sx={{ p: 2 }}>
+                      <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, md: 5 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Item title"
+                            value={item.title}
+                            onChange={event => setCharterItems(prev => prev.map((charter, itemIndex) => (
+                              itemIndex === index ? { ...charter, title: event.target.value } : charter
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 7 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Item description"
+                            value={item.description}
+                            onChange={event => setCharterItems(prev => prev.map((charter, itemIndex) => (
+                              itemIndex === index ? { ...charter, description: event.target.value } : charter
+                            )))}
+                            multiline
+                            minRows={2}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Stack>
+                  </Box>
+                ))}
+
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => setCharterItems(prev => [...prev, { title: "", description: "" }])}
+                  sx={{ textTransform: "none", borderRadius: 2, alignSelf: "flex-start" }}
+                >
+                  Add Charter Item
+                </Button>
+              </Stack>
+            </>
+          )}
+
+          {record.id !== "home-features" && record.id !== "home-timeline" && record.id !== "home-faq" && record.id !== "home-instagram" && record.id !== "story-philosophy" && record.id !== "story-timeline" && record.id !== "about-journey" && record.id !== "about-charter" && record.fields
             .filter(field => {
               if (record.id === "home-categories" || record.id === "categories-grid") {
                 return field.id !== "cards" && field.id !== "imageSet";

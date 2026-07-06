@@ -39,6 +39,127 @@ const cleanUrl = (url: string): string => {
   return url.replace(/%22$/, "").replace(/"$/, "").trim();
 };
 
+const sectionRecordIds: Record<string, string> = {
+  banner: "about-banner",
+  stewardship: "about-stewardship",
+  journey: "about-journey",
+  quote: "about-quote",
+  charter: "about-charter"
+};
+
+const mapRecordToSectionData = (section: string, record: any) => {
+  const fields = record?.fields || [];
+  const get = (id: string) => fields.find((f: any) => f.id === id)?.value;
+
+  if (section === "banner") {
+    return {
+      bannerImage: cleanUrl(get("image") || ""),
+      bannerLabel: get("eyebrow") || get("bannerLabel") || "",
+      bannerTitle: get("headline") || get("bannerTitle") || "",
+      bannerDescription: get("description") || get("bannerDescription") || "",
+      showSection: get("showSection") !== false
+    };
+  }
+
+  if (section === "stewardship") {
+    return {
+      eyebrow: get("eyebrow") || "",
+      heading: get("heading") || "",
+      description: get("description") || "",
+      quote: get("quote") || "",
+      badgeNumber: get("badgeNumber") || "",
+      badgeText: get("badgeText") || "",
+      image: cleanUrl(get("image") || ""),
+      showSection: get("showSection") !== false
+    };
+  }
+
+  if (section === "journey") {
+    return {
+      eyebrow: get("eyebrow") || "",
+      heading: get("heading") || "",
+      steps: get("steps") || "",
+      imageSet: get("imageSet") || "",
+      showSection: get("showSection") !== false
+    };
+  }
+
+  if (section === "quote") {
+    return {
+      quote: get("quote") || "",
+      author: get("author") || "",
+      showSection: get("showSection") !== false
+    };
+  }
+
+  if (section === "charter") {
+    return {
+      heading: get("heading") || "",
+      description: get("description") || "",
+      reportLabel: get("reportLabel") || "",
+      reportHref: get("reportHref") || "",
+      charters: get("charters") || "",
+      showSection: get("showSection") !== false
+    };
+  }
+
+  return {};
+};
+
+const normalizeSectionResponse = (section: string, response: any) => {
+  const data = response?.data ?? response;
+  const sectionData = data?.[section] ?? data;
+  const recordId = sectionRecordIds[section];
+  const record = sectionData?.fields
+    ? sectionData
+    : data?.records?.find((item: any) => item.id === recordId);
+
+  if (record?.fields) {
+    return mapRecordToSectionData(section, record);
+  }
+
+  if (sectionData && typeof sectionData === "object" && !Array.isArray(sectionData)) {
+    return sectionData;
+  }
+
+  return null;
+};
+
+const isSuccessResponse = (response: any) => {
+  return (response?.status === "success" || response?.success === true) && response?.data;
+};
+
+const parseRequestBody = async (
+  request: Request
+): Promise<{ payload: Record<string, any>; backendOptions: { body: BodyInit; headers: Record<string, string> } }> => {
+  const contentType = request.headers.get("content-type") || "";
+
+  if (contentType.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    const payload: Record<string, any> = {};
+    formData.forEach((value, key) => {
+      payload[key] = value;
+    });
+
+    return {
+      payload,
+      backendOptions: {
+        body: formData,
+        headers: {}
+      }
+    };
+  }
+
+  const payload = await request.json();
+  return {
+    payload,
+    backendOptions: {
+      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/json" }
+    }
+  };
+};
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ section: string }> }
@@ -47,78 +168,42 @@ export async function GET(
 
   // 1. Try local Express backend
   const localRes = await tryFetch(`${LOCAL_BACKEND}/about-us/${section}`);
-  if (localRes?.status === "success" && localRes?.data) {
-    return NextResponse.json(localRes);
+  if (isSuccessResponse(localRes)) {
+    const sectionData = normalizeSectionResponse(section, localRes);
+    if (sectionData) {
+      return NextResponse.json({
+        success: true,
+        status: "success",
+        data: { [section]: sectionData }
+      });
+    }
   }
 
   // 2. Try remote Express backend
   const remoteRes = await tryFetch(`${REMOTE_BACKEND}/about-us/${section}`);
-  if (remoteRes?.status === "success" && remoteRes?.data) {
-    return NextResponse.json(remoteRes);
+  if (isSuccessResponse(remoteRes)) {
+    const sectionData = normalizeSectionResponse(section, remoteRes);
+    if (sectionData) {
+      return NextResponse.json({
+        success: true,
+        status: "success",
+        data: { [section]: sectionData }
+      });
+    }
   }
 
   // 3. Fallback to local JSON file
   const localJson = readLocalData();
   if (localJson) {
-    let recordId = "";
-    if (section === "banner") recordId = "about-banner";
-    else if (section === "stewardship") recordId = "about-stewardship";
-    else if (section === "journey") recordId = "about-journey";
-    else if (section === "quote") recordId = "about-quote";
-    else if (section === "charter") recordId = "about-charter";
+    const recordId = sectionRecordIds[section] || "";
 
     if (recordId) {
       const record = (localJson.records || []).find((r: any) => r.id === recordId);
       if (record) {
-        const fields = record.fields || [];
-        const get = (id: string) => fields.find((f: any) => f.id === id)?.value;
-
-        let sectionData: any = {};
-        if (section === "banner") {
-          sectionData = {
-            bannerImage: cleanUrl(get("image") || ""),
-            bannerLabel: get("eyebrow") || "",
-            bannerTitle: get("headline") || "",
-            bannerDescription: get("description") || "",
-            showSection: get("showSection") !== false
-          };
-        } else if (section === "stewardship") {
-          sectionData = {
-            eyebrow: get("eyebrow") || "",
-            heading: get("heading") || "",
-            description: get("description") || "",
-            quote: get("quote") || "",
-            badgeNumber: get("badgeNumber") || "",
-            badgeText: get("badgeText") || "",
-            image: cleanUrl(get("image") || ""),
-            showSection: get("showSection") !== false
-          };
-        } else if (section === "journey") {
-          sectionData = {
-            eyebrow: get("eyebrow") || "",
-            heading: get("heading") || "",
-            steps: get("steps") || "",
-            imageSet: get("imageSet") || "",
-            showSection: get("showSection") !== false
-          };
-        } else if (section === "quote") {
-          sectionData = {
-            quote: get("quote") || "",
-            author: get("author") || "",
-            showSection: get("showSection") !== false
-          };
-        } else if (section === "charter") {
-          sectionData = {
-            heading: get("heading") || "",
-            description: get("description") || "",
-            reportLabel: get("reportLabel") || "",
-            reportHref: get("reportHref") || "",
-            charters: get("charters") || "",
-            showSection: get("showSection") !== false
-          };
-        }
+        const sectionData = mapRecordToSectionData(section, record);
 
         return NextResponse.json({
+          success: true,
           status: "success",
           data: { [section]: sectionData }
         });
@@ -173,6 +258,7 @@ export async function GET(
   }
 
   return NextResponse.json({
+    success: true,
     status: "success",
     data: { [section]: defaultData }
   });
@@ -186,20 +272,23 @@ export async function PUT(
   const authorization = request.headers.get("authorization");
 
   let payload: any;
+  let backendOptions: { body: BodyInit; headers: Record<string, string> };
   try {
-    payload = await request.json();
+    const parsed = await parseRequestBody(request);
+    payload = parsed.payload;
+    backendOptions = parsed.backendOptions;
   } catch {
-    return NextResponse.json({ status: "error", message: "Invalid JSON payload" }, { status: 400 });
+    return NextResponse.json({ success: false, status: "error", message: "Invalid request payload" }, { status: 400 });
   }
 
   // 1. Try local Express backend
   const options: RequestInit = {
     method: "PUT",
     headers: {
-      "Content-Type": "application/json",
+      ...backendOptions.headers,
       ...(authorization ? { Authorization: authorization } : {})
     },
-    body: JSON.stringify(payload)
+    body: backendOptions.body
   };
 
   let savedToBackend = false;
@@ -222,83 +311,22 @@ export async function PUT(
     } catch {}
   }
 
-  // 2. Save locally in local about-us-data.json
-  const localJson = readLocalData() || { id: "about-us", title: "About Us CMS Page", records: [] };
-  if (!localJson.records) localJson.records = [];
-
-  let recordId = "";
-  if (section === "banner") recordId = "about-banner";
-  else if (section === "stewardship") recordId = "about-stewardship";
-  else if (section === "journey") recordId = "about-journey";
-  else if (section === "quote") recordId = "about-quote";
-  else if (section === "charter") recordId = "about-charter";
-
-  if (recordId) {
-    const idx = localJson.records.findIndex((r: any) => r.id === recordId);
-
-    const fields: any[] = [];
-    if (section === "banner") {
-      fields.push({ id: "eyebrow", label: "Hero subtitle", type: "text", value: payload.bannerLabel || "" });
-      fields.push({ id: "headline", label: "H1 headline", type: "text", value: payload.bannerTitle || "" });
-      fields.push({ id: "description", label: "Hero paragraph", type: "textarea", value: payload.bannerDescription || "" });
-      fields.push({ id: "image", label: "Hero image", type: "image", value: payload.bannerImage || "" });
-      fields.push({ id: "showSection", label: "Show section", type: "toggle", value: payload.showSection !== false });
-    } else if (section === "stewardship") {
-      fields.push({ id: "eyebrow", label: "Eyebrow", type: "text", value: payload.eyebrow || "" });
-      fields.push({ id: "heading", label: "Heading", type: "text", value: payload.heading || "" });
-      fields.push({ id: "description", label: "Description", type: "textarea", value: payload.description || "" });
-      fields.push({ id: "quote", label: "Quote", type: "textarea", value: payload.quote || "" });
-      fields.push({ id: "badgeNumber", label: "Badge Number", type: "text", value: payload.badgeNumber || "" });
-      fields.push({ id: "badgeText", label: "Badge Text", type: "text", value: payload.badgeText || "" });
-      fields.push({ id: "image", label: "Image", type: "image", value: payload.image || "" });
-      fields.push({ id: "showSection", label: "Show section", type: "toggle", value: payload.showSection !== false });
-    } else if (section === "journey") {
-      fields.push({ id: "eyebrow", label: "Eyebrow", type: "text", value: payload.eyebrow || "" });
-      fields.push({ id: "heading", label: "Heading", type: "text", value: payload.heading || "" });
-      fields.push({ id: "steps", label: "Steps (Title|Desc)", type: "textarea", value: payload.steps || "" });
-      fields.push({ id: "imageSet", label: "Images (Newline separated)", type: "textarea", value: payload.imageSet || "" });
-      fields.push({ id: "showSection", label: "Show section", type: "toggle", value: payload.showSection !== false });
-    } else if (section === "quote") {
-      fields.push({ id: "quote", label: "Quote", type: "textarea", value: payload.quote || "" });
-      fields.push({ id: "author", label: "Author", type: "text", value: payload.author || "" });
-      fields.push({ id: "showSection", label: "Show section", type: "toggle", value: payload.showSection !== false });
-    } else if (section === "charter") {
-      fields.push({ id: "heading", label: "Heading", type: "text", value: payload.heading || "" });
-      fields.push({ id: "description", label: "Description", type: "textarea", value: payload.description || "" });
-      fields.push({ id: "reportLabel", label: "Report CTA Label", type: "text", value: payload.reportLabel || "" });
-      fields.push({ id: "reportHref", label: "Report Link", type: "text", value: payload.reportHref || "" });
-      fields.push({ id: "charters", label: "Charters (Title|Desc)", type: "textarea", value: payload.charters || "" });
-      fields.push({ id: "showSection", label: "Show section", type: "toggle", value: payload.showSection !== false });
-    }
-
-    const updatedRecord = {
-      id: recordId,
-      title: section.charAt(0).toUpperCase() + section.slice(1) + " Section",
-      type: "Content Section",
-      status: "Published",
-      updatedAt: new Date().toISOString().slice(0, 10),
-      fields
-    };
-
-    if (idx !== -1) {
-      localJson.records[idx] = updatedRecord;
-    } else {
-      localJson.records.push(updatedRecord);
-    }
-
-    try {
-      const dirPath = path.dirname(jsonFilePath);
-      if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
-      fs.writeFileSync(jsonFilePath, JSON.stringify(localJson, null, 2), "utf8");
-    } catch (err) {
-      console.error("Failed to write to local JSON:", err);
-    }
+  if (!savedToBackend) {
+    return NextResponse.json(
+      {
+        success: false,
+        status: "error",
+        message: `Backend failed to save ${section}. The public page was not updated.`
+      },
+      { status: 502 }
+    );
   }
 
   return NextResponse.json({
+    success: true,
     status: "success",
     message: `${section} updated successfully.`,
     data: payload,
-    savedToBackend
+    savedToBackend: true
   });
 }

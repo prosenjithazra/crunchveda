@@ -48,10 +48,10 @@ export default function ArtisanalJourney({ data }: ArtisanalJourneyProps) {
 
   if (data) {
     if (data.showSection === false) return null;
-    eyebrow = data.eyebrow || eyebrow;
-    heading = data.heading || heading;
-    stepsRaw = data.steps || "";
-    imageSetRaw = data.imageSet || "";
+    eyebrow = data.eyebrow ?? eyebrow;
+    heading = data.heading ?? heading;
+    stepsRaw = data.steps ?? "";
+    imageSetRaw = data.imageSet ?? "";
   } else {
     const journeyRecord = moduleData?.records?.find(r => r.id === "about-journey");
     const showSectionField = journeyRecord?.fields?.find(f => f.id === "showSection");
@@ -69,7 +69,7 @@ export default function ArtisanalJourney({ data }: ArtisanalJourneyProps) {
     imageSetRaw = getFieldValue("imageSet", "");
   }
 
-  let steps: Array<{ title: string; description: string; image: string }> = defaultSteps;
+  let steps: Array<{ title: string; description: string; image: string }> = data ? [] : defaultSteps;
   if (stepsRaw && stepsRaw.trim()) {
     const lines = stepsRaw.split("\n").filter(Boolean);
     const images = imageSetRaw ? imageSetRaw.split("\n").filter(Boolean) : [];

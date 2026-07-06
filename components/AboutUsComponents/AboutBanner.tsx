@@ -18,11 +18,13 @@ interface AboutBannerProps {
 }
 
 export default function AboutBanner({ data }: AboutBannerProps) {
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+
   if (data) {
     if (data.showSection === false) return null;
-    const eyebrow = data.bannerLabel || "EST. 1914";
-    const headline = data.bannerTitle || "Cultivating Legacy Through the Seasons";
-    const description = data.bannerDescription || "A century of dedication to the soil, the seed, and the harvest. The story of our organic stewardship.";
+    const eyebrow = data.bannerLabel ?? "EST. 1914";
+    const headline = data.bannerTitle ?? "Cultivating Legacy Through the Seasons";
+    const description = data.bannerDescription ?? "A century of dedication to the soil, the seed, and the harvest. The story of our organic stewardship.";
     const image = data.bannerImage || assets.aboutBanner;
 
     return (
@@ -55,7 +57,6 @@ export default function AboutBanner({ data }: AboutBannerProps) {
     );
   }
 
-  const { data: moduleData, isLoading } = useContentModule("about-us");
   if (isLoading) return <AboutBannerSkeleton />;
 
   const bannerRecord = moduleData?.records?.find(r => r.id === "about-banner");
