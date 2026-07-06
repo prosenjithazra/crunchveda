@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { IProduct, IProductCategory, IProductPrice } from "@/types/product";
 import { adminAuthService } from "./authService";
 

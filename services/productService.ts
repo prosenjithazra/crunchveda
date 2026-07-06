@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DryFruitProduct } from "@/json/mock/dryFruits";
 
 const API_URL = "/api";

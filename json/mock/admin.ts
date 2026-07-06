@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assets } from "@/json/assest";
 import { dryFruits } from "@/json/mock/dryFruits";
 

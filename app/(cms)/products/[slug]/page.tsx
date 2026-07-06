@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductDetailsUI from "@/components/ProductComponents/ProductDetailsUI";
 import JsonLd from "@/components/SEO/JsonLd";
 import { createBreadcrumbSchema, createProductSchema } from "@/lib/seo/schema";

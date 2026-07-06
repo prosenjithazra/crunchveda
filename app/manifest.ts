@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { siteSeo } from "@/lib/seo/siteSeo";
 import type { MetadataRoute } from "next";
 

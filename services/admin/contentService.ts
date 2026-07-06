@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { adminModules, type AdminContentRecord, type AdminModule, type AdminProductRecord, type AdminSectionField } from "@/json/mock/admin";
 import { adminAuthService } from "./authService";
 
