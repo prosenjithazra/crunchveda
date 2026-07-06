@@ -1,0 +1,209 @@
+{
+  "id": "about-us",
+  "title": "About Us CMS Page",
+  "records": [
+    {
+      "id": "about-banner",
+      "title": "Sunt neque dignissim",
+      "type": "Officiis numquam qui",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Small title",
+          "type": "text",
+          "value": "Ut necessitatibus ul"
+        },
+        {
+          "id": "headline",
+          "label": "H1 headline",
+          "type": "text",
+          "value": "Perspiciatis nihil "
+        },
+        {
+          "id": "description",
+          "label": "Hero paragraph",
+          "type": "textarea",
+          "value": "Modi et voluptatem s"
+        },
+        {
+          "id": "image",
+          "label": "Hero image",
+          "type": "image",
+          "value": "Voluptatem magni ev"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ],
+      "updatedAt": "2026-07-06"
+    },
+    {
+      "id": "about-stewardship",
+      "title": "roots section",
+      "type": "Roots content",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "type": "text",
+          "value": "Our Roots"
+        },
+        {
+          "id": "heading",
+          "label": "Heading",
+          "type": "text",
+          "value": "A Century of Stewardship"
+        },
+        {
+          "id": "description",
+          "label": "Description",
+          "type": "textarea",
+          "value": "For over three generations, the Nur Harvest estate has stood as a beacon of organic excellence. Our journey began with a simple promise: to honor the land and craft purity. We believe that true luxury lies in the purity of the source and the patience of the process."
+        },
+        {
+          "id": "quote",
+          "label": "Quote",
+          "type": "textarea",
+          "value": "This is not merely land; it is a trust we hold for those who will follow. Every seed we sow and every harvest we press carries the warmth of the story we write here."
+        },
+        {
+          "id": "badgeNumber",
+          "label": "Badge Number",
+          "type": "text",
+          "value": "100+"
+        },
+        {
+          "id": "badgeText",
+          "label": "Badge Text",
+          "type": "text",
+          "value": "Years of Tradition"
+        },
+        {
+          "id": "image",
+          "label": "Image",
+          "type": "image",
+          "value": ""
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "about-journey",
+      "title": "artisanal journey",
+      "type": "Artisanal content",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "type": "text",
+          "value": "Our Process"
+        },
+        {
+          "id": "heading",
+          "label": "Heading",
+          "type": "text",
+          "value": "The Artisanal Journey"
+        },
+        {
+          "id": "steps",
+          "label": "Steps (Title|Desc)",
+          "type": "textarea",
+          "value": "Seed Heritage | The finest seed, hand-selected to reflect archaeological history and botanical purity.\nMineral Enrichment | Curating balanced ecosystem compounds, enriching soil nutrients to capture the natural essence.\nMaster Curation | Only the pinnacle of the harvest is selected, ensuring each jar represents a masterpiece."
+        },
+        {
+          "id": "imageSet",
+          "label": "Images (Newline separated)",
+          "type": "textarea",
+          "value": ""
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "about-quote",
+      "title": "quote section",
+      "type": "Quote content",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "quote",
+          "label": "Quote",
+          "type": "textarea",
+          "value": "Nature doesn't rush, yet everything is accomplished. We've learned that by respecting the clock of the seasons, we achieve a quality that technology simply cannot replicate."
+        },
+        {
+          "id": "author",
+          "label": "Author",
+          "type": "text",
+          "value": "— ALBERT CHEN, CHIEF FIELD WARDEN"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "about-charter",
+      "title": "sustainability charter",
+      "type": "Charter content",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "heading",
+          "label": "Heading",
+          "type": "text",
+          "value": "The Sustainability Charter"
+        },
+        {
+          "id": "description",
+          "label": "Description",
+          "type": "textarea",
+          "value": "Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance."
+        },
+        {
+          "id": "reportLabel",
+          "label": "Report CTA Label",
+          "type": "text",
+          "value": "Read Our Full Report"
+        },
+        {
+          "id": "reportHref",
+          "label": "Report Link",
+          "type": "text",
+          "value": "#report"
+        },
+        {
+          "id": "charters",
+          "label": "Charters (Title|Desc)",
+          "type": "textarea",
+          "value": "Water Safety | Closed-loop irrigation systems that reduce water by 45 percent.\nCO2 Reduction | Solar-driven greenhouses and active low-emission transportation.\nSoil Security | No synthetic chemicals, preserving natural biodiversity.\nOrganic Grades | Rigorous testing protocols for all farm operations."
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

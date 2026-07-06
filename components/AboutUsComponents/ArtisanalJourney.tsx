@@ -25,24 +25,49 @@ const defaultSteps = [
   }
 ];
 
-export default function ArtisanalJourney() {
-  const { data: moduleData, isLoading } = useContentModule("about-us");
-  if (isLoading) return <ArtisanalJourneySkeleton />;
-
-  const journeyRecord = moduleData?.records?.find(r => r.id === "about-journey");
-  const showSectionField = journeyRecord?.fields?.find(f => f.id === "showSection");
-  const showSection = showSectionField ? showSectionField.value !== false : true;
-  if (!showSection) return null;
-
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = journeyRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
+interface ArtisanalJourneyProps {
+  data?: {
+    eyebrow?: string;
+    heading?: string;
+    steps?: string;
+    imageSet?: string;
+    showSection?: boolean;
   };
+}
 
-  const eyebrow = getFieldValue("eyebrow", "Our Process");
-  const heading = getFieldValue("heading", "The Artisanal Journey");
-  const stepsRaw = getFieldValue("steps", "");
-  const imageSetRaw = getFieldValue("imageSet", "");
+export default function ArtisanalJourney({ data }: ArtisanalJourneyProps) {
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+
+  if (isLoading && !data) return <ArtisanalJourneySkeleton />;
+
+  let eyebrow = "Our Process";
+  let heading = "The Artisanal Journey";
+  let stepsRaw = "";
+  let imageSetRaw = "";
+  let showSection = true;
+
+  if (data) {
+    if (data.showSection === false) return null;
+    eyebrow = data.eyebrow || eyebrow;
+    heading = data.heading || heading;
+    stepsRaw = data.steps || "";
+    imageSetRaw = data.imageSet || "";
+  } else {
+    const journeyRecord = moduleData?.records?.find(r => r.id === "about-journey");
+    const showSectionField = journeyRecord?.fields?.find(f => f.id === "showSection");
+    showSection = showSectionField ? showSectionField.value !== false : true;
+    if (!showSection) return null;
+
+    const getFieldValue = (fieldId: string, defaultValue: string): string => {
+      const field = journeyRecord?.fields?.find(f => f.id === fieldId);
+      return field && typeof field.value === "string" ? field.value : defaultValue;
+    };
+
+    eyebrow = getFieldValue("eyebrow", eyebrow);
+    heading = getFieldValue("heading", heading);
+    stepsRaw = getFieldValue("steps", "");
+    imageSetRaw = getFieldValue("imageSet", "");
+  }
 
   let steps: Array<{ title: string; description: string; image: string }> = defaultSteps;
   if (stepsRaw && stepsRaw.trim()) {

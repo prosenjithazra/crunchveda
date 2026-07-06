@@ -922,6 +922,19 @@ export const adminContentService = {
       }
     }
 
+    if (id === "about-us") {
+      try {
+        const res = await fetch(cmsRequestUrl("/api/about-us"), { cache: 'no-store' });
+        const data = await readApiJson(res);
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to fetch about-us module");
+        }
+        return mergeContentModule(data.data, id);
+      } catch {
+        return mergeContentModule(undefined, id);
+      }
+    }
+
     try {
       const res = await fetch(`${API_URL}/content/modules/${id}`, { cache: 'no-store' });
       const data = await readApiJson(res);
@@ -1011,6 +1024,22 @@ export const adminContentService = {
       }
 
       const res = await fetch(`/api/our-story`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ section }),
+      });
+      const data = await readApiJson(res);
+      if (!res.ok) {
+        throw new Error(data.message || `Failed to save ${section.title} section`);
+      }
+      return data.data || section;
+    }
+
+    if (resolvedModuleId === "about-us") {
+      const res = await fetch(`/api/about-us`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

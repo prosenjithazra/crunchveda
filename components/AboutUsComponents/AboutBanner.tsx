@@ -7,7 +7,54 @@ import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
 import { AboutBannerSkeleton } from '../Loader/SectionSkeletons';
 
-export default function AboutBanner() {
+interface AboutBannerProps {
+  data?: {
+    bannerImage?: string;
+    bannerLabel?: string;
+    bannerTitle?: string;
+    bannerDescription?: string;
+    showSection?: boolean;
+  };
+}
+
+export default function AboutBanner({ data }: AboutBannerProps) {
+  if (data) {
+    if (data.showSection === false) return null;
+    const eyebrow = data.bannerLabel || "EST. 1914";
+    const headline = data.bannerTitle || "Cultivating Legacy Through the Seasons";
+    const description = data.bannerDescription || "A century of dedication to the soil, the seed, and the harvest. The story of our organic stewardship.";
+    const image = data.bannerImage || assets.aboutBanner;
+
+    return (
+      <Box className="about_hero">
+        <Box className="hero_bg">
+          <Image
+            src={image}
+            alt={headline}
+            title={headline}
+            fill
+            priority
+            sizes="100vw"
+          />
+        </Box>
+        <Box className="hero_overlay" />
+        <Container fixed>
+          <Box className="hero_content">
+            <Typography variant="h6" className="section_title_small" sx={{ color: 'warning.light' }}>
+              {eyebrow}
+            </Typography>
+            <Typography variant="h1">
+              {headline}
+            </Typography>
+            <Typography variant="body1">
+              {description}
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
+    );
+  }
+
   const { data: moduleData, isLoading } = useContentModule("about-us");
   if (isLoading) return <AboutBannerSkeleton />;
 

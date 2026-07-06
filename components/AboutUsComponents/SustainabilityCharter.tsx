@@ -33,25 +33,53 @@ const defaultCharters = [
   }
 ];
 
-export default function SustainabilityCharter() {
-  const { data: moduleData, isLoading } = useContentModule("about-us");
-  if (isLoading) return <SustainabilityCharterSkeleton />;
-
-  const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
-  const showSectionField = charterRecord?.fields?.find(f => f.id === "showSection");
-  const showSection = showSectionField ? showSectionField.value !== false : true;
-  if (!showSection) return null;
-
-  const getFieldValue = (fieldId: string, defaultValue: string): string => {
-    const field = charterRecord?.fields?.find(f => f.id === fieldId);
-    return field && typeof field.value === "string" ? field.value : defaultValue;
+interface SustainabilityCharterProps {
+  data?: {
+    heading?: string;
+    description?: string;
+    reportLabel?: string;
+    reportHref?: string;
+    charters?: string;
+    showSection?: boolean;
   };
+}
 
-  const heading = getFieldValue("heading", "The Sustainability Charter");
-  const description = getFieldValue("description", "Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance.");
-  const reportLabel = getFieldValue("reportLabel", "Read Our Full Report");
-  const reportHref = getFieldValue("reportHref", "#report");
-  const chartersRaw = getFieldValue("charters", "");
+export default function SustainabilityCharter({ data }: SustainabilityCharterProps) {
+  const { data: moduleData, isLoading } = useContentModule("about-us");
+
+  if (isLoading && !data) return <SustainabilityCharterSkeleton />;
+
+  let heading = "The Sustainability Charter";
+  let description = "Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance.";
+  let reportLabel = "Read Our Full Report";
+  let reportHref = "#report";
+  let chartersRaw = "";
+  let showSection = true;
+
+  if (data) {
+    if (data.showSection === false) return null;
+    heading = data.heading || heading;
+    description = data.description || description;
+    reportLabel = data.reportLabel || reportLabel;
+    reportHref = data.reportHref || reportHref;
+    chartersRaw = data.charters || "";
+  } else {
+    const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
+    const showSectionField = charterRecord?.fields?.find(f => f.id === "showSection");
+    showSection = showSectionField ? showSectionField.value !== false : true;
+    if (!showSection) return null;
+
+    const getFieldValue = (fieldId: string, defaultValue: string): string => {
+      const field = charterRecord?.fields?.find(f => f.id === fieldId);
+      return field && typeof field.value === "string" ? field.value : defaultValue;
+    };
+
+    heading = getFieldValue("heading", heading);
+    description = getFieldValue("description", description);
+    reportLabel = getFieldValue("reportLabel", reportLabel);
+    reportHref = getFieldValue("reportHref", reportHref);
+    chartersRaw = getFieldValue("charters", "");
+  }
 
   let charters = defaultCharters;
   if (chartersRaw && chartersRaw.trim()) {
