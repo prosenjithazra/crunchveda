@@ -177,7 +177,7 @@ export function useUpdateProfile() {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/auth/me`,
+          `${process.env.NEXT_PUBLIC_API_URL || "https://crunch-veda-backend.onrender.com/api"}/auth/me`,
           {
             method: "PUT",
             headers: {

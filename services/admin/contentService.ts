@@ -2,7 +2,7 @@
 import { adminModules, type AdminContentRecord, type AdminModule, type AdminProductRecord, type AdminSectionField } from "@/json/mock/admin";
 import { adminAuthService } from "./authService";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://192.168.6.128:5000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://crunch-veda-backend.onrender.com/api";
 const CMS_HOME_BANNER_API = "/api/cms/home-banner";
 const CMS_HOME_PAGE_API = "/api/cms/home-page";
 
@@ -935,6 +935,19 @@ export const adminContentService = {
       }
     }
 
+    if (id === "gifts") {
+      try {
+        const res = await fetch(cmsRequestUrl("/api/gifts"), { cache: 'no-store' });
+        const data = await readApiJson(res);
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to fetch gifts module");
+        }
+        return mergeContentModule(data.data, id);
+      } catch {
+        return mergeContentModule(undefined, id);
+      }
+    }
+
     try {
       const res = await fetch(`${API_URL}/content/modules/${id}`, { cache: 'no-store' });
       const data = await readApiJson(res);
@@ -1052,6 +1065,126 @@ export const adminContentService = {
         throw new Error(data.message || `Failed to save ${section.title} section`);
       }
       return data.data || section;
+    }
+
+    if (resolvedModuleId === "gifts") {
+      let endpoint = `/api/gifts`;
+      let bodyData: any = { section };
+
+      if (section.id === "gifts-executive") {
+        endpoint = `/api/gifts/gift-collections`;
+        const sectionTitle = section.fields.find(f => f.id === "heading")?.value || "";
+        const sectionButtonText = section.fields.find(f => f.id === "exploreLabel")?.value || "";
+        const sectionButtonLink = section.fields.find(f => f.id === "exploreLink")?.value || "";
+        
+        let collections: any[] = [];
+        const rawCol = section.fields.find(f => f.id === "collections")?.value;
+        if (Array.isArray(rawCol)) {
+          collections = rawCol;
+        } else if (typeof rawCol === "string") {
+          try {
+            collections = JSON.parse(rawCol);
+          } catch {
+            collections = [];
+          }
+        }
+
+        bodyData = {
+          giftCollections: {
+            sectionTitle,
+            sectionButtonText,
+            sectionButtonLink,
+            collections
+          }
+        };
+      } else if (section.id === "gifts-custom-chest") {
+        endpoint = `/api/gifts/custom-chest`;
+        const sectionLabel = section.fields.find(f => f.id === "eyebrow")?.value || "";
+        const sectionTitle = section.fields.find(f => f.id === "heading")?.value || "";
+        const sectionDescription = section.fields.find(f => f.id === "description")?.value || "";
+        const buttonText = section.fields.find(f => f.id === "ctaLabel")?.value || "";
+        const buttonLink = section.fields.find(f => f.id === "ctaHref")?.value || "";
+        const backgroundImage = section.fields.find(f => f.id === "image")?.value || "";
+
+        bodyData = {
+          customChest: {
+            sectionLabel,
+            sectionTitle,
+            sectionDescription,
+            buttonText,
+            buttonLink,
+            backgroundImage
+          }
+        };
+      } else if (section.id === "gifts-collections") {
+        endpoint = `/api/gifts/gift-products`;
+        let categories: any[] = [];
+        const rawCategories = section.fields.find(f => f.id === "categories")?.value;
+        if (Array.isArray(rawCategories)) {
+          categories = rawCategories;
+        } else if (typeof rawCategories === "string") {
+          try {
+            categories = JSON.parse(rawCategories);
+          } catch {
+            categories = [];
+          }
+        }
+
+        if (categories.length === 0) {
+          // Map fields to categories if empty
+          const parseItems = (text: string, baseId: string) => {
+            if (!text) return [];
+            return String(text).split("\n").filter(Boolean).map((line, idx) => {
+              const parts = line.split("|").map(p => p.trim());
+              return {
+                image: "",
+                title: parts[0] || "",
+                description: parts[1] || "",
+                price: parts[2] || "",
+                _id: `${baseId}${idx}`
+              };
+            });
+          };
+
+          const heritageHeading = section.fields.find(f => f.id === "heritageHeading")?.value || "The Heritage";
+          const heritageItems = String(section.fields.find(f => f.id === "heritageItems")?.value || "");
+          const seasonalHeading = section.fields.find(f => f.id === "seasonalHeading")?.value || "The Seasonal";
+          const seasonalItems = String(section.fields.find(f => f.id === "seasonalItems")?.value || "");
+
+          categories = [
+            {
+              categoryTitle: heritageHeading,
+              products: parseItems(heritageItems, "6a4bac669970b0ba46cf9ce"),
+              _id: "6a4bac669970b0ba46cf9ce3"
+            },
+            {
+              categoryTitle: seasonalHeading,
+              products: parseItems(seasonalItems, "6a4bac669970b0ba46cf9cd"),
+              _id: "6a4bac669970b0ba46cf9ce6"
+            }
+          ];
+        }
+
+        bodyData = {
+          giftProducts: {
+            categories
+          }
+        };
+      }
+
+      const res = await fetch(endpoint, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(bodyData),
+      });
+      const data = await readApiJson(res);
+      if (!res.ok) {
+        throw new Error(data.message || `Failed to save ${section.title} section`);
+      }
+      return section;
     }
 
     if (resolvedModuleId === "home") {

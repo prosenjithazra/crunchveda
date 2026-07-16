@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const LOCAL_BACKEND = "http://localhost:5000/api";
+const LOCAL_BACKEND = "https://crunch-veda-backend.onrender.com/api";
 const REMOTE_BACKEND =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
   process.env.BACKEND_API_URL ||
-  "http://192.168.6.128:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 const jsonFilePath = path.join(process.cwd(), "json/mock/about-us-data.json");
 
@@ -22,6 +22,20 @@ const readLocalData = () => {
     console.error("Failed to read local about-us JSON:", error);
   }
   return null;
+};
+
+const writeLocalData = (data: any) => {
+  try {
+    const dirPath = path.dirname(jsonFilePath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    fs.writeFileSync(jsonFilePath, JSON.stringify(data, null, 2), "utf8");
+    return true;
+  } catch (error) {
+    console.error("Failed to write local about-us JSON:", error);
+    return false;
+  }
 };
 
 const tryFetch = async (url: string, options?: RequestInit) => {
@@ -38,17 +52,44 @@ const isSuccessResponse = (response: any) => {
   return (response?.success === true || response?.status === "success") && response?.data;
 };
 
+const mergeLocalFallbackFields = (backendData: any) => {
+  if (!backendData || !backendData.records) return backendData;
+  const localJson = readLocalData();
+  if (!localJson || !localJson.records) return backendData;
+
+  const updatedRecords = backendData.records.map((record: any) => {
+    const localRecord = localJson.records.find((r: any) => r.id === record.id);
+    if (!localRecord || !localRecord.fields) return record;
+
+    const updatedFields = record.fields.map((field: any) => {
+      if (field.value === "" || field.value === null || field.value === undefined) {
+        const localField = localRecord.fields.find((f: any) => f.id === field.id);
+        if (localField && localField.value !== "" && localField.value !== null && localField.value !== undefined) {
+          return { ...field, value: localField.value };
+        }
+      }
+      return field;
+    });
+
+    return { ...record, fields: updatedFields };
+  });
+
+  return { ...backendData, records: updatedRecords };
+};
+
 export async function GET() {
   // 1. Try direct local Express backend /about-us
   const localDirectRes = await tryFetch(`${LOCAL_BACKEND}/about-us`);
   if (isSuccessResponse(localDirectRes)) {
-    return NextResponse.json(localDirectRes);
+    const merged = mergeLocalFallbackFields(localDirectRes.data);
+    return NextResponse.json({ ...localDirectRes, data: merged });
   }
 
   // 2. Try direct remote Express backend /about-us
   const remoteDirectRes = await tryFetch(`${REMOTE_BACKEND}/about-us`);
   if (isSuccessResponse(remoteDirectRes)) {
-    return NextResponse.json(remoteDirectRes);
+    const merged = mergeLocalFallbackFields(remoteDirectRes.data);
+    return NextResponse.json({ ...remoteDirectRes, data: merged });
   }
 
   // 3. Fallback to local JSON file
@@ -122,19 +163,25 @@ export async function PUT(request: Request) {
   const localPutRes = await tryFetch(`${LOCAL_BACKEND}/about-us/${backendSlug}`, putOptions);
   const remotePutRes = localPutRes ? null : await tryFetch(`${REMOTE_BACKEND}/about-us/${backendSlug}`, putOptions);
   const backendRes = localPutRes || remotePutRes;
-
-  if (!(backendRes?.status === "success" || backendRes?.success === true)) {
-    return NextResponse.json(
-      { success: false, message: `Backend failed to save ${section.title}. The public page was not updated.` },
-      { status: 502 }
-    );
-  }
+  const savedToBackend = !!(backendRes?.status === "success" || backendRes?.success === true);
 
   section.updatedAt = new Date().toISOString().slice(0, 10);
+
+  // Save locally in Next.js workspace to persist edits
+  const localJson = readLocalData();
+  if (localJson && localJson.records) {
+    const recordIndex = localJson.records.findIndex((r: any) => r.id === section.id);
+    if (recordIndex !== -1) {
+      localJson.records[recordIndex] = { ...localJson.records[recordIndex], ...section };
+    } else {
+      localJson.records.push(section);
+    }
+    writeLocalData(localJson);
+  }
 
   return NextResponse.json({
     success: true,
     data: section,
-    savedToBackend: true
+    savedToBackend
   });
 }

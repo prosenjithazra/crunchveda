@@ -4,7 +4,7 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
   process.env.BACKEND_API_URL ||
-  "http://192.168.6.128:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 type BackendUser = {
   id?: string;

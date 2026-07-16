@@ -258,7 +258,7 @@ export default function ProductUI() {
   const handleWhatsAppInquiry = (product: ProductItem, size: string) => {
     const text = `Hi, I am interested in purchasing ${product.name} (${size}) from your Dry Fruit Collections.`;
     const encodedText = encodeURIComponent(text);
-    window.open(`https://wa.me/+1234567890?text=${encodedText}`, "_blank");
+    window.open(`https://wa.me/6296909031?text=${encodedText}`, "_blank");
   };
 
   // Add to Cart handler

@@ -4,13 +4,14 @@
 import type { AdminContentRecord, AdminModule, AdminSectionField, AdminStatus } from "@/json/mock/admin";
 import { adminContentService } from "@/services/admin/contentService";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
-import { Alert, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography, Paper, Divider } from "@mui/material";
-import React from "react";
+import { Alert, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Typography, Paper, Divider, CircularProgress } from "@mui/material";
+import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import AdminBreadcrumb from "./AdminBreadcrumb";
 import AdminPageHeader from "./AdminPageHeader";
 import { SectionFieldEditor, FeatureItemsEditor, TimelineItemsEditor, FaqItemsEditor, InstagramReelsEditor, PhilosophyItemsEditor, type PhilosophyItem } from "./AdminFormFields";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import { adminModules } from "@/json/mock/admin";
 
 type AdminContentSectionManagerProps = {
@@ -74,6 +75,128 @@ const serializeCharterItems = (items: CharterItem[]) => {
   return items.map(item => `${item.title.trim()} | ${item.description.trim()}`).join("\n");
 };
 
+function JourneyCardImageUploader({
+  value,
+  onChange,
+  label,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  label: string;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const extractUrl = (result: any): string =>
+    result?.data?.url        ||
+    result?.data?.secure_url ||
+    result?.data?.imageUrl   ||
+    result?.url              ||
+    result?.secure_url       ||
+    result?.imageUrl         ||
+    result?.data?.path       ||
+    result?.path             ||
+    "";
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Show preview immediately
+    const localUrl = URL.createObjectURL(file);
+    onChange(localUrl);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setUploading(true);
+    try {
+      const token =
+        window.localStorage.getItem("token") ||
+        window.localStorage.getItem("tocken") ||
+        "";
+      const res = await fetch("/api/upload/image", {
+        method: "POST",
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: formData,
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(result?.message || "Upload failed");
+      }
+      const uploadedUrl = extractUrl(result);
+      if (!uploadedUrl) {
+        toast.success("Image uploaded. Preview shown.");
+        return;
+      }
+      onChange(uploadedUrl);
+      toast.success("Image uploaded successfully!");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Image upload failed");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  return (
+    <Stack spacing={1}>
+      <TextField
+        fullWidth
+        size="small"
+        label={label}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Paste image URL or pick a file below"
+        helperText="Paste a URL directly, or click below to upload."
+      />
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+      <Box
+        onClick={() => !uploading && fileInputRef.current?.click()}
+        sx={{
+          p: 1.5,
+          border: "1px dashed",
+          borderColor: "primary.main",
+          borderRadius: 2,
+          bgcolor: "customColors.lightCream",
+          cursor: uploading ? "not-allowed" : "pointer",
+          textAlign: "center",
+          "&:hover": { bgcolor: "action.hover" },
+        }}
+      >
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center", justifyContent: "center" }}>
+          {uploading ? (
+            <>
+              <CircularProgress size={16} />
+              <Typography variant="caption" color="text.secondary">
+                Uploading…
+              </Typography>
+            </>
+          ) : (
+            <>
+              <CloudUploadOutlinedIcon color="primary" fontSize="small" />
+              <Typography variant="caption" color="primary" sx={{ fontWeight: 600 }}>
+                Click to upload image
+              </Typography>
+            </>
+          )}
+        </Stack>
+      </Box>
+      {value && (
+        <Box sx={{ border: 1, borderColor: "divider", borderRadius: 2, overflow: "hidden", maxWidth: 150, mt: 0.5 }}>
+          <img src={value} alt="Preview" style={{ width: "100%", height: "auto", display: "block" }} />
+        </Box>
+      )}
+    </Stack>
+  );
+}
+
 export default function AdminContentSectionManager({ moduleId, sectionId }: AdminContentSectionManagerProps) {
   const router = useRouter();
   const [module, setModule] = React.useState<AdminModule | null>(null);
@@ -87,6 +210,8 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
   const [philosophyItems, setPhilosophyItems] = React.useState<PhilosophyItem[]>([]);
   const [journeyCards, setJourneyCards] = React.useState<JourneyCardItem[]>([{ title: "", description: "", image: "" }]);
   const [charterItems, setCharterItems] = React.useState<CharterItem[]>([{ title: "", description: "" }]);
+  const [giftCollections, setGiftCollections] = React.useState<any[]>([]);
+  const [giftProductsCategories, setGiftProductsCategories] = React.useState<any[]>([]);
 
   const [prevParams, setPrevParams] = React.useState({ moduleId, sectionId });
     if (moduleId !== prevParams.moduleId || sectionId !== prevParams.sectionId) {
@@ -633,6 +758,98 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
               const imageSetField = rec.fields.find(f => f.id === "imageSet");
               setJourneyCards(parseJourneyCards(stepsField?.value, imageSetField?.value));
             }
+            if (rec.id === "gifts-executive") {
+              const colField = rec.fields.find(f => f.id === "collections");
+              let cols: any[] = [];
+              if (colField) {
+                if (Array.isArray(colField.value)) {
+                  cols = colField.value;
+                } else if (typeof colField.value === "string") {
+                  try {
+                    cols = JSON.parse(colField.value);
+                  } catch {
+                    cols = [];
+                  }
+                }
+              }
+              
+              if (cols.length === 0) {
+                const parseCard = (line: string, defaultId: string) => {
+                  const parts = line.split("|").map(p => p.trim());
+                  return {
+                    image: "",
+                    label: parts[0] || "",
+                    title: parts[1] || "",
+                    description: parts[2] || "",
+                    buttonText: parts[3] || "Read details",
+                    buttonLink: "/gifts",
+                    _id: defaultId
+                  };
+                };
+                const largeCard = String(rec.fields.find(f => f.id === "largeCard")?.value || "");
+                const smallCards = String(rec.fields.find(f => f.id === "smallCards")?.value || "");
+                if (largeCard) {
+                  cols.push(parseCard(largeCard, "6a4ba83368a084edc873a777"));
+                }
+                if (smallCards) {
+                  const lines = smallCards.split("\n").filter(Boolean);
+                  lines.forEach((line: string, idx: number) => {
+                    cols.push(parseCard(line, `6a4ba83368a084edc873a77${8 + idx}`));
+                  });
+                }
+              }
+              setGiftCollections(cols);
+            }
+            if (rec.id === "gifts-collections") {
+              const catField = rec.fields.find(f => f.id === "categories");
+              let cats: any[] = [];
+              if (catField) {
+                if (Array.isArray(catField.value)) {
+                  cats = catField.value;
+                } else if (typeof catField.value === "string") {
+                  try {
+                    cats = JSON.parse(catField.value);
+                  } catch {
+                    cats = [];
+                  }
+                }
+              }
+
+              if (cats.length === 0) {
+                const parseItems = (text: string, baseId: string) => {
+                  if (!text) return [];
+                  return String(text).split("\n").filter(Boolean).map((line, idx) => {
+                    const parts = line.split("|").map(p => p.trim());
+                    return {
+                      image: "",
+                      title: parts[0] || "",
+                      description: parts[1] || "",
+                      price: parts[2] || "",
+                      _id: `${baseId}${idx}`
+                    };
+                  });
+                };
+
+                const heritageHeading = rec.fields.find(f => f.id === "heritageHeading")?.value || "The Heritage";
+                const heritageItems = String(rec.fields.find(f => f.id === "heritageItems")?.value || "");
+                const seasonalHeading = rec.fields.find(f => f.id === "seasonalHeading")?.value || "The Seasonal";
+                const seasonalItems = String(rec.fields.find(f => f.id === "seasonalItems")?.value || "");
+
+                cats = [
+                  {
+                    categoryTitle: heritageHeading,
+                    products: parseItems(heritageItems, "6a4bac669970b0ba46cf9ce"),
+                    _id: "6a4bac669970b0ba46cf9ce3"
+                  },
+                  {
+                    categoryTitle: seasonalHeading,
+                    products: parseItems(seasonalItems, "6a4bac669970b0ba46cf9cd"),
+                    _id: "6a4bac669970b0ba46cf9ce6"
+                  }
+                ];
+              }
+              setGiftProductsCategories(cats);
+            }
             if (rec.id === "about-charter") {
               const chartersField = rec.fields.find(f => f.id === "charters");
               setCharterItems(parseCharterItems(chartersField?.value));
@@ -739,6 +956,20 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
             }
             return f;
           }),
+        };
+      } else if (record.id === "gifts-executive") {
+        recordToSave = {
+          ...record,
+          fields: record.fields.map(f =>
+            f.id === "collections" ? { ...f, value: giftCollections as any } : f
+          ),
+        };
+      } else if (record.id === "gifts-collections") {
+        recordToSave = {
+          ...record,
+          fields: record.fields.map(f =>
+            f.id === "categories" ? { ...f, value: giftProductsCategories as any } : f
+          ),
         };
       } else if (record.id === "about-charter") {
         recordToSave = {
@@ -1040,14 +1271,12 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
                           />
                         </Grid>
                         <Grid size={{ xs: 12, md: 6 }}>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            label="Image URL"
+                          <JourneyCardImageUploader
                             value={item.image}
-                            onChange={event => setJourneyCards(prev => prev.map((card, itemIndex) => (
-                              itemIndex === index ? { ...card, image: event.target.value } : card
+                            onChange={url => setJourneyCards(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, image: url } : card
                             )))}
+                            label="Image URL"
                           />
                         </Grid>
                         <Grid size={{ xs: 12 }}>
@@ -1075,6 +1304,347 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
                   sx={{ textTransform: "none", borderRadius: 2, alignSelf: "flex-start" }}
                 >
                   Add Journey Card
+                </Button>
+              </Stack>
+            </>
+          )}
+
+          {record.id === "gifts-executive" && (
+            <>
+              {record.fields
+                .filter(f => f.id === "heading" || f.id === "exploreLabel" || f.id === "exploreLink" || f.id === "showSection")
+                .map(field => (
+                  <Box key={field.id}>
+                    <SectionFieldEditor field={field} onChange={handleFieldChange} />
+                  </Box>
+                ))
+              }
+              <Stack spacing={2}>
+                <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                    Gift Collections
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {giftCollections.length} card{giftCollections.length !== 1 ? "s" : ""}
+                  </Typography>
+                </Stack>
+
+                {giftCollections.map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      border: "1.5px solid",
+                      borderColor: "divider",
+                      borderRadius: 2.5,
+                      overflow: "hidden",
+                      bgcolor: "background.paper",
+                    }}
+                  >
+                    <Stack
+                      direction="row"
+                      sx={{
+                        alignItems: "center",
+                        px: 2,
+                        py: 1.2,
+                        bgcolor: "action.hover",
+                        borderBottom: "1px solid",
+                        borderColor: "divider",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 24,
+                          height: 24,
+                          borderRadius: "50%",
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 11,
+                          fontWeight: 700,
+                          mr: 1.5,
+                          flexShrink: 0,
+                        }}
+                      >
+                        {index + 1}
+                      </Box>
+                      <Typography variant="body2" sx={{ fontWeight: 600, flex: 1 }}>
+                        {item.title || `Collection Card ${index + 1}`}
+                      </Typography>
+                      {giftCollections.length > 1 && (
+                        <Button
+                          type="button"
+                          color="error"
+                          variant="outlined"
+                          size="small"
+                          onClick={() => setGiftCollections(prev => prev.filter((_, itemIndex) => itemIndex !== index))}
+                          sx={{ textTransform: "none", borderRadius: 2 }}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Stack spacing={2} sx={{ p: 2 }}>
+                      <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Card label / badge"
+                            value={item.label || ""}
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, label: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Card title"
+                            value={item.title || ""}
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, title: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <JourneyCardImageUploader
+                            value={item.image || ""}
+                            onChange={url => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, image: url } : card
+                            )))}
+                            label="Card image URL"
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Button text"
+                            value={item.buttonText || ""}
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, buttonText: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Card description"
+                            value={item.description || ""}
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, description: event.target.value } : card
+                            )))}
+                            multiline
+                            minRows={2}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Stack>
+                  </Box>
+                ))}
+
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => setGiftCollections(prev => [...prev, { label: "", title: "", description: "", image: "", buttonText: "", buttonLink: "", _id: `6a4ba83368a084edc873a77${7 + prev.length}` }])}
+                  sx={{ textTransform: "none", borderRadius: 2, alignSelf: "flex-start" }}
+                >
+                  Add Collection Card
+                </Button>
+              </Stack>
+            </>
+          )}
+
+          {record.id === "gifts-collections" && (
+            <>
+              {record.fields
+                .filter(f => f.id === "showSection")
+                .map(field => (
+                  <Box key={field.id}>
+                    <SectionFieldEditor field={field} onChange={handleFieldChange} />
+                  </Box>
+                ))
+              }
+              <Stack spacing={4}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mt: 2 }}>
+                  Heritage & Seasonal Categories
+                </Typography>
+
+                {giftProductsCategories.map((category, catIdx) => (
+                  <Box
+                    key={category._id || catIdx}
+                    sx={{
+                      border: "2px solid",
+                      borderColor: "primary.light",
+                      borderRadius: 3,
+                      p: 3,
+                      bgcolor: "background.paper",
+                    }}
+                  >
+                    <Stack direction="row" spacing={2} sx={{ alignItems: "center", mb: 3 }}>
+                      <TextField
+                        label="Category Title"
+                        size="small"
+                        fullWidth
+                        value={category.categoryTitle || ""}
+                        onChange={event => setGiftProductsCategories(prev => prev.map((cat, idx) => (
+                          idx === catIdx ? { ...cat, categoryTitle: event.target.value } : cat
+                        )))}
+                        sx={{ fontWeight: 700 }}
+                      />
+                      {giftProductsCategories.length > 1 && (
+                        <Button
+                          color="error"
+                          variant="outlined"
+                          onClick={() => setGiftProductsCategories(prev => prev.filter((_, idx) => idx !== catIdx))}
+                          sx={{ textTransform: "none", borderRadius: 2 }}
+                        >
+                          Remove Category
+                        </Button>
+                      )}
+                    </Stack>
+
+                    <Stack spacing={2}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: "text.secondary" }}>
+                        Products in {category.categoryTitle || `Category ${catIdx + 1}`}
+                      </Typography>
+
+                      {(category.products || []).map((product: any, prodIdx: number) => (
+                        <Box
+                          key={product._id || prodIdx}
+                          sx={{
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 2,
+                            p: 2,
+                            bgcolor: "action.hover",
+                          }}
+                        >
+                          <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                            <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                              Product {prodIdx + 1}
+                            </Typography>
+                            <Button
+                              color="error"
+                              variant="text"
+                              size="small"
+                              onClick={() => setGiftProductsCategories(prev => prev.map((cat, idx) => {
+                                if (idx !== catIdx) return cat;
+                                return {
+                                  ...cat,
+                                  products: (cat.products || []).filter((_: any, pIdx: number) => pIdx !== prodIdx)
+                                };
+                              }))}
+                              sx={{ textTransform: "none" }}
+                            >
+                              Remove Product
+                            </Button>
+                          </Stack>
+
+                          <Grid container spacing={2}>
+                            <Grid size={{ xs: 12, md: 6 }}>
+                              <TextField
+                                label="Product Title"
+                                size="small"
+                                fullWidth
+                                value={product.title || ""}
+                                onChange={event => setGiftProductsCategories(prev => prev.map((cat, idx) => {
+                                  if (idx !== catIdx) return cat;
+                                  return {
+                                    ...cat,
+                                    products: (cat.products || []).map((p: any, pIdx: number) => (
+                                      pIdx === prodIdx ? { ...p, title: event.target.value } : p
+                                    ))
+                                  };
+                                }))}
+                              />
+                            </Grid>
+                            <Grid size={{ xs: 12, md: 6 }}>
+                              <TextField
+                                label="Product Price"
+                                size="small"
+                                fullWidth
+                                value={product.price || ""}
+                                onChange={event => setGiftProductsCategories(prev => prev.map((cat, idx) => {
+                                  if (idx !== catIdx) return cat;
+                                  return {
+                                    ...cat,
+                                    products: (cat.products || []).map((p: any, pIdx: number) => (
+                                      pIdx === prodIdx ? { ...p, price: event.target.value } : p
+                                    ))
+                                  };
+                                }))}
+                              />
+                            </Grid>
+                            <Grid size={{ xs: 12, md: 6 }}>
+                              <JourneyCardImageUploader
+                                value={product.image || ""}
+                                onChange={url => setGiftProductsCategories(prev => prev.map((cat, idx) => {
+                                  if (idx !== catIdx) return cat;
+                                  return {
+                                    ...cat,
+                                    products: (cat.products || []).map((p: any, pIdx: number) => (
+                                      pIdx === prodIdx ? { ...p, image: url } : p
+                                    ))
+                                  };
+                                }))}
+                                label="Product image URL"
+                              />
+                            </Grid>
+                            <Grid size={{ xs: 12 }}>
+                              <TextField
+                                label="Product Description"
+                                size="small"
+                                fullWidth
+                                multiline
+                                minRows={2}
+                                value={product.description || ""}
+                                onChange={event => setGiftProductsCategories(prev => prev.map((cat, idx) => {
+                                  if (idx !== catIdx) return cat;
+                                  return {
+                                    ...cat,
+                                    products: (cat.products || []).map((p: any, pIdx: number) => (
+                                      pIdx === prodIdx ? { ...p, description: event.target.value } : p
+                                    ))
+                                  };
+                                }))}
+                              />
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      ))}
+
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        size="small"
+                        onClick={() => setGiftProductsCategories(prev => prev.map((cat, idx) => {
+                          if (idx !== catIdx) return cat;
+                          return {
+                            ...cat,
+                            products: [...(cat.products || []), { title: "", description: "", price: "", image: "", _id: `6a4bac669970b0ba46cf9ce${idx}${cat.products.length}` }]
+                          };
+                        }))}
+                        sx={{ textTransform: "none", borderRadius: 2, alignSelf: "flex-start" }}
+                      >
+                        Add Product
+                      </Button>
+                    </Stack>
+                  </Box>
+                ))}
+
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => setGiftProductsCategories(prev => [...prev, { categoryTitle: "", products: [], _id: `6a4bac669970b0ba46cf9ce${prev.length}` }])}
+                  sx={{ textTransform: "none", borderRadius: 2, alignSelf: "flex-start" }}
+                >
+                  Add Category Section
                 </Button>
               </Stack>
             </>

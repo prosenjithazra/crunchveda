@@ -11,7 +11,7 @@ import React from "react";
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
-  "http://192.168.6.128:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 interface PageProps {
   params: Promise<{ slug: string }>;

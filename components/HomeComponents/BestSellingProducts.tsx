@@ -94,7 +94,7 @@ export default function BestSellingProducts() {
   const handleWhatsAppInquiry = (title: string, size: string) => {
     const text = `Hi, I am interested in purchasing ${title} (${size}) from your Best Seller Collections.`;
     const encodedText = encodeURIComponent(text);
-    window.open(`https://wa.me/+1234567890?text=${encodedText}`, "_blank");
+    window.open(`https://wa.me/6296909031?text=${encodedText}`, "_blank");
   };
 
   // Add to Cart handler

@@ -1,0 +1,224 @@
+{
+  "id": "gifts",
+  "title": "Gifts Page",
+  "route": "/gifts",
+  "description": "Manage gifting header content, executive gift cards, custom chest CTA, collection columns, and concierge form copy.",
+  "pageType": "Commerce",
+  "records": [
+    {
+      "id": "gifts-header",
+      "title": "Qui aut vel expedita",
+      "type": "Est a saepe do elit",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Subtitle",
+          "type": "text",
+          "value": "Porro ex ut ut sint "
+        },
+        {
+          "id": "headline",
+          "label": "H1 headline",
+          "type": "text",
+          "value": "Omnis pariatur Comm"
+        },
+        {
+          "id": "description",
+          "label": "Intro paragraph",
+          "type": "textarea",
+          "value": "Amet ea est suscipi"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ],
+      "updatedAt": "2026-07-07"
+    },
+    {
+      "id": "gifts-executive",
+      "title": "Executive gift set",
+      "type": "Gift cards",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "heading",
+          "label": "Section heading",
+          "type": "text",
+          "value": "Voluptatem cum simi"
+        },
+        {
+          "id": "exploreLabel",
+          "label": "Explore link label",
+          "type": "text",
+          "value": "Aliqua Quis nostrud"
+        },
+        {
+          "id": "exploreLink",
+          "label": "Explore link URL",
+          "type": "text",
+          "value": "Rerum et sint quod s"
+        },
+        {
+          "id": "collections",
+          "label": "Collections data",
+          "type": "textarea",
+          "value": [
+            {
+              "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418172238_cashews_product_p1wLvEs-0.png",
+              "label": "Et laborum Quam ali",
+              "title": "Aut tenetur maxime e",
+              "description": "Dolore qui eum maxim",
+              "buttonText": "Fugiat sunt saepe a",
+              "buttonLink": "Eu soluta voluptates",
+              "_id": "6a4ba83368a084edc873a777"
+            },
+            {
+              "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418176624_contact_hero_shirt_iPfqwv_or.png",
+              "label": "Tempor praesentium p",
+              "title": "Error quo sint ad o",
+              "description": "Earum sint corporis",
+              "buttonText": "Reprehenderit conseq",
+              "buttonLink": "Sint enim doloribus",
+              "_id": "6a4ba83368a084edc873a778"
+            },
+            {
+              "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418180748_royal_harvest_RknlU6TB5.png",
+              "label": "Ea accusamus pariatu",
+              "title": "Doloribus nesciunt ",
+              "description": "Harum provident off",
+              "buttonText": "In minim sequi quis ",
+              "buttonLink": "Sit molestias sapien",
+              "_id": "6a4ba83368a084edc873a779"
+            }
+          ]
+        }
+      ],
+      "updatedAt": "2026-07-07"
+    },
+    {
+      "id": "gifts-custom-chest",
+      "title": "Custom chest banner",
+      "type": "Banner CTA",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "eyebrow",
+          "label": "Banner subtitle",
+          "type": "text",
+          "value": "Ut cupiditate itaque"
+        },
+        {
+          "id": "heading",
+          "label": "Banner heading",
+          "type": "text",
+          "value": "Voluptates quam fugi"
+        },
+        {
+          "id": "description",
+          "label": "Banner description",
+          "type": "textarea",
+          "value": "Est cumque autem sin"
+        },
+        {
+          "id": "ctaLabel",
+          "label": "CTA label",
+          "type": "text",
+          "value": "Sapiente id fuga Se"
+        },
+        {
+          "id": "ctaHref",
+          "label": "CTA link",
+          "type": "text",
+          "value": "/categories"
+        },
+        {
+          "id": "image",
+          "label": "Banner image",
+          "type": "image",
+          "value": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418954059_pistachios_product_uIhSPOO73.png"
+        }
+      ],
+      "updatedAt": "2026-07-07"
+    },
+    {
+      "id": "gifts-collections",
+      "title": "Heritage and seasonal collections",
+      "type": "Product columns",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "heritageHeading",
+          "label": "Left column heading",
+          "type": "text",
+          "value": "The Heritage"
+        },
+        {
+          "id": "heritageItems",
+          "label": "Heritage items",
+          "type": "textarea",
+          "value": "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | $110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | $75.00"
+        },
+        {
+          "id": "seasonalHeading",
+          "label": "Right column heading",
+          "type": "text",
+          "value": "The Seasonal"
+        },
+        {
+          "id": "seasonalItems",
+          "label": "Seasonal items",
+          "type": "textarea",
+          "value": "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | $120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | $95.00"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "gifts-concierge",
+      "title": "Gift concierge",
+      "type": "Lead form",
+      "status": "Published",
+      "fields": [
+        {
+          "id": "heading",
+          "label": "Form heading",
+          "type": "text",
+          "value": "Gift Concierge"
+        },
+        {
+          "id": "description",
+          "label": "Form description",
+          "type": "textarea",
+          "value": "Need help sending gifts for your team or event? Our concierge service provides personalized guidance."
+        },
+        {
+          "id": "emailPlaceholder",
+          "label": "Email placeholder",
+          "type": "text",
+          "value": "Your Email Address"
+        },
+        {
+          "id": "submitLabel",
+          "label": "Submit button label",
+          "type": "text",
+          "value": "Inquire"
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -14,7 +14,9 @@ import {
   Tab,
   Tabs,
   TextField,
+  Typography,
 } from "@mui/material";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import toast from "react-hot-toast";
 import AdminBreadcrumb from "@/components/AdminComponents/AdminBreadcrumb";
 import AdminPageHeader from "@/components/AdminComponents/AdminPageHeader";
@@ -32,6 +34,128 @@ type CharterItem = {
   title: string;
   description: string;
 };
+
+function JourneyCardImageUploader({
+  value,
+  onChange,
+  label,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+  label: string;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const extractUrl = (result: any): string =>
+    result?.data?.url        ||
+    result?.data?.secure_url ||
+    result?.data?.imageUrl   ||
+    result?.url              ||
+    result?.secure_url       ||
+    result?.imageUrl         ||
+    result?.data?.path       ||
+    result?.path             ||
+    "";
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Show preview immediately
+    const localUrl = URL.createObjectURL(file);
+    onChange(localUrl);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setUploading(true);
+    try {
+      const token =
+        window.localStorage.getItem("token") ||
+        window.localStorage.getItem("tocken") ||
+        "";
+      const res = await fetch("/api/upload/image", {
+        method: "POST",
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: formData,
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(result?.message || "Upload failed");
+      }
+      const uploadedUrl = extractUrl(result);
+      if (!uploadedUrl) {
+        toast.success("Image uploaded. Preview shown.");
+        return;
+      }
+      onChange(uploadedUrl);
+      toast.success("Image uploaded successfully!");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Image upload failed");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  return (
+    <Stack spacing={1}>
+      <TextField
+        fullWidth
+        size="small"
+        label={label}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Paste image URL or pick a file below"
+        helperText="Paste a URL directly, or click below to upload."
+      />
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+      <Box
+        onClick={() => !uploading && fileInputRef.current?.click()}
+        sx={{
+          p: 1.5,
+          border: "1px dashed",
+          borderColor: "primary.main",
+          borderRadius: 2,
+          bgcolor: "customColors.lightCream",
+          cursor: uploading ? "not-allowed" : "pointer",
+          textAlign: "center",
+          "&:hover": { bgcolor: "action.hover" },
+        }}
+      >
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center", justifyContent: "center" }}>
+          {uploading ? (
+            <>
+              <CircularProgress size={16} />
+              <Typography variant="caption" color="text.secondary">
+                Uploading…
+              </Typography>
+            </>
+          ) : (
+            <>
+              <CloudUploadOutlinedIcon color="primary" fontSize="small" />
+              <Typography variant="caption" color="primary" sx={{ fontWeight: 600 }}>
+                Click to upload image
+              </Typography>
+            </>
+          )}
+        </Stack>
+      </Box>
+      {value && (
+        <Box sx={{ border: 1, borderColor: "divider", borderRadius: 2, overflow: "hidden", maxWidth: 150, mt: 0.5 }}>
+          <img src={value} alt="Preview" style={{ width: "100%", height: "auto", display: "block" }} />
+        </Box>
+      )}
+    </Stack>
+  );
+}
 
 export default function AboutUsAdminPage() {
   const [activeTab, setActiveTab] = useState<SectionKey>("banner");
@@ -425,17 +549,16 @@ export default function AboutUsAdminPage() {
                         />
                       </Grid>
                       <Grid size={{ xs: 12, md: 6 }}>
-                        <TextField
-                          fullWidth
-                          label="Image URL"
+                        <JourneyCardImageUploader
                           value={card.image}
-                          onChange={(e) =>
+                          onChange={(url) =>
                             handleJourneyCardChange(
                               index,
                               "image",
-                              e.target.value,
+                              url,
                             )
                           }
+                          label="Image URL"
                         />
                       </Grid>
                       <Grid size={{ xs: 12 }}>

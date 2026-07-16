@@ -94,7 +94,7 @@ export default function ProductDetailsMain({ product }: Props) {
 
   const handleWhatsApp = () => {
     const text = `Hi, I am interested in purchasing ${quantity} x ${product.name} (${selectedSize} Pack) from your Dry Fruit Collections. Could you assist me with the order?`;
-    window.open(`https://wa.me/+1234567890?text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://wa.me/6296909031?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const trust = [

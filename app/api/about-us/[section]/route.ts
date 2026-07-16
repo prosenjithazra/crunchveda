@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const LOCAL_BACKEND = "http://localhost:5000/api";
+const LOCAL_BACKEND = "https://crunch-veda-backend.onrender.com/api";
 const REMOTE_BACKEND =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
   process.env.BACKEND_API_URL ||
-  "http://192.168.6.128:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 const jsonFilePath = path.join(process.cwd(), "json/mock/about-us-data.json");
 
@@ -22,6 +22,20 @@ const readLocalData = () => {
     console.error("Failed to read local about-us JSON:", error);
   }
   return null;
+};
+
+const writeLocalData = (data: any) => {
+  try {
+    const dirPath = path.dirname(jsonFilePath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    fs.writeFileSync(jsonFilePath, JSON.stringify(data, null, 2), "utf8");
+    return true;
+  } catch (error) {
+    console.error("Failed to write local about-us JSON:", error);
+    return false;
+  }
 };
 
 const tryFetch = async (url: string, options?: RequestInit) => {
@@ -129,6 +143,28 @@ const isSuccessResponse = (response: any) => {
   return (response?.status === "success" || response?.success === true) && response?.data;
 };
 
+const mergeLocalSectionFallback = (section: string, sectionData: any) => {
+  const localJson = readLocalData();
+  const recordId = sectionRecordIds[section];
+  if (!localJson || !localJson.records || !recordId) return sectionData;
+
+  const localRecord = localJson.records.find((r: any) => r.id === recordId);
+  if (!localRecord) return sectionData;
+
+  const localSectionData = mapRecordToSectionData(section, localRecord) as any;
+  const merged = { ...sectionData } as any;
+
+  Object.keys(merged).forEach((key) => {
+    if (merged[key] === "" || merged[key] === null || merged[key] === undefined) {
+      if (localSectionData[key] !== "" && localSectionData[key] !== null && localSectionData[key] !== undefined) {
+        merged[key] = localSectionData[key];
+      }
+    }
+  });
+
+  return merged;
+};
+
 const parseRequestBody = async (
   request: Request
 ): Promise<{ payload: Record<string, any>; backendOptions: { body: BodyInit; headers: Record<string, string> } }> => {
@@ -171,10 +207,11 @@ export async function GET(
   if (isSuccessResponse(localRes)) {
     const sectionData = normalizeSectionResponse(section, localRes);
     if (sectionData) {
+      const mergedData = mergeLocalSectionFallback(section, sectionData);
       return NextResponse.json({
         success: true,
         status: "success",
-        data: { [section]: sectionData }
+        data: { [section]: mergedData }
       });
     }
   }
@@ -184,10 +221,11 @@ export async function GET(
   if (isSuccessResponse(remoteRes)) {
     const sectionData = normalizeSectionResponse(section, remoteRes);
     if (sectionData) {
+      const mergedData = mergeLocalSectionFallback(section, sectionData);
       return NextResponse.json({
         success: true,
         status: "success",
-        data: { [section]: sectionData }
+        data: { [section]: mergedData }
       });
     }
   }
@@ -311,15 +349,35 @@ export async function PUT(
     } catch {}
   }
 
-  if (!savedToBackend) {
-    return NextResponse.json(
-      {
-        success: false,
-        status: "error",
-        message: `Backend failed to save ${section}. The public page was not updated.`
-      },
-      { status: 502 }
-    );
+  // Save locally in Next.js workspace to persist edits
+  const localJson = readLocalData();
+  const recordId = sectionRecordIds[section];
+  if (localJson && localJson.records && recordId) {
+    const recordIndex = localJson.records.findIndex((r: any) => r.id === recordId);
+    if (recordIndex !== -1) {
+      const record = localJson.records[recordIndex];
+      record.updatedAt = new Date().toISOString().slice(0, 10);
+      record.fields = record.fields.map((field: any) => {
+        let val = payload[field.id];
+        // Handle field id aliases
+        if (field.id === "image" && payload.bannerImage !== undefined && section === "banner") {
+          val = payload.bannerImage;
+        } else if (field.id === "eyebrow" && payload.bannerLabel !== undefined && section === "banner") {
+          val = payload.bannerLabel;
+        } else if (field.id === "headline" && payload.bannerTitle !== undefined && section === "banner") {
+          val = payload.bannerTitle;
+        } else if (field.id === "description" && payload.bannerDescription !== undefined && section === "banner") {
+          val = payload.bannerDescription;
+        }
+        
+        if (val !== undefined) {
+          return { ...field, value: val };
+        }
+        return field;
+      });
+      localJson.records[recordIndex] = record;
+      writeLocalData(localJson);
+    }
   }
 
   return NextResponse.json({
@@ -327,6 +385,6 @@ export async function PUT(
     status: "success",
     message: `${section} updated successfully.`,
     data: payload,
-    savedToBackend: true
+    savedToBackend
   });
 }

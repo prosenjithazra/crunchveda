@@ -24,7 +24,7 @@ import toast from "react-hot-toast";
 import AdminBreadcrumb from "@/components/AdminComponents/AdminBreadcrumb";
 import AdminPageHeader from "@/components/AdminComponents/AdminPageHeader";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://crunch-veda-backend.onrender.com/api";
 
 type CategoryFormProps = {
   /** Existing category when editing; undefined when creating */

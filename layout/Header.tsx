@@ -64,7 +64,7 @@ const mobileMenuData = [
   },
   {
     iconPath: <WhatsAppIcon />,
-    href: "https://wa.me/+1234567890",
+    href: "https://wa.me/6296909031",
     label: "Contact",
   },
 ];

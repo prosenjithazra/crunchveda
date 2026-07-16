@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 
-const LOCAL_API = "http://localhost:5000/api";
+const LOCAL_API = "https://crunch-veda-backend.onrender.com/api";
 
 const REMOTE_API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
   process.env.BACKEND_API_URL ||
-  "http://192.168.6.128:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 const readBackendJson = async (response: Response) => {
   const text = await response.text();

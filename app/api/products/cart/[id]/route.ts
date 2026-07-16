@@ -4,7 +4,7 @@ const BACKEND_API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
   process.env.BACKEND_API_URL ||
-  "http://localhost:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 const readBackendJson = async (response: Response) => {
   const text = await response.text();

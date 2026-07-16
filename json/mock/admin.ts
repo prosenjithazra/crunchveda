@@ -311,8 +311,36 @@ export const adminModules: AdminModule[] = [
       createContentRecord("gifts-executive", "Executive gift set", "Gift cards", [
         field("heading", "Section heading", "text", "The Executive"),
         field("exploreLabel", "Explore link label", "text", "Explore The Set"),
-        field("largeCard", "Large gift card", "textarea", "The Signature | The Founder's Reserve | Handmade wood chest with gourmet dried fruits, chocolate, wildflower honey & olive oil. | Read details"),
-        field("smallCards", "Small gift cards", "textarea", "Royal Harvest | A sampling box of raw honey, medjool dates & handpicked nuts.\nThe Tea Botanical | Loose leaf organic herbal tea selection with handmade tea infuser."),
+        field("exploreLink", "Explore link URL", "text", "/gifts/executive"),
+        field("collections", "Collections data", "textarea", [
+          {
+            image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783343153560_Superfoods_50HpUVsEfG.jpg",
+            label: "THE SIGNATURE",
+            title: "The Founder's Reserve",
+            description: "Handmade wood chest with gourmet dried fruits, chocolate, wildflower honey & olive oil.",
+            buttonText: "Read details",
+            buttonLink: "/gifts/founders-reserve",
+            _id: "6a4ba83368a084edc873a777"
+          },
+          {
+            image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783343153564_newbannerimg_wc4cM1GvT.jpg",
+            label: "",
+            title: "Royal Harvest",
+            description: "A sampling box of raw honey, medjool dates & handpicked nuts.",
+            buttonText: "VIEW DETAILS",
+            buttonLink: "/gifts/royal-harvest",
+            _id: "6a4ba83368a084edc873a778"
+          },
+          {
+            image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783343153565_Screenshot_2026-07-06_at_6.16.05_PM_BDfflCrzf.png",
+            label: "",
+            title: "The Tea Botanical",
+            description: "Loose leaf organic herbal tea selection with handmade tea infuser.",
+            buttonText: "VIEW DETAILS",
+            buttonLink: "/gifts/tea-botanical",
+            _id: "6a4ba83368a084edc873a779"
+          }
+        ] as any),
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("gifts-custom-chest", "Custom chest banner", "Banner CTA", [
@@ -329,13 +357,48 @@ export const adminModules: AdminModule[] = [
         field("heritageItems", "Heritage items", "textarea", "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | $110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | $75.00"),
         field("seasonalHeading", "Right column heading", "text", "The Seasonal"),
         field("seasonalItems", "Seasonal items", "textarea", "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | $120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | $95.00"),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("gifts-concierge", "Gift concierge", "Lead form", [
-        field("heading", "Form heading", "text", "Gift Concierge"),
-        field("description", "Form description", "textarea", "Need help sending gifts for your team or event? Our concierge service provides personalized guidance."),
-        field("emailPlaceholder", "Email placeholder", "text", "Your Email Address"),
-        field("submitLabel", "Submit button label", "text", "Inquire"),
+        field("categories", "Categories data", "textarea", [
+          {
+            categoryTitle: "The Heritage",
+            products: [
+              {
+                image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228642_bannerimg_hBKQj2aHT.webp",
+                title: "Old Orchard Classic",
+                description: "Heritage cider, heirloom apples & seasonal fruit.",
+                price: "$110.00",
+                _id: "6a4bac669970b0ba46cf9ce4"
+              },
+              {
+                image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228646_Screenshot_2026-07-06_at_1.36.42_PM_kqLzKTCVv.png",
+                title: "The Orchard Spa",
+                description: "Botanical body mist, lavender oil & organic tea.",
+                price: "$75.00",
+                _id: "6a4bac669970b0ba46cf9ce5"
+              }
+            ],
+            _id: "6a4bac669970b0ba46cf9ce3"
+          },
+          {
+            categoryTitle: "The Seasonal",
+            products: [
+              {
+                image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228646_Superfoods_ylMqPfLA3.jpg",
+                title: "Winter Solstice",
+                description: "Spiced honey, dark chocolate & hand-poured candle.",
+                price: "$120.00",
+                _id: "6a4bac669970b0ba46cf9ce7"
+              },
+              {
+                image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228647_bannerimg_ru6BY7RcJ.webp",
+                title: "The Morning Harvest",
+                description: "Blueberry jam, wildflower honey & signature blend.",
+                price: "$95.00",
+                _id: "6a4bac669970b0ba46cf9ce8"
+              }
+            ],
+            _id: "6a4bac669970b0ba46cf9ce6"
+          }
+        ] as any),
         toggleField("showSection", "Show section", true),
       ]),
     ],

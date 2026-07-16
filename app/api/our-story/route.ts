@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const LOCAL_BACKEND = "http://localhost:5000/api";
+const LOCAL_BACKEND = "https://crunch-veda-backend.onrender.com/api";
 const REMOTE_BACKEND =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.API_URL ||
   process.env.BACKEND_API_URL ||
-  "http://192.168.6.128:5000/api";
+  "https://crunch-veda-backend.onrender.com/api";
 
 const jsonFilePath = path.join(process.cwd(), "json/mock/our-story-data.json");
 

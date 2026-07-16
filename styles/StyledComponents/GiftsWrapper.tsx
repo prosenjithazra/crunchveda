@@ -429,6 +429,7 @@ export const GiftsWrapper = styled("div")`
 
       h2 {
         font-family: ${playFair.style.fontFamily};
+        color: ${({ theme }) => theme.palette.common.white};
         font-size: 40px;
         font-weight: 700;
         line-height: 1.2;

@@ -105,27 +105,21 @@
       "fields": [
         {
           "id": "eyebrow",
-          "label": "Eyebrow",
+          "label": "Small title",
           "type": "text",
-          "value": "Our Process"
+          "value": "Et lorem quo obcaeca"
         },
         {
           "id": "heading",
-          "label": "Heading",
+          "label": "Section heading",
           "type": "text",
-          "value": "The Artisanal Journey"
+          "value": "Iste quos nisi quam "
         },
         {
           "id": "steps",
-          "label": "Steps (Title|Desc)",
+          "label": "Process cards",
           "type": "textarea",
-          "value": "Seed Heritage | The finest seed, hand-selected to reflect archaeological history and botanical purity.\nMineral Enrichment | Curating balanced ecosystem compounds, enriching soil nutrients to capture the natural essence.\nMaster Curation | Only the pinnacle of the harvest is selected, ensuring each jar represents a masterpiece."
-        },
-        {
-          "id": "imageSet",
-          "label": "Images (Newline separated)",
-          "type": "textarea",
-          "value": ""
+          "value": "Quaerat aliquid veli | Quam animi quia ill\nSaepe nesciunt omni | Qui quasi rerum id u\nVoluptas iusto simil | Ipsam quis qui et es"
         },
         {
           "id": "showSection",
@@ -133,7 +127,8 @@
           "type": "toggle",
           "value": true
         }
-      ]
+      ],
+      "updatedAt": "2026-07-07"
     },
     {
       "id": "about-quote",
