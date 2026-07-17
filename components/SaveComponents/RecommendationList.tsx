@@ -61,7 +61,7 @@ export default function RecommendationList() {
                   {item.title}
                 </Typography>
                 <Typography variant="body2" className="rec_price">
-                  ${item.price.toFixed(2)}
+                  ₹{item.price.toFixed(2)}
                 </Typography>
               </Link>
             </Grid>

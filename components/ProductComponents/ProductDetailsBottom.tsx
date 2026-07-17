@@ -156,7 +156,7 @@ export default function ProductDetailsBottom({ product }: Props) {
                       {item.name}
                     </Box>
                     <Box component="p" className="pair_price">
-                      ${defaultPrice.toFixed(2)}
+                      ₹{defaultPrice.toFixed(2)}
                     </Box>
                     <button className="pair_add_btn">Add to Cart</button>
                   </Box>

@@ -64,7 +64,7 @@ export default function BestSellerHero() {
                   <Typography className="badge_tag">Editor&apos;s Choice #01</Typography>
                   <Typography variant="h3" className="badge_title">{product.name}</Typography>
                   <Typography className="badge_sub">
-                    Premium Grade &bull; {product.defaultSize} &bull; ${price.toFixed(2)}
+                    Premium Grade &bull; {product.defaultSize} &bull; ₹{price.toFixed(2)}
                   </Typography>
                 </Box>
               </Box>

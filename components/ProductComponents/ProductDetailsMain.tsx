@@ -214,10 +214,10 @@ export default function ProductDetailsMain({ product }: Props) {
                 {/* Price */}
                 <Box className="price_row">
                   <Box component="span" className="price_main">
-                    ${price.toFixed(2)}
+                    ₹{price.toFixed(2)}
                   </Box>
                   <Box component="span" className="price_original">
-                    ${(price * 1.2).toFixed(2)}
+                    ₹{(price * 1.2).toFixed(2)}
                   </Box>
                   <Box component="span" className="price_savings">
                     20% Savings
@@ -245,7 +245,7 @@ export default function ProductDetailsMain({ product }: Props) {
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <Box component="span" className="option_price">
-                            ${sizePrice.toFixed(2)}
+                            ₹{sizePrice.toFixed(2)}
                           </Box>
                           <Box
                             className={`option_check${selectedSize === size ? " checked" : ""}`}

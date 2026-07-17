@@ -57,7 +57,7 @@ export default function BestSellerGrid() {
                     <Box className="card_details">
                       <Box className="title_row">
                         <Typography variant="h3">{product.name}</Typography>
-                        <Typography className="price">${price.toFixed(2)}</Typography>
+                        <Typography className="price">₹{price.toFixed(2)}</Typography>
                       </Box>
                       <Typography className="sub_label">
                         {product.category} | {product.defaultSize}

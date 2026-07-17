@@ -493,7 +493,7 @@ export default function ProfileUI() {
                           sx={{ fontWeight: 700, mr: 1 }}
                         />
                         <Typography variant="subtitle2" sx={{ display: "inline-block", fontWeight: 800 }}>
-                          $142.50
+                          ₹142.50
                         </Typography>
                       </Grid>
                     </Grid>
@@ -506,19 +506,19 @@ export default function ProfileUI() {
                         <Typography variant="body2" sx={{ color: "text.secondary" }}>
                           1x Royal Afghan Almonds (1kg)
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>$45.00</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>₹45.00</Typography>
                       </Stack>
                       <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                         <Typography variant="body2" sx={{ color: "text.secondary" }}>
                           2x Premium Jumbo Cashews (500g)
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>$65.00</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>₹65.00</Typography>
                       </Stack>
                       <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                         <Typography variant="body2" sx={{ color: "text.secondary" }}>
                           1x Raw Wildflower Honey (32oz)
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>$32.50</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>₹32.50</Typography>
                       </Stack>
                     </Stack>
 
@@ -560,7 +560,7 @@ export default function ProfileUI() {
                           sx={{ fontWeight: 700, mr: 1 }}
                         />
                         <Typography variant="subtitle2" sx={{ display: "inline-block", fontWeight: 800 }}>
-                          $72.00
+                          ₹72.00
                         </Typography>
                       </Grid>
                     </Grid>
@@ -572,7 +572,7 @@ export default function ProfileUI() {
                         <Typography variant="body2" sx={{ color: "text.secondary" }}>
                           3x Roasted & Salted Pistachios (250g)
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>$72.00</Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>₹72.00</Typography>
                       </Stack>
                     </Stack>
 

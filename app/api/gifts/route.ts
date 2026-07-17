@@ -75,9 +75,9 @@ const readLocalData = () => {
         status: "Published",
         fields: [
           { id: "heritageHeading", label: "Left column heading", type: "text", value: "The Heritage" },
-          { id: "heritageItems", label: "Heritage items", type: "textarea", value: "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | $110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | $75.00" },
+          { id: "heritageItems", label: "Heritage items", type: "textarea", value: "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | ₹110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | ₹75.00" },
           { id: "seasonalHeading", label: "Right column heading", type: "text", value: "The Seasonal" },
-          { id: "seasonalItems", label: "Seasonal items", type: "textarea", value: "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | $120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | $95.00" },
+          { id: "seasonalItems", label: "Seasonal items", type: "textarea", value: "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | ₹120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | ₹95.00" },
           { id: "showSection", label: "Show section", type: "toggle", value: true }
         ]
       },

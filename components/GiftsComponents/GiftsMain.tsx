@@ -69,14 +69,14 @@ export default function GiftsMain() {
             image: assets.oldOrchardClassic,
             title: "Old Orchard Classic",
             description: "Heritage cider, heirloom apples & seasonal fruit.",
-            price: "$110.00",
+            price: "₹110.00",
             _id: "6a4bac669970b0ba46cf9ce4"
           },
           {
             image: assets.orchardSpa,
             title: "The Orchard Spa",
             description: "Botanical body mist, lavender oil & organic tea.",
-            price: "$75.00",
+            price: "₹75.00",
             _id: "6a4bac669970b0ba46cf9ce5"
           }
         ],
@@ -89,14 +89,14 @@ export default function GiftsMain() {
             image: assets.winterSolstice,
             title: "Winter Solstice",
             description: "Spiced honey, dark chocolate & hand-poured candle.",
-            price: "$120.00",
+            price: "₹120.00",
             _id: "6a4bac669970b0ba46cf9ce7"
           },
           {
             image: assets.morningHarvest,
             title: "The Morning Harvest",
             description: "Blueberry jam, wildflower honey & signature blend.",
-            price: "$95.00",
+            price: "₹95.00",
             _id: "6a4bac669970b0ba46cf9ce8"
           }
         ],

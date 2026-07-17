@@ -66,7 +66,7 @@ const defaultStewardship = {
 export async function GET() {
   // 1. Try local Express backend
   const localRes = await tryFetch(`${LOCAL_BACKEND}/our-story/stewardship`);
-  if (localRes?.status === "success" && localRes?.data?.stewardship) {
+  if ((localRes?.status === "success" || localRes?.success === true) && localRes?.data?.stewardship) {
     const s = localRes.data.stewardship;
     if (Array.isArray(s.milestones)) {
       s.milestones = s.milestones.map((m: any) => ({
@@ -74,12 +74,16 @@ export async function GET() {
         image: cleanUrl(m.image || "")
       }));
     }
-    return NextResponse.json(localRes);
+    return NextResponse.json({
+      status: "success",
+      message: "Stewardship section retrieved successfully.",
+      data: { stewardship: s }
+    });
   }
 
   // 2. Try remote Express backend
   const remoteRes = await tryFetch(`${REMOTE_BACKEND}/our-story/stewardship`);
-  if (remoteRes?.status === "success" && remoteRes?.data?.stewardship) {
+  if ((remoteRes?.status === "success" || remoteRes?.success === true) && remoteRes?.data?.stewardship) {
     const s = remoteRes.data.stewardship;
     if (Array.isArray(s.milestones)) {
       s.milestones = s.milestones.map((m: any) => ({
@@ -87,7 +91,11 @@ export async function GET() {
         image: cleanUrl(m.image || "")
       }));
     }
-    return NextResponse.json(remoteRes);
+    return NextResponse.json({
+      status: "success",
+      message: "Stewardship section retrieved successfully.",
+      data: { stewardship: s }
+    });
   }
 
   // 3. Fallback: local JSON file

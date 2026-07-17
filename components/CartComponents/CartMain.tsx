@@ -310,7 +310,7 @@ export default function CartMain() {
                   {/* Price */}
                   <Box className="item_price_box">
                     <Box className="item_price">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ₹{(item.price * item.quantity).toFixed(2)}
                     </Box>
 
                     <Button
@@ -336,24 +336,24 @@ export default function CartMain() {
 
               <Box className="summary_row">
                 <Box className="row_label">Subtotal</Box>
-                <Box className="row_value">${subtotal.toFixed(2)}</Box>
+                <Box className="row_value">₹{subtotal.toFixed(2)}</Box>
               </Box>
 
               <Box className="summary_row">
                 <Box className="row_label">Estimated Shipping</Box>
-                <Box className="row_value">${shipping.toFixed(2)}</Box>
+                <Box className="row_value">₹{shipping.toFixed(2)}</Box>
               </Box>
 
               <Box className="summary_row">
                 <Box className="row_label">Tax</Box>
-                <Box className="row_value">${tax.toFixed(2)}</Box>
+                <Box className="row_value">₹{tax.toFixed(2)}</Box>
               </Box>
 
               <Box className="summary_divider" />
 
               <Box className="total_row">
                 <Box className="total_label">Total</Box>
-                <Box className="total_value">${total.toFixed(2)}</Box>
+                <Box className="total_value">₹{total.toFixed(2)}</Box>
               </Box>
 
               <Button
@@ -404,7 +404,7 @@ export default function CartMain() {
                   <Typography variant="h4" className="upsell_name">
                     {upsell.name}
                   </Typography>
-                  <Box className="upsell_price">${upsell.price.toFixed(2)}</Box>
+                  <Box className="upsell_price">₹{upsell.price.toFixed(2)}</Box>
                 </Box>
                 <Button
                   variant="contained"

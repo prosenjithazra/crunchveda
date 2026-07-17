@@ -124,7 +124,7 @@ function ProductCard({
       </Box>
 
       <Box className="card_footer_row">
-        <Box className="card_price">${price.toFixed(2)}</Box>
+        <Box className="card_price">₹{price.toFixed(2)}</Box>
         <Box className="card_actions">
           {isInCart ? (
             <button
@@ -434,9 +434,9 @@ export default function ProductUI() {
                     }}
                   />
                   <Box className="price_labels">
-                    <span>${priceRange[0]}</span>
+                    <span>₹{priceRange[0]}</span>
                     <span>
-                      {priceRange[1] === maxPriceLimit ? `$${maxPriceLimit}+` : `$${priceRange[1]}`}
+                      {priceRange[1] === maxPriceLimit ? `₹${maxPriceLimit}+` : `₹${priceRange[1]}`}
                     </span>
                   </Box>
                 </Box>

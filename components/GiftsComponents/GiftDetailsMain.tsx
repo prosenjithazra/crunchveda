@@ -106,7 +106,7 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
   const isFoundersReserve = selectedGift.title.toLowerCase().includes('founder');
   const isRoyalHarvest = selectedGift.title.toLowerCase().includes('royal');
 
-  const giftPrice = isFoundersReserve ? '$145.00' : isRoyalHarvest ? '$85.00' : '$65.00';
+  const giftPrice = isFoundersReserve ? '₹145.00' : isRoyalHarvest ? '₹85.00' : '₹65.00';
   const componentsList = isFoundersReserve 
     ? [
         'Handmade, engraved premium pinewood keepsake chest.',

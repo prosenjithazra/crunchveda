@@ -25,7 +25,7 @@ const defaultProducts = [
   {
     id: "1",
     title: "Jumbo Cashews",
-    price: "$18.50",
+    price: "₹18.50",
     image: assets.cashewsProduct,
     badge: { text: "Organic", type: "organic" },
     sizes: ["250g", "500g", "1kg"],
@@ -37,7 +37,7 @@ const defaultProducts = [
   {
     id: "2",
     title: "Raw California Almonds",
-    price: "$18.50",
+    price: "₹18.50",
     image: assets.almondsProduct,
     badge: { text: "Best Seller", type: "bestseller" },
     sizes: ["100g","250g", "500g", "1kg"],
@@ -49,7 +49,7 @@ const defaultProducts = [
   {
     id: "3",
     title: "Artisanal Chilean Walnuts",
-    price: "$21.99",
+    price: "₹21.99",
     image: assets.walnutsProduct,
     badge: null,
     sizes: ["500g"],
@@ -61,7 +61,7 @@ const defaultProducts = [
   {
     id: "4",
     title: "Turkish Salted Pistachios",
-    price: "$27.50",
+    price: "₹27.50",
     image: assets.pistachiosProduct,
     badge: null,
     sizes: ["100g","500g"],

@@ -95,19 +95,19 @@
       "title": "Minimal intervention philosophy",
       "type": "Card grid",
       "status": "Published",
-      "updatedAt": "2026-07-06",
+      "updatedAt": "2026-07-17",
       "fields": [
         {
           "id": "heading",
           "label": "Section heading",
           "type": "text",
-          "value": "Beatae cumque dolore"
+          "value": "Minimal Intervention Philosophy"
         },
         {
           "id": "description",
           "label": "Section description",
           "type": "textarea",
-          "value": "Aliquip iusto exerci"
+          "value": "We believe the finest produce is born from where the human hand is lightest, guiding nature without forcing it."
         },
         {
           "id": "cards",
@@ -115,16 +115,16 @@
           "type": "textarea",
           "value": [
             {
-              "title": "Architecto quo iusto",
-              "description": "Facilis in ipsam ips"
+              "title": "Biodynamic Balance",
+              "description": "Aligning harvests close with celestial cycles to ensure the highest potential energy and energetic purity."
             },
             {
-              "title": "Laboris reiciendis d",
-              "description": "Sed sunt voluptatem"
+              "title": "Pure Sourcingfefefefe",
+              "description": "Only 2% of global harvests meet our criteria for soil cleanliness, mineral depth, and certified pure origin."
             },
             {
-              "title": "Itaque aliquip neque",
-              "description": "Consequuntur quo lib"
+              "title": "Artisanal Curation",
+              "description": "Every batch is hand-inspected, air-cured slowly, and packed in protective glass to preserve the sensory richness."
             }
           ]
         },
@@ -223,23 +223,26 @@
     }
   ],
   "philosophy": {
-    "sectionTitle": "Beatae cumque dolore",
-    "sectionDescription": "Aliquip iusto exerci",
+    "sectionTitle": "Minimal Intervention Philosophy",
+    "sectionDescription": "We believe the finest produce is born from where the human hand is lightest, guiding nature without forcing it.",
     "philosophies": [
       {
-        "icon": "",
-        "title": "Architecto quo iusto",
-        "description": "Facilis in ipsam ips"
+        "icon": "🌿",
+        "title": "Biodynamic Balance",
+        "description": "Aligning harvests close with celestial cycles to ensure the highest potential energy and energetic purity.",
+        "_id": "6a4b62032e9eb6efba152912"
       },
       {
-        "icon": "",
-        "title": "Laboris reiciendis d",
-        "description": "Sed sunt voluptatem"
+        "icon": "🌿",
+        "title": "Pure Sourcingfefefefe",
+        "description": "Only 2% of global harvests meet our criteria for soil cleanliness, mineral depth, and certified pure origin.",
+        "_id": "6a4b62032e9eb6efba152913"
       },
       {
-        "icon": "",
-        "title": "Itaque aliquip neque",
-        "description": "Consequuntur quo lib"
+        "icon": "🌿",
+        "title": "Artisanal Curation",
+        "description": "Every batch is hand-inspected, air-cured slowly, and packed in protective glass to preserve the sensory richness.",
+        "_id": "6a4b62032e9eb6efba152914"
       }
     ]
   },

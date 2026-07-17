@@ -916,7 +916,27 @@ export const adminContentService = {
         if (!res.ok) {
           throw new Error(data.message || "Failed to fetch our-story module");
         }
-        return mergeContentModule(data.data, id);
+        const moduleData = mergeContentModule(data.data, id);
+        if (moduleData) {
+          try {
+            const [banner, beginning, philosophy, stewardship] = await Promise.all([
+              adminContentService.getOurStoryBanner().catch(() => null),
+              adminContentService.getOurStoryBeginning().catch(() => null),
+              adminContentService.getOurStoryPhilosophy().catch(() => null),
+              adminContentService.getOurStoryStewardship().catch(() => null),
+            ]);
+            moduleData.records = moduleData.records.map(record => {
+              if (record.id === "story-hero" && banner) return banner;
+              if (record.id === "story-legacy" && beginning) return beginning;
+              if (record.id === "story-philosophy" && philosophy) return philosophy;
+              if (record.id === "story-timeline" && stewardship) return stewardship;
+              return record;
+            });
+          } catch (e) {
+            console.error("Failed to merge our-story details:", e);
+          }
+        }
+        return moduleData;
       } catch {
         return mergeContentModule(undefined, id);
       }

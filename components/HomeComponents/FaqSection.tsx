@@ -23,7 +23,7 @@ const faqData: FaqItem[] = [
   },
   {
     question: "What is your shipping policy?",
-    answer: "We offer carbon-neutral express shipping across the country. Orders are processed within 24 hours, and delivery typically takes 2–4 business days. Free shipping is automatically applied to all orders over $50."
+    answer: "We offer carbon-neutral express shipping across the country. Orders are processed within 24 hours, and delivery typically takes 2–4 business days. Free shipping is automatically applied to all orders over ₹50."
   }
 ];
 

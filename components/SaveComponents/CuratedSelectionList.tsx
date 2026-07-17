@@ -90,7 +90,7 @@ export default function CuratedSelectionList({
                   {item.description}
                 </Typography>
                 <Typography variant="h4" className="card_price">
-                  ${item.price.toFixed(2)}
+                  ₹{item.price.toFixed(2)}
                 </Typography>
                 <Button
                   variant="contained"

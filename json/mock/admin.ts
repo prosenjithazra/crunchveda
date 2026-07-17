@@ -116,7 +116,7 @@ export const adminModules: AdminModule[] = [
         field("heading", "Section heading", "text", "Best Selling Products"),
         field("viewAllLabel", "View all label", "text", "View All Products"),
         field("viewAllHref", "View all link", "text", "/products"),
-        field("products", "Featured product cards", "textarea", "Jumbo Cashews | $18.50 | Organic | 250g, 500g, 1kg | WhatsApp enabled\nRaw California Almonds | $18.50 | Best Seller | 100g, 250g, 500g, 1kg | WhatsApp enabled\nArtisanal Chilean Walnuts | $21.99 | No badge | 500g | WhatsApp disabled\nTurkish Salted Pistachios | $27.50 | No badge | 100g, 500g | WhatsApp disabled"),
+        field("products", "Featured product cards", "textarea", "Jumbo Cashews | ₹18.50 | Organic | 250g, 500g, 1kg | WhatsApp enabled\nRaw California Almonds | ₹18.50 | Best Seller | 100g, 250g, 500g, 1kg | WhatsApp enabled\nArtisanal Chilean Walnuts | ₹21.99 | No badge | 500g | WhatsApp disabled\nTurkish Salted Pistachios | ₹27.50 | No badge | 100g, 500g | WhatsApp disabled"),
         toggleField("showSection", "Show best selling section", true),
       ]),
       createContentRecord("home-features", "Feature promise band", "Feature cards", [
@@ -280,7 +280,7 @@ export const adminModules: AdminModule[] = [
         field("image", "Featured image", "image", assets.bestSellerDates),
         field("badgeTag", "Overlay badge", "text", "Editor's Choice #01"),
         field("productName", "Product name", "text", "Jumbo Medjool Dates"),
-        field("productMeta", "Product meta", "text", "Premium Grade • 1kg • $32.00"),
+        field("productMeta", "Product meta", "text", "Premium Grade • 1kg • ₹32.00"),
         field("sectionTag", "Right column tag", "text", "The Provenance"),
         field("description", "Product story", "textarea", "Harvested from the Jericho Valley, these King of Dates are hand-picked at peak ripeness."),
         field("checklist", "Checklist items", "textarea", "Single-Estate Origin\n100% Pure Organic"),
@@ -290,7 +290,7 @@ export const adminModules: AdminModule[] = [
       createContentRecord("best-collection", "The Collection grid", "Product cards", [
         field("heading", "Section heading", "text", "The Collection"),
         field("viewAllLabel", "View all label", "text", "View All Shop"),
-        field("cards", "Collection cards", "textarea", "Raw Forest Honey | $45.00 | Acacia & Tupelo | 500g | Limited Batch\nArtisanal Walnuts | $28.00 | Shelled | 750g\nExotic Fruit Mix | $34.00 | Dehydrated | 400g"),
+        field("cards", "Collection cards", "textarea", "Raw Forest Honey | ₹45.00 | Acacia & Tupelo | 500g | Limited Batch\nArtisanal Walnuts | ₹28.00 | Shelled | 750g\nExotic Fruit Mix | ₹34.00 | Dehydrated | 400g"),
         toggleField("showSection", "Show section", true),
       ]),
     ],
@@ -354,9 +354,9 @@ export const adminModules: AdminModule[] = [
       ]),
       createContentRecord("gifts-collections", "Heritage and seasonal collections", "Product columns", [
         field("heritageHeading", "Left column heading", "text", "The Heritage"),
-        field("heritageItems", "Heritage items", "textarea", "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | $110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | $75.00"),
+        field("heritageItems", "Heritage items", "textarea", "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | ₹110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | ₹75.00"),
         field("seasonalHeading", "Right column heading", "text", "The Seasonal"),
-        field("seasonalItems", "Seasonal items", "textarea", "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | $120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | $95.00"),
+        field("seasonalItems", "Seasonal items", "textarea", "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | ₹120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | ₹95.00"),
         field("categories", "Categories data", "textarea", [
           {
             categoryTitle: "The Heritage",
@@ -365,14 +365,14 @@ export const adminModules: AdminModule[] = [
                 image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228642_bannerimg_hBKQj2aHT.webp",
                 title: "Old Orchard Classic",
                 description: "Heritage cider, heirloom apples & seasonal fruit.",
-                price: "$110.00",
+                price: "₹110.00",
                 _id: "6a4bac669970b0ba46cf9ce4"
               },
               {
                 image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228646_Screenshot_2026-07-06_at_1.36.42_PM_kqLzKTCVv.png",
                 title: "The Orchard Spa",
                 description: "Botanical body mist, lavender oil & organic tea.",
-                price: "$75.00",
+                price: "₹75.00",
                 _id: "6a4bac669970b0ba46cf9ce5"
               }
             ],
@@ -385,14 +385,14 @@ export const adminModules: AdminModule[] = [
                 image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228646_Superfoods_ylMqPfLA3.jpg",
                 title: "Winter Solstice",
                 description: "Spiced honey, dark chocolate & hand-poured candle.",
-                price: "$120.00",
+                price: "₹120.00",
                 _id: "6a4bac669970b0ba46cf9ce7"
               },
               {
                 image: "https://ik.imagekit.io/phzkfvkms/crunchveda/gifts/gifts_1783344228647_bannerimg_ru6BY7RcJ.webp",
                 title: "The Morning Harvest",
                 description: "Blueberry jam, wildflower honey & signature blend.",
-                price: "$95.00",
+                price: "₹95.00",
                 _id: "6a4bac669970b0ba46cf9ce8"
               }
             ],
@@ -587,7 +587,7 @@ export const adminModules: AdminModule[] = [
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("cart-items", "Default cart items", "Cart products", [
-        field("items", "Default items", "textarea", "Artisanal Forest Strawberries | SEASONAL SELECTION | $18.00 | Qty 2\nCold-Pressed Heritage Olive Oil | ESTATE BOTTLED | $45.00 | Qty 1"),
+        field("items", "Default items", "textarea", "Artisanal Forest Strawberries | SEASONAL SELECTION | ₹18.00 | Qty 2\nCold-Pressed Heritage Olive Oil | ESTATE BOTTLED | ₹45.00 | Qty 1"),
         field("emptyTitle", "Empty state text", "text", "Your basket is currently empty."),
         field("emptyCtaLabel", "Empty CTA label", "text", "Browse Products"),
         field("emptyCtaHref", "Empty CTA link", "text", "/products"),
@@ -603,7 +603,7 @@ export const adminModules: AdminModule[] = [
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("cart-upsell", "Upsell products", "Upsell cards", [
-        field("items", "Upsell items", "textarea", "Infused Fleur de Sel | $12.00\nRaw Wildflower Honey | $22.00\nStone-Baked Sourdough | $9.00"),
+        field("items", "Upsell items", "textarea", "Infused Fleur de Sel | ₹12.00\nRaw Wildflower Honey | ₹22.00\nStone-Baked Sourdough | ₹9.00"),
         toggleField("showSection", "Show section", true),
       ]),
     ],
@@ -616,7 +616,7 @@ export const adminModules: AdminModule[] = [
     pageType: "Utility",
     records: [
       createContentRecord("saved-list", "Curated selection list", "Saved products", [
-        field("items", "Saved items", "textarea", "DESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | $32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | $32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | $32.00"),
+        field("items", "Saved items", "textarea", "DESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | ₹32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | ₹32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | ₹32.00"),
         field("clearAllLabel", "Clear all label", "text", "Clear All"),
         field("moveAllLabel", "Move all label", "text", "Move All to Basket"),
         toggleField("showSection", "Show section", true),
@@ -697,7 +697,7 @@ export const adminProducts: AdminProductRecord[] = dryFruits.map(product => ({
   name: product.name,
   category: product.category,
   status: "Published",
-  price: `$${product.sizePrices[product.defaultSize].toFixed(2)}`,
+  price: `₹${product.sizePrices[product.defaultSize].toFixed(2)}`,
   defaultSize: product.defaultSize,
   rating: product.rating.toString(),
   image: product.image,

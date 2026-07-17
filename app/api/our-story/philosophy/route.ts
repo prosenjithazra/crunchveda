@@ -63,14 +63,22 @@ const defaultPhilosophy = {
 export async function GET() {
   // 1. Try local Express backend
   const localRes = await tryFetch(`${LOCAL_BACKEND}/our-story/philosophy`);
-  if (localRes?.status === "success" && localRes?.data?.philosophy) {
-    return NextResponse.json(localRes);
+  if ((localRes?.status === "success" || localRes?.success === true) && localRes?.data?.philosophy) {
+    return NextResponse.json({
+      status: "success",
+      message: "Philosophy section retrieved successfully.",
+      data: { philosophy: localRes.data.philosophy }
+    });
   }
 
   // 2. Try remote Express backend
   const remoteRes = await tryFetch(`${REMOTE_BACKEND}/our-story/philosophy`);
-  if (remoteRes?.status === "success" && remoteRes?.data?.philosophy) {
-    return NextResponse.json(remoteRes);
+  if ((remoteRes?.status === "success" || remoteRes?.success === true) && remoteRes?.data?.philosophy) {
+    return NextResponse.json({
+      status: "success",
+      message: "Philosophy section retrieved successfully.",
+      data: { philosophy: remoteRes.data.philosophy }
+    });
   }
 
   // 3. Fallback: read from local our-story-data.json

@@ -102,7 +102,7 @@ export default function CheckoutMain() {
     const itemsText = cartItems
       .map(
         (item) =>
-          `• ${item.quantity} x ${item.name} (${item.badge}) - $${(
+          `• ${item.quantity} x ${item.name} (${item.badge}) - ₹${(
             item.price * item.quantity
           ).toFixed(2)}`,
       )
@@ -119,10 +119,10 @@ export default function CheckoutMain() {
       `Country: ${country}\n\n` +
       `📦 Order Details:\n` +
       `${itemsText}\n\n` +
-      `Subtotal: $${subtotal.toFixed(2)}\n` +
-      `Shipping: $${shipping.toFixed(2)}\n` +
-      `Tax: $${tax.toFixed(2)}\n` +
-      `Total: $${total.toFixed(2)}\n\n` +
+      `Subtotal: ₹${subtotal.toFixed(2)}\n` +
+      `Shipping: ₹${shipping.toFixed(2)}\n` +
+      `Tax: ₹${tax.toFixed(2)}\n` +
+      `Total: ₹${total.toFixed(2)}\n\n` +
       `Please confirm receipt and send me the payment link. Thank you!`;
 
     window.open(
@@ -376,11 +376,11 @@ export default function CheckoutMain() {
                             {item.name}
                           </Typography>
                           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                            Qty: {item.quantity} × ${item.price.toFixed(2)}
+                            Qty: {item.quantity} × ₹{item.price.toFixed(2)}
                           </Typography>
                         </Box>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ₹{(item.price * item.quantity).toFixed(2)}
                         </Typography>
                       </Stack>
                     ))
@@ -393,21 +393,21 @@ export default function CheckoutMain() {
                 <Stack spacing={1.5} sx={{ mb: 3 }}>
                   <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                     <Typography variant="body2" sx={{ color: "text.secondary" }}>Subtotal</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>${subtotal.toFixed(2)}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>₹{subtotal.toFixed(2)}</Typography>
                   </Stack>
                   <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                     <Typography variant="body2" sx={{ color: "text.secondary" }}>Estimated Shipping</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>${shipping.toFixed(2)}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>₹{shipping.toFixed(2)}</Typography>
                   </Stack>
                   <Stack direction="row" sx={{ justifyContent: "space-between" }}>
                     <Typography variant="body2" sx={{ color: "text.secondary" }}>Tax (5.55%)</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>${tax.toFixed(2)}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>₹{tax.toFixed(2)}</Typography>
                   </Stack>
                   <Divider sx={{ my: 1 }} />
                   <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>Total</Typography>
                     <Typography variant="subtitle1" sx={{ fontWeight: 800, color: "primary.main" }}>
-                      ${total.toFixed(2)}
+                      ₹{total.toFixed(2)}
                     </Typography>
                   </Stack>
                 </Stack>
