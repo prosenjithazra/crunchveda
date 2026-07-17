@@ -1,4 +1,4 @@
-const ADMIN_SESSION_KEY = "nutriharvest_admin_session";
+const ADMIN_SESSION_KEY = "crunchveda_admin_session";
 
 export type AdminSession = {
   email: string;

@@ -148,7 +148,7 @@ export const adminModules: AdminModule[] = [
       createContentRecord("home-timeline", "Heritage timeline section", "Heritage Timeline", [
         field("heading", "Section heading", "text", "Our Heritage Journey"),
         field("description", "Section description", "textarea", "Tracing our roots back to the finest organic orchards."),
-        field("milestones", "Timeline milestones", "textarea", "1994 | The Seed is Sown | Founded as a small family orchard in the foothills, focused on traditional farming methods. | left\n2008 | Organic Certification | One of the first in the region to achieve global 100% organic certification for all our produce. | right\n2024 | NutriHarvest Global | Launching our digital experience to deliver premium health directly to your doorstep worldwide. | left"),
+        field("milestones", "Timeline milestones", "textarea", "1994 | The Seed is Sown | Founded as a small family orchard in the foothills, focused on traditional farming methods. | left\n2008 | Organic Certification | One of the first in the region to achieve global 100% organic certification for all our produce. | right\n2024 | Crunchveda Global | Launching our digital experience to deliver premium health directly to your doorstep worldwide. | left"),
         toggleField("showSection", "Show heritage journey timeline", true),
       ]),
       createContentRecord("home-faq", "Frequently asked questions", "FAQ accordion", [
@@ -157,7 +157,7 @@ export const adminModules: AdminModule[] = [
         toggleField("showSection", "Show FAQ section", true),
       ]),
       createContentRecord("home-instagram", "Instagram Reels section", "Instagram Reels", [
-        field("heading", "Section heading", "text", "NutriHarvest Life"),
+        field("heading", "Section heading", "text", "Crunchveda Life"),
         field("description", "Section subtitle", "text", "Follow our journey on Instagram"),
         field("reels", "Instagram reels", "textarea", JSON.stringify([
           { image: "/assets/instagram_1.png", link: "https://instagram.com", alt: "Smoothie bowl breakfast" },
@@ -466,7 +466,7 @@ export const adminModules: AdminModule[] = [
       createContentRecord("story-legacy", "Legacy split section", "Split content", [
         field("eyebrow", "Small title", "text", "The Beginning"),
         field("heading", "Section heading", "text", "The Legacy of Soil and Spirit"),
-        field("body", "Body copy", "textarea", "Our story began in 1924, on a small patch of untouched soil that whispered of potential.\nToday, NutriHarvest stands as a beacon of high-end agricultural craft."),
+        field("body", "Body copy", "textarea", "Our story began in 1924, on a small patch of untouched soil that whispered of potential.\nToday, Crunchveda stands as a beacon of high-end agricultural craft."),
         field("image", "Section image", "image", assets.storyLegacySoil),
         toggleField("showSection", "Show section", true),
       ]),
@@ -514,7 +514,7 @@ export const adminModules: AdminModule[] = [
       ]),
       createContentRecord("zero-plastic", "Zero Plastic Mandate", "Card grid", [
         field("heading", "Section heading", "text", "Zero Plastic Mandate"),
-        field("description", "Intro paragraph", "textarea", "Every NutriHarvest vessel is designed to respect the environment, using glass, biodegradable mycelium, and vegetable-inked paper."),
+        field("description", "Intro paragraph", "textarea", "Every Crunchveda vessel is designed to respect the environment, using glass, biodegradable mycelium, and vegetable-inked paper."),
         field("cards", "Packaging cards", "textarea", "Infinitely Recyclable | Flint Glass Vases\n100% Compostable | Mycelium Buffers\nSoy-Based Ink | Vegetable Dyes"),
         toggleField("showSection", "Show section", true),
       ]),
@@ -548,7 +548,7 @@ export const adminModules: AdminModule[] = [
         field("storeLabel", "Store label", "text", "Flagship Store"),
         field("address", "Address", "textarea", "42 Savile Row,\nMayfair, London\nW1S 3QR, UK"),
         field("mapLabel", "Map link label", "text", "View on map ↗"),
-        field("email", "Enquiry email", "text", "concierge@nutriharvest.com"),
+        field("email", "Enquiry email", "text", "concierge@crunchveda.com"),
         field("phone", "Phone number", "text", "+44 (0) 20 7946 0123"),
         field("socialLinks", "Social links", "textarea", "INSTAGRAM | https://instagram.com\nLINKEDIN | https://linkedin.com"),
         toggleField("showSection", "Show section", true),
@@ -638,14 +638,14 @@ export const adminModules: AdminModule[] = [
       createContentRecord("privacy-header", "Policy header", "Policy hero", [
         field("tag", "Governance tag", "text", "Information Governance"),
         field("headline", "H1 headline", "text", "Privacy Policy"),
-        field("description", "Header description", "textarea", "Your trust is the foundation of our heritage. This policy outlines how NutriHarvest gathers, processes, and protects your information."),
+        field("description", "Header description", "textarea", "Your trust is the foundation of our heritage. This policy outlines how Crunchveda gathers, processes, and protects your information."),
         field("effectiveLabel", "Effective label", "text", "Effective Date"),
         field("effectiveDate", "Effective date", "text", "Oct 2024"),
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("privacy-sections", "Policy sections", "Legal content", [
         field("quickNav", "Quick nav items", "textarea", "01 | Data Collection | data-collection\n02 | Cookie Usage | cookie-usage\n03 | Data Sharing | data-sharing\n04 | Data Security & Rights | data-rights"),
-        field("sections", "Policy body sections", "textarea", "01 | Data Collection | We collect personal coordinates such as name, email, and phone descriptors.\n02 | Cookie Usage | NutriHarvest utilizes cookies and local browser storage to streamline user selections.\n03 | Data Sharing | We do not rent, sell, or disclose your data to third-party advertising companies.\n04 | Data Security & Rights | You can request access, corrections, or deletion of your profile data."),
+        field("sections", "Policy body sections", "textarea", "01 | Data Collection | We collect personal coordinates such as name, email, and phone descriptors.\n02 | Cookie Usage | Crunchveda utilizes cookies and local browser storage to streamline user selections.\n03 | Data Sharing | We do not rent, sell, or disclose your data to third-party advertising companies.\n04 | Data Security & Rights | You can request access, corrections, or deletion of your profile data."),
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("privacy-sidebar", "Policy sidebar and service block", "Sidebar content", [
@@ -653,7 +653,7 @@ export const adminModules: AdminModule[] = [
         field("conciergeCopy", "Concierge card copy", "textarea", "Our legal concierge is available to clarify any aspect of our documentation."),
         field("relatedDocs", "Related documents", "textarea", "Terms & Conditions | /terms-condition\nCookie Statement | #cookie-statement\nAccessibility | #accessibility"),
         field("serviceHeading", "Service heading", "text", "Unrivaled Service"),
-        field("email", "Contact email", "text", "concierge@nutriharvest.com"),
+        field("email", "Contact email", "text", "concierge@crunchveda.com"),
         field("phone", "Contact phone", "text", "1.800.HERITAGE"),
         toggleField("showSection", "Show section", true),
       ]),
@@ -669,14 +669,14 @@ export const adminModules: AdminModule[] = [
       createContentRecord("terms-header", "Terms header", "Policy hero", [
         field("tag", "Governance tag", "text", "Information Governance"),
         field("headline", "H1 headline", "text", "Legal Documentation"),
-        field("description", "Header description", "textarea", "Welcome to NutriHarvest. These terms outline the rules and regulations for the use of our high-end artisanal estate and provisions platform."),
+        field("description", "Header description", "textarea", "Welcome to Crunchveda. These terms outline the rules and regulations for the use of our high-end artisanal estate and provisions platform."),
         field("effectiveLabel", "Effective label", "text", "Effective Date"),
         field("effectiveDate", "Effective date", "text", "Oct 2024"),
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("terms-sections", "Terms sections", "Legal content", [
         field("quickNav", "Quick nav items", "textarea", "01 | Use of Site | use-of-site\n02 | Product Authenticity | product-authenticity\n03 | Intellectual Property | intellectual-property\n04 | Liability | liability"),
-        field("sections", "Terms body sections", "textarea", "01 | Use of Site | You warrant that you are at least 18 years of age or supervised by a guardian.\n02 | Product Authenticity | All product descriptions and images are subject to change without notice.\n03 | Intellectual Property | All site content is the property of NutriHarvest or its suppliers.\n04 | Liability | NutriHarvest provides the site on an as-is and as-available basis."),
+        field("sections", "Terms body sections", "textarea", "01 | Use of Site | You warrant that you are at least 18 years of age or supervised by a guardian.\n02 | Product Authenticity | All product descriptions and images are subject to change without notice.\n03 | Intellectual Property | All site content is the property of Crunchveda or its suppliers.\n04 | Liability | Crunchveda provides the site on an as-is and as-available basis."),
         toggleField("showSection", "Show section", true),
       ]),
       createContentRecord("terms-sidebar", "Terms sidebar and service block", "Sidebar content", [
@@ -684,7 +684,7 @@ export const adminModules: AdminModule[] = [
         field("conciergeCopy", "Concierge card copy", "textarea", "Our legal concierge is available to clarify any aspect of our documentation."),
         field("relatedDocs", "Related documents", "textarea", "Privacy Policy | /privacy-policy\nCookie Statement | #cookie-statement\nAccessibility | #accessibility"),
         field("serviceHeading", "Service heading", "text", "Unrivaled Service"),
-        field("email", "Contact email", "text", "concierge@nutriharvest.com"),
+        field("email", "Contact email", "text", "concierge@crunchveda.com"),
         field("phone", "Contact phone", "text", "1.800.HERITAGE"),
         toggleField("showSection", "Show section", true),
       ]),

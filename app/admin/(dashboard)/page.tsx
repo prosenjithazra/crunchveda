@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
       <AdminBreadcrumb items={[{ label: "Dashboard" }]} />
       <AdminPageHeader
         title="Dashboard"
-        description="A central workspace for managing NutriHarvest page sections, commerce content, products, media references, and admin settings."
+        description="A central workspace for managing Crunchveda page sections, commerce content, products, media references, and admin settings."
         actionLabel="Edit homepage"
         actionIcon={<AddRoundedIcon />}
         onAction={() => router.push("/admin/content/home")}

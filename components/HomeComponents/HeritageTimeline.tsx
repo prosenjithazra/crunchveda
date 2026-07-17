@@ -26,7 +26,7 @@ const defaultEvents = [
   {
     id: 3,
     year: "2024",
-    title: "NutriHarvest Global",
+    title: "Crunchveda Global",
     desc: "Launching our digital experience to deliver premium health directly to your doorstep worldwide.",
     align: "left"
   }

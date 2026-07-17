@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
   };
 
   const handleConciergeInquiry = () => {
-    window.open("mailto:concierge@nutriharvest.com?subject=Privacy%20Policy%20Inquiry", "_blank");
+    window.open("mailto:concierge@crunchveda.com?subject=Privacy%20Policy%20Inquiry", "_blank");
   };
 
   return (
@@ -33,7 +33,7 @@ export default function PrivacyPolicy() {
               <Typography className="gov_tag">Information Governance</Typography>
               <Typography variant="h1">Privacy Policy</Typography>
               <Typography className="header_desc">
-                Your trust is the foundation of our heritage. This policy outlines how NutriHarvest gathers, processes, and protects your information when using our curation platforms and WhatsApp checkout nodes.
+                Your trust is the foundation of our heritage. This policy outlines how Crunchveda gathers, processes, and protects your information when using our curation platforms and WhatsApp checkout nodes.
               </Typography>
             </Box>
             
@@ -110,7 +110,7 @@ export default function PrivacyPolicy() {
                 </Box>
                 <Box className="section_body">
                   <Typography>
-                    NutriHarvest utilizes cookies and local browser storage to streamline user selections. By saving key parameters locally, we prevent selections from clearing when you navigate between categories, story paths, and details.
+                    Crunchveda utilizes cookies and local browser storage to streamline user selections. By saving key parameters locally, we prevent selections from clearing when you navigate between categories, story paths, and details.
                   </Typography>
                   
                   <Box className="sub_columns_grid">
@@ -154,7 +154,7 @@ export default function PrivacyPolicy() {
                 </Box>
                 <Box className="section_body">
                   <Typography>
-                    Your rights to information governance are respected at NutriHarvest. You can request access to your stored profile data, request corrections, or request deletion of contact options from our customer index.
+                    Your rights to information governance are respected at Crunchveda. You can request access to your stored profile data, request corrections, or request deletion of contact options from our customer index.
                   </Typography>
                   <Typography>
                     We maintain secure server databases and audit security parameters regularly to shield personal variables from unauthorized data breaches or exposure.
@@ -198,7 +198,7 @@ export default function PrivacyPolicy() {
               <Box className="heritage_img_card">
                 <Image 
                   src={assets.bestSellerOrchard} 
-                  alt="NutriHarvest sunlit orchard hills" 
+                  alt="Crunchveda sunlit orchard hills" 
                   fill 
                   sizes="(max-width: 900px) 100vw, 30vw"
                 />
@@ -217,11 +217,11 @@ export default function PrivacyPolicy() {
           <Box className="unrivaled_service_block">
             <Typography variant="h2">Unrivaled Service</Typography>
             <Typography className="service_desc">
-              At NutriHarvest, we believe transparency is the foundation of luxury. Should you require further assistance with our documentation, our dedicated team is at your disposal.
+              At Crunchveda, we believe transparency is the foundation of luxury. Should you require further assistance with our documentation, our dedicated team is at your disposal.
             </Typography>
             <Box className="contact_links_row">
-              <a href="mailto:concierge@nutriharvest.com" className="contact_item">
-                <EmailOutlinedIcon /> concierge@nutriharvest.com
+              <a href="mailto:concierge@crunchveda.com" className="contact_item">
+                <EmailOutlinedIcon /> concierge@crunchveda.com
               </a>
               <span className="separator_dot" />
               <a href="tel:18004374824" className="contact_item">

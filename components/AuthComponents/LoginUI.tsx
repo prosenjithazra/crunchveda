@@ -302,7 +302,7 @@ export default function LoginUI() {
                     maxWidth: 380,
                   }}
                 >
-                  Join NutriHarvest to experience premium, hand-picked dry fruits and organic pantry collections delivered right to your doorstep.
+                  Join Crunchveda to experience premium, hand-picked dry fruits and organic pantry collections delivered right to your doorstep.
                 </Typography>
               </Stack>
 

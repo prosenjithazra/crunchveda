@@ -268,7 +268,7 @@ export default function CmsLoader() {
             >
               <Image
                 src="/assets/logo-mark.svg"
-                alt="NutriHarvest Logo Mark"
+                alt="crunchveda Logo Mark"
                 width={50}
                 height={50}
                 style={{ objectFit: "contain" }}
@@ -299,8 +299,8 @@ export default function CmsLoader() {
           {/* Full Branding Logo under the spinner */}
           <Box sx={{ maxWidth: 220, opacity: 0.95, filter: "brightness(0) invert(1)" }}>
             <Image
-              src="/assets/mainLogo.png"
-              alt="NutriHarvest Logo"
+              src="/assets/crunchvedaLogo.png"
+              alt="crunchveda Logo"
               width={180}
               height={50}
               style={{ objectFit: "contain", height: "auto" }}

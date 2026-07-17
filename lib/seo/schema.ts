@@ -18,13 +18,13 @@ export const organizationSchema = {
   "@type": "Organization",
   name: siteSeo.name,
   url: siteSeo.url,
-  logo: absoluteUrl("/assets/mainLogo.png"),
+  logo: absoluteUrl("/assets/crunchvedaLogo.png"),
   sameAs: ["https://instagram.com", "https://linkedin.com"],
   contactPoint: [
     {
       "@type": "ContactPoint",
       contactType: "customer support",
-      email: "concierge@nutriharvest.com",
+      email: "concierge@crunchveda.com",
       telephone: "+44-20-7946-0123",
       availableLanguage: ["English"],
     },
@@ -38,7 +38,7 @@ export const localBusinessSchema = {
   image: absoluteUrl("/assets/contact_hero_shirt.png"),
   url: siteSeo.url,
   telephone: "+44-20-7946-0123",
-  email: "concierge@nutriharvest.com",
+  email: "concierge@crunchveda.com",
   address: {
     "@type": "PostalAddress",
     streetAddress: "42 Savile Row",
@@ -68,7 +68,7 @@ export const homeFaqSchema = {
       name: "How do you ensure the freshness of your dry fruits?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "NutriHarvest sources products directly from selected farms during peak harvest season and packs them in airtight, eco-friendly bags before dispatch.",
+        text: "Crunchveda sources products directly from selected farms during peak harvest season and packs them in airtight, eco-friendly bags before dispatch.",
       },
     },
     {
@@ -76,7 +76,7 @@ export const homeFaqSchema = {
       name: "Are your products completely organic?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "NutriHarvest's curated selection is organic, pesticide-free, and grown using natural farming practices.",
+        text: "Crunchveda's curated selection is organic, pesticide-free, and grown using natural farming practices.",
       },
     },
     {

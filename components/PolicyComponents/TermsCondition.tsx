@@ -21,7 +21,7 @@ export default function TermsCondition() {
   };
 
   const handleConciergeInquiry = () => {
-    window.open("mailto:concierge@nutriharvest.com?subject=Legal%20Terms%20Inquiry", "_blank");
+    window.open("mailto:concierge@crunchveda.com?subject=Legal%20Terms%20Inquiry", "_blank");
   };
 
   return (
@@ -35,7 +35,7 @@ export default function TermsCondition() {
               <Typography className="gov_tag">Information Governance</Typography>
               <Typography variant="h1">Legal Documentation</Typography>
               <Typography className="header_desc">
-                Welcome to NutriHarvest. These terms outline the rules and regulations for the use of our high-end artisanal estate and provisions platform. By accessing this website, we assume you accept these terms and conditions in full.
+                Welcome to Crunchveda. These terms outline the rules and regulations for the use of our high-end artisanal estate and provisions platform. By accessing this website, we assume you accept these terms and conditions in full.
               </Typography>
             </Box>
             
@@ -75,14 +75,14 @@ export default function TermsCondition() {
                 </Box>
                 <Box className="section_body">
                   <Typography>
-                    By engaging with the NutriHarvest digital environment, you warrant that you are at least 18 years of age or are accessing the site under the supervision of a parent or guardian. We grant you a limited, revocable, and non-exclusive license to access and make personal use of this site.
+                    By engaging with the Crunchveda digital environment, you warrant that you are at least 18 years of age or are accessing the site under the supervision of a parent or guardian. We grant you a limited, revocable, and non-exclusive license to access and make personal use of this site.
                   </Typography>
                   <Typography>
-                    You are strictly prohibited from reproducing, duplicating, copying, copying, selling, or otherwise exploiting our digital estate for any commercial purpose without express written consent from our legal department. Any unauthorized use terminates the permission or license granted by NutriHarvest immediately.
+                    You are strictly prohibited from reproducing, duplicating, copying, copying, selling, or otherwise exploiting our digital estate for any commercial purpose without express written consent from our legal department. Any unauthorized use terminates the permission or license granted by Crunchveda immediately.
                   </Typography>
                   <Box className="warning_blockquote">
                     <Typography>
-                      &ldquo;We reserve the right to refuse service, terminate accounts, or cancel orders at our sole discretion, including, without limitation, if we believe that customer conduct violates applicable law or is harmful to the interests of NutriHarvest.&rdquo;
+                      &ldquo;We reserve the right to refuse service, terminate accounts, or cancel orders at our sole discretion, including, without limitation, if we believe that customer conduct violates applicable law or is harmful to the interests of Crunchveda.&rdquo;
                     </Typography>
                   </Box>
                 </Box>
@@ -96,7 +96,7 @@ export default function TermsCondition() {
                 </Box>
                 <Box className="section_body">
                   <Typography>
-                    NutriHarvest is committed to the highest standards of provenance and artisanal integrity. All descriptions, images, and references to products or services on the site are subject to change without notice. We make every effort to display as accurately as possible the colors and features of our organic provisions.
+                    Crunchveda is committed to the highest standards of provenance and artisanal integrity. All descriptions, images, and references to products or services on the site are subject to change without notice. We make every effort to display as accurately as possible the colors and features of our organic provisions.
                   </Typography>
                   
                   {/* Sub-grid columns */}
@@ -125,10 +125,10 @@ export default function TermsCondition() {
                 </Box>
                 <Box className="section_body">
                   <Typography>
-                    All content included on this site, such as text, graphics, logos, button icons, images, audio clips, digital downloads, data compilations, and software, is the property of NutriHarvest or its content suppliers and protected by international copyright laws.
+                    All content included on this site, such as text, graphics, logos, button icons, images, audio clips, digital downloads, data compilations, and software, is the property of Crunchveda or its content suppliers and protected by international copyright laws.
                   </Typography>
                   <Typography>
-                    The NutriHarvest trademark and trade dress may not be used in connection with any product or service that is not NutriHarvest&apos;s, in any manner that is likely to cause confusion among customers, or in any manner that disparages or discredits the brand.
+                    The Crunchveda trademark and trade dress may not be used in connection with any product or service that is not Crunchveda&apos;s, in any manner that is likely to cause confusion among customers, or in any manner that disparages or discredits the brand.
                   </Typography>
                 </Box>
               </Box>
@@ -141,10 +141,10 @@ export default function TermsCondition() {
                 </Box>
                 <Box className="section_body">
                   <Typography>
-                    NutriHarvest provides the site on an &ldquo;as is&rdquo; and &ldquo;as available&rdquo; basis. We make no representations or warranties of any kind, express or implied, as to the operation of the site or the information, content, materials, or products included.
+                    Crunchveda provides the site on an &ldquo;as is&rdquo; and &ldquo;as available&rdquo; basis. We make no representations or warranties of any kind, express or implied, as to the operation of the site or the information, content, materials, or products included.
                   </Typography>
                   <Typography>
-                    To the full extent permissible by applicable law, NutriHarvest disclaims all warranties, express or implied. NutriHarvest will not be liable for any damages of any kind arising from the use of this site, including, but not limited to direct, indirect, incidental, punitive, and consequential damages.
+                    To the full extent permissible by applicable law, Crunchveda disclaims all warranties, express or implied. Crunchveda will not be liable for any damages of any kind arising from the use of this site, including, but not limited to direct, indirect, incidental, punitive, and consequential damages.
                   </Typography>
                 </Box>
               </Box>
@@ -185,7 +185,7 @@ export default function TermsCondition() {
               <Box className="heritage_img_card">
                 <Image 
                   src={assets.bestSellerOrchard} 
-                  alt="NutriHarvest sunlit orchard hills" 
+                  alt="Crunchveda sunlit orchard hills" 
                   fill 
                   sizes="(max-width: 900px) 100vw, 30vw"
                 />
@@ -204,11 +204,11 @@ export default function TermsCondition() {
           <Box className="unrivaled_service_block">
             <Typography variant="h2">Unrivaled Service</Typography>
             <Typography className="service_desc">
-              At NutriHarvest, we believe transparency is the foundation of luxury. Should you require further assistance with our documentation, our dedicated team is at your disposal.
+              At Crunchveda, we believe transparency is the foundation of luxury. Should you require further assistance with our documentation, our dedicated team is at your disposal.
             </Typography>
             <Box className="contact_links_row">
-              <a href="mailto:concierge@nutriharvest.com" className="contact_item">
-                <EmailOutlinedIcon /> concierge@nutriharvest.com
+              <a href="mailto:concierge@crunchveda.com" className="contact_item">
+                <EmailOutlinedIcon /> concierge@crunchveda.com
               </a>
               <span className="separator_dot" />
               <a href="tel:18004374824" className="contact_item">

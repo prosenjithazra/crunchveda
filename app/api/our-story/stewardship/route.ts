@@ -51,7 +51,7 @@ const defaultStewardship = {
     {
       year: "1968",
       title: "Organic Pioneer",
-      description: "NutriHarvest becomes one of the first certified organic estates in the region, introducing natural balance and compost enrichment techniques.",
+      description: "Crunchveda becomes one of the first certified organic estates in the region, introducing natural balance and compost enrichment techniques.",
       image: ""
     },
     {

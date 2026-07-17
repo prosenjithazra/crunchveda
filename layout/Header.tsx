@@ -163,8 +163,8 @@ export function Header() {
                   src={assets.logo}
                   width={600}
                   height={400}
-                  alt="NutriHarvest logo"
-                  title="NutriHarvest"
+                  alt="crunchveda logo"
+                  title="crunchveda"
                   style={{ width: "100%", height: "auto" }}
                 />
               </Link>
@@ -398,7 +398,7 @@ export function Header() {
         <Drawer anchor="right" open={isOpen} onClose={() => setIsOpen(false)}>
           <Stack sx={{ width: 280, p: 3 }} spacing={3}>
             <Typography variant="h6" sx={{ fontWeight: 800 }}>
-              NutriHarvest
+              Crunchveda
             </Typography>
             {navItems.map((item) => (
               <Typography

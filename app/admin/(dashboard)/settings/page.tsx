@@ -8,9 +8,9 @@ import toast from "react-hot-toast";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = React.useState({
-    siteName: "NutriHarvest",
-    supportEmail: "support@nutriharvest.com",
-    orderPrefix: "NH",
+    siteName: "Crunchveda",
+    supportEmail: "support@crunchveda.com",
+    orderPrefix: "CV",
     maintenanceMode: false,
     showDraftPreview: true,
   });

@@ -23,7 +23,7 @@ export default function ZeroPlasticMandate() {
         <Box className="mandate_header">
           <Typography variant="h2">Zero Plastic Mandate</Typography>
           <Typography>
-            Every NutriHarvest vessel is designed to respect the environment, using only glass, biodegradable mycelium, and vegetable-inked paper.
+            Every Crunchveda vessel is designed to respect the environment, using only glass, biodegradable mycelium, and vegetable-inked paper.
           </Typography>
         </Box>
 

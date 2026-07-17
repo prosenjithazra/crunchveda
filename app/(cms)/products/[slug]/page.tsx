@@ -88,8 +88,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!product) {
       return createPageMetadata({
-        title: "Product Not Found | NutriHarvest",
-        description: "The requested NutriHarvest product could not be found.",
+        title: "Product Not Found | Crunchveda",
+        description: "The requested Crunchveda product could not be found.",
         path: `/products/${slug}`,
         noIndex: true,
       });
@@ -104,7 +104,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         .replace(/^-+|-+$/g, "");
 
     return createPageMetadata({
-      title: `${product.name} | NutriHarvest`,
+      title: `${product.name} | Crunchveda`,
       description: product.description,
       path: `/products/${productSlug}`,
       keywords: [product.name, ...((product as any).dietary || []), "premium dry fruits"],
@@ -112,8 +112,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch {
     return createPageMetadata({
-      title: "Product Not Found | NutriHarvest",
-      description: "The requested NutriHarvest product could not be found.",
+      title: "Product Not Found | Crunchveda",
+      description: "The requested Crunchveda product could not be found.",
       path: `/products/${slug}`,
       noIndex: true,
     });

@@ -584,7 +584,7 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
             setTimelineItems([
               { year: "1994", title: "The Seed is Sown", description: "Founded as a small family orchard in the foothills, focused on traditional farming methods." },
               { year: "2008", title: "Organic Certification", description: "One of the first in the region to achieve global 100% organic certification for all our produce." },
-              { year: "2024", title: "NutriHarvest Global", description: "Launching our digital experience to deliver premium health directly to your doorstep worldwide." },
+              { year: "2024", title: "Crunchveda Global", description: "Launching our digital experience to deliver premium health directly to your doorstep worldwide." },
             ]);
           }
         })
@@ -599,7 +599,7 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
           setTimelineItems([
             { year: "1994", title: "The Seed is Sown", description: "Founded as a small family orchard in the foothills, focused on traditional farming methods." },
             { year: "2008", title: "Organic Certification", description: "One of the first in the region to achieve global 100% organic certification for all our produce." },
-            { year: "2024", title: "NutriHarvest Global", description: "Launching our digital experience to deliver premium health directly to your doorstep worldwide." },
+            { year: "2024", title: "Crunchveda Global", description: "Launching our digital experience to deliver premium health directly to your doorstep worldwide." },
           ]);
         })
         .finally(() => {

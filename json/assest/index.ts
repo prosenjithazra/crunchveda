@@ -1,5 +1,5 @@
 export const assets = {
-  logo: '/assets/mainLogo.png',
+  logo: '/assets/crunchvedaLogo.png',
   homeBannerImg: '/assets/homeBannerImg.png',
   almonds: '/assets/almonds_category.png',
   cashews: '/assets/cashews_category.png',

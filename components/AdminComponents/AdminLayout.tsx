@@ -155,7 +155,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <Stack spacing={2} sx={{ p: 3 }}>
         <Image
           src={assets.logo}
-          alt="NutriHarvest"
+          alt="Crunchveda"
           width={150}
           height={40}
           priority
@@ -537,7 +537,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Box>
               <Typography variant="h4">Admin Dashboard</Typography>
               <Typography variant="body2" color="text.secondary">
-                Manage NutriHarvest content and commerce modules
+                Manage Crunchveda content and commerce modules
               </Typography>
             </Box>
           </Stack>

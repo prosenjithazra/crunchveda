@@ -34,7 +34,7 @@ export function Footer() {
         <Box className="footer_grid">
           <Stack spacing={{lg:2.5, xs:1.25}} className="firstClm">
             <Typography variant="h5" className="brand_title">
-              NutriHarvest
+              Crunchveda
             </Typography>
             <Typography variant="body2" className="brand_desc">
               Elevating agricultural heritage into premium wellness experiences. Our mission is to provide the
@@ -77,7 +77,7 @@ export function Footer() {
 
         <Box className="footer_bottom">
           <Typography variant="caption" className="copyright_text">
-            © 2026 <Link href={'/'}>NutriHarvest</Link>. Curated Excellence in Agriculture.
+            © 2026 <Link href={'/'}>Crunchveda</Link>. Curated Excellence in Agriculture.
           </Typography>
           <Stack direction="row" spacing={2} className="payment_icons">
             <CreditCardRoundedIcon fontSize="small" />

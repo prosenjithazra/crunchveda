@@ -1,6 +1,6 @@
 # QA Report
 
-Project Name: NutriHarvest
+Project Name: Crunchveda
 QA Date: 2026-06-11
 
 Total Pages Tested: 22
@@ -61,7 +61,7 @@ Category: Console Warning / Image Handling
 Severity: Low
 Steps to Reproduce: Open pages containing the logo in dev mode and inspect the Next dev log.
 Expected Result: Logo renders without image sizing warnings.
-Actual Result: Next.js emitted an image aspect-ratio warning for `/assets/mainLogo.png`.
+Actual Result: Next.js emitted an image aspect-ratio warning for `/assets/crunchvedaLogo.png`.
 Status: Fixed
 
 6. Issue ID: QA-006

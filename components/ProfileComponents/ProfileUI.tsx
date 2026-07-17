@@ -67,7 +67,7 @@ function CustomTabPanel(props: TabPanelProps) {
   );
 }
 
-// Preset avatars for NutriHarvest
+// Preset avatars for Crunchveda
 const avatarPresets = [
   { name: "Almond", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" },
   { name: "Cashew", url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" },
@@ -479,7 +479,7 @@ export default function ProfileUI() {
                     <Grid container spacing={2} sx={{ alignItems: "center", mb: 3 }}>
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
-                          Order #NH-29834
+                          Order #CV-29834
                         </Typography>
                         <Typography variant="caption" sx={{ color: "text.secondary" }}>
                           Placed on June 15, 2026 at 11:30 AM
@@ -546,7 +546,7 @@ export default function ProfileUI() {
                     <Grid container spacing={2} sx={{ alignItems: "center", mb: 3 }}>
                       <Grid size={{ xs: 12, sm: 6 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
-                          Order #NH-29801
+                          Order #CV-29801
                         </Typography>
                         <Typography variant="caption" sx={{ color: "text.secondary" }}>
                           Placed on May 24, 2026 at 4:15 PM

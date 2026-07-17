@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
           <Stack spacing={1.5} sx={{ alignItems: "center", textAlign: "center" }}>
             <Image
               src={assets.logo}
-              alt="NutriHarvest"
+              alt="Crunchveda"
               width={170}
               height={48}
               priority

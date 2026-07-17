@@ -26,16 +26,16 @@ export const comingSoonPageData: UtilityPageProps = {
   eyebrow: "NEW HARVEST IN PREPARATION",
   title: "Something fresh is coming soon",
   description:
-    "Our team is preparing a refined NutriHarvest experience with curated drops, seasonal gifting, and smoother shopping flows.",
+    "Our team is preparing a refined Crunchveda experience with curated drops, seasonal gifting, and smoother shopping flows. We will open on 1st August.",
   image: assets.royalHarvest,
-  imageAlt: "Premium NutriHarvest dry fruit gift box",
+  imageAlt: "Premium Crunchveda dry fruit gift box",
   countdownTo: "2026-08-01T00:00:00+05:30",
   highlights: [
     { label: "Curated launch", value: "Soon", icon: CalendarMonthOutlinedIcon },
     { label: "Harvest quality", value: "Premium", icon: VerifiedOutlinedIcon },
     { label: "Launch window", value: "August", icon: CalendarMonthOutlinedIcon },
   ],
-  notes: ["Limited-batch collections", "Gift-ready packaging", "Organic sourcing updates"],
+  notes: ["Opening on 1st August", "Limited-batch collections", "Gift-ready packaging", "Organic sourcing updates"],
   variant: "coming-soon",
 };
 
@@ -43,7 +43,7 @@ export const maintenancePageData: UtilityPageProps = {
   eyebrow: "STOREFRONT CARE IN PROGRESS",
   title: "We are tuning the harvest room",
   description:
-    "NutriHarvest is briefly under maintenance while we refresh product details, checkout support, and content modules.",
+    "Crunchveda is briefly under maintenance while we refresh product details, checkout support, and content modules.",
   image: assets.morningHarvest,
   imageAlt: "Morning harvest basket with fresh organic produce",
   highlights: [

@@ -1,6 +1,6 @@
 # SEO Audit Report
 
-Project Name: NutriHarvest
+Project Name: Crunchveda
 Date: 2026-06-11
 
 Pages Audited:

@@ -19,15 +19,15 @@ export const metadata: Metadata = {
     try {
       return new URL(siteSeo.url);
     } catch {
-      return new URL("https://nutriharvest.com");
+      return new URL("https://crunchveda.com");
     }
   })(),
   applicationName: siteSeo.name,
   manifest: '/manifest.webmanifest',
   icons: {
-    icon: '/assets/logo-mark.svg',
-    shortcut: '/assets/logo-mark.svg',
-    apple: '/assets/logo-mark.svg',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
 };
 

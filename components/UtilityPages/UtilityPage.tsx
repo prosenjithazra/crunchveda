@@ -160,14 +160,14 @@ export default function UtilityPage({
       ref={rootRef}
       component="main"
       sx={{
-        minHeight: "100svh",
+        minHeight: "100dvh",
         bgcolor: "customColors.lightCream",
         background: isMaintenance
           ? "radial-gradient(circle at 85% 20%, rgba(255, 232, 225, 0.9), transparent 32%), linear-gradient(135deg, #FCF9F2 0%, #FFF2D5 100%)"
           : "radial-gradient(circle at 84% 18%, rgba(208, 233, 212, 0.95), transparent 32%), linear-gradient(135deg, #FCF9F2 0%, #F0EEE7 100%)",
         display: "flex",
         alignItems: "center",
-        py: { xs: 3, md: 5 },
+        py: { xs: 3, md: 4 },
         pt: { xs: 11, md: 12 },
         overflow: "hidden",
         position: "relative",
@@ -175,10 +175,10 @@ export default function UtilityPage({
           content: '""',
           position: "absolute",
           inset: "auto auto -22% -12%",
-          width: { xs: 260, md: 420 },
-          height: { xs: 260, md: 420 },
+          width: { xs: 200, md: 320 },
+          height: { xs: 200, md: 320 },
           borderRadius: "50%",
-          border: "1px solid rgba(32,53,39,0.12)",
+          border: "1px solid rgba(32,53,39,0.08)",
         },
       }}
     >
@@ -186,52 +186,56 @@ export default function UtilityPage({
         className="utility-logo"
         sx={{
           position: "absolute",
-          top: { xs: 22, md: 28 },
+          top: { xs: 18, md: 24 },
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 4,
-          width: { xs: 148, md: 174 },
+          width: { xs: 180, md: 220 },
         }}
       >
         <Image
           src={assets.logo}
-          alt="NutriHarvest"
-          width={180}
-          height={48}
+          alt="crunchveda"
+          width={220}
+          height={40}
           priority
           style={{ width: "100%", height: "auto" }}
         />
       </Box>
 
       <Container fixed>
-        <Grid container spacing={{ xs: 3, lg: 7 }} sx={{ alignItems: "center", minHeight: { md: "calc(100svh - 116px)" } }}>
+        <Grid container spacing={{ xs: 2.5, lg: 3 }} sx={{ alignItems: "center", minHeight: { md: "calc(100dvh - 140px)" } }}>
           <Grid size={{ xs: 12, lg: 6 }}>
-            <Stack spacing={{ xs: 2, md: 2.5 }}>
+            <Stack spacing={2}>
               <Chip
                 className="utility-kicker"
-                icon={<SpaOutlinedIcon />}
+                icon={<SpaOutlinedIcon sx={{ fontSize: "16px !important" }} />}
                 label={eyebrow}
                 sx={{
                   width: "fit-content",
                   bgcolor: isMaintenance ? "customColors.lightYellow" : "customColors.lightGreen",
                   color: "primary.main",
                   fontWeight: 800,
-                  letterSpacing: 1.2,
+                  fontSize: 11,
+                  letterSpacing: 1,
                   borderRadius: 1.5,
-                  px: 0.75,
+                  px: 0.5,
+                  height: 26,
                 }}
               />
 
               <Box>
                 <Typography
                   className="utility-title"
-                  variant="h1"
+                  variant="h2"
                   aria-label={title}
                   sx={{
-                    maxWidth: 680,
-                    minHeight: { xs: 76, sm: 88, md: 116 },
-                    mb: 2,
                     color: "primary.dark",
+                    fontSize: { xs: 28, sm: 34, md: 40 },
+                    fontWeight: 800,
+                    lineHeight: 1.2,
+                    mb: 1.5,
+                    minHeight: { xs: 68, sm: 80, md: 96 },
                     "&::after": {
                       content: '"|"',
                       display: "inline-block",
@@ -247,37 +251,63 @@ export default function UtilityPage({
                 >
                   {mounted ? (typedTitle || "\u00a0") : title}
                 </Typography>
-                <Typography className="utility-copy" variant="body1" sx={{ maxWidth: 560, color: "customColors.textColor", fontSize: { md: 18 } }}>
+                <Typography
+                  className="utility-copy"
+                  variant="body2"
+                  sx={{
+                    maxWidth: 500,
+                    color: "customColors.textColor",
+                    fontSize: { xs: 14, md: 15.5 },
+                    lineHeight: 1.5,
+                  }}
+                >
                   {description}
                 </Typography>
               </Box>
 
               {showCountdown && (
-                <Grid container spacing={{lg:1.5, xs:0.5}} sx={{ maxWidth: '100%' }}>
+                <Grid container spacing={1} sx={{ maxWidth: 440 }}>
                   {[
                     { label: "Days", value: mounted ? countdown?.days : undefined },
-                    { label: "Hours", value: mounted ? countdown?.hours : undefined },
-                    { label: "Minutes", value: mounted ? countdown?.minutes : undefined },
-                    { label: "Seconds", value: mounted ? countdown?.seconds : undefined },
+                    { label: "Hrs", value: mounted ? countdown?.hours : undefined },
+                    { label: "Min", value: mounted ? countdown?.minutes : undefined },
+                    { label: "Sec", value: mounted ? countdown?.seconds : undefined },
                   ].map(item => (
-                    <Grid key={item.label} size={{ xs: 3, sm: 3 }}>
+                    <Grid key={item.label} size={{ xs: 3 }}>
                       <Paper
                         className="utility-timer"
                         elevation={0}
                         sx={{
-                          p: { xs: 1, md: 2 },
+                          py: 1,
+                          px: 0.5,
                           borderRadius: 2,
-                          border: 1,
-                          borderColor: "rgba(32,53,39,0.14)",
-                          bgcolor: "rgba(255,255,255,0.76)",
+                          border: "1px solid rgba(32,53,39,0.1)",
+                          bgcolor: "rgba(255,255,255,0.6)",
                           textAlign: "center",
-                          boxShadow: "0 16px 40px rgba(32,53,39,0.08)",
+                          boxShadow: "0 6px 15px rgba(32,53,39,0.03)",
                         }}
                       >
-                        <Typography variant="h2" sx={{ fontSize: {xs:22, md: 28, lg: 38 }, color: "primary.main", lineHeight: 1.2 }}>
+                        <Typography
+                          variant="h3"
+                          sx={{
+                            fontSize: { xs: 18, md: 22, lg: 26 },
+                            fontWeight: 800,
+                            color: "primary.main",
+                            lineHeight: 1.1,
+                          }}
+                        >
                           {typeof item.value === "number" ? item.value.toString().padStart(2, "0") : "--"}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: "customColors.textColor", fontWeight: 700 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontSize: 12,
+                            color: "text.secondary",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: 0.5,
+                          }}
+                        >
                           {item.label}
                         </Typography>
                       </Paper>
@@ -286,42 +316,41 @@ export default function UtilityPage({
                 </Grid>
               )}
 
-              <Grid container spacing={1.5}>
+              <Grid container spacing={1.25} sx={{ maxWidth: 520 }}>
                 {highlights.map(item => {
                   const Icon = item.icon;
-
                   return (
                     <Grid key={item.label} size={{ xs: 12, sm: 4 }}>
                       <Paper
                         className="utility-stat"
                         elevation={0}
                         sx={{
-                          height: "100%",
-                          p: 2,
-                          borderRadius: 2,
-                          border: 1,
-                          borderColor: "divider",
-                          bgcolor: "rgba(255,255,255,0.72)",
+                          p: 1.25,
+                          borderRadius: 1.5,
+                          border: "1px solid rgba(0,0,0,0.06)",
+                          bgcolor: "rgba(255,255,255,0.45)",
                         }}
                       >
-                        <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
+                        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
                           <Stack
                             sx={{
-                              width: 40,
-                              height: 40,
+                              width: 28,
+                              height: 28,
                               flexShrink: 0,
                               alignItems: "center",
                               justifyContent: "center",
-                              borderRadius: 1.5,
+                              borderRadius: 1,
                               bgcolor: isMaintenance ? "customColors.lightOrange" : "customColors.lightGreen",
                               color: "primary.main",
                             }}
                           >
-                            <Icon fontSize="small" />
+                            <Icon sx={{ fontSize: 15 }} />
                           </Stack>
-                          <Box>
-                            <Typography variant="h4">{item.value}</Typography>
-                            <Typography variant="caption" color="text.secondary">
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="subtitle2" sx={{ fontSize: 12, fontWeight: 750, lineHeight: 1.2 }}>
+                              {item.value}
+                            </Typography>
+                            <Typography variant="caption" sx={{ fontSize: 11, display: "block", color: "text.secondary", lineHeight: 1 }}>
                               {item.label}
                             </Typography>
                           </Box>
@@ -338,7 +367,10 @@ export default function UtilityPage({
             <Box
               sx={{
                 position: "relative",
-                minHeight: { xs: 330, sm: 430, md: 560 },
+                minHeight: { xs: 260, sm: 300, md: 360 },
+                maxWidth: 480,
+                mx: "auto",
+                width: "100%",
               }}
             >
               <Box

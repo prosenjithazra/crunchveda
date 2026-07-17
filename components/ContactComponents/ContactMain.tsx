@@ -54,8 +54,8 @@ export default function ContactMain() {
                 <Grid size={{ xs: 6 }}>
                   <Typography className="details_title">Enquiries</Typography>
                   <Box className="details_content">
-                    <Link href="mailto:concierge@nutriharvest.com">
-                      concierge@nutriharvest.com
+                    <Link href="mailto:concierge@crunchveda.com">
+                      concierge@crunchveda.com
                     </Link>
                     <Link href="tel:+442079460123">
                       +44 (0) 20 7946 0123

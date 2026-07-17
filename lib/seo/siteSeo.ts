@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
 export const siteSeo = {
-  name: "NutriHarvest",
-  title: "NutriHarvest | Premium Dry Fruits, Nuts & Organic Gifts",
+  name: "Crunchveda",
+  title: "Crunchveda | Premium Dry Fruits, Nuts & Organic Gifts",
   description:
     "Shop premium dry fruits, nuts, organic pantry essentials, and curated gift hampers sourced from trusted farms and delivered fresh.",
   url: (() => {
-    let rawUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nutriharvest.com";
+    let rawUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://crunchveda.com";
     rawUrl = rawUrl.trim();
     if (rawUrl && !rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
       rawUrl = `https://${rawUrl}`;
@@ -15,12 +15,12 @@ export const siteSeo = {
       new URL(rawUrl);
       return rawUrl;
     } catch {
-      return "https://nutriharvest.com";
+      return "https://crunchveda.com";
     }
   })(),
-  author: "NutriHarvest",
+  author: "Crunchveda",
   locale: "en_US",
-  twitterHandle: "@nutriharvest",
+  twitterHandle: "@crunchveda",
   defaultImage: "/assets/homeBannerImg.png",
   keywords: [
     "premium dry fruits",
@@ -30,7 +30,7 @@ export const siteSeo = {
     "healthy snacks",
     "curated gift hampers",
     "sustainable food delivery",
-    "NutriHarvest",
+    "Crunchveda",
   ],
 };
 
@@ -127,17 +127,17 @@ export function createPageMetadata({
 export const publicPagesSeo: PageSeoConfig[] = [
   {
     path: "/",
-    title: "NutriHarvest | Premium Dry Fruits Delivered Fresh",
+    title: "Crunchveda | Premium Dry Fruits Delivered Fresh",
     description:
-      "Discover premium dry fruits, nuts, curated categories, organic pantry essentials, and elegant gift boxes from NutriHarvest.",
+      "Discover premium dry fruits, nuts, curated categories, organic pantry essentials, and elegant gift boxes from Crunchveda.",
     keywords: ["dry fruits online", "premium nuts", "organic dry fruits"],
     image: "/assets/homeBannerImg.png",
   },
   {
     path: "/categories",
-    title: "Curated Organic Collections | NutriHarvest Categories",
+    title: "Curated Organic Collections | Crunchveda Categories",
     description:
-      "Explore NutriHarvest categories including premium dates, exotic nuts, ancient grains, artisanal oils, and gifting collections.",
+      "Explore Crunchveda categories including premium dates, exotic nuts, ancient grains, artisanal oils, and gifting collections.",
     keywords: ["dry fruit categories", "premium dates", "exotic nuts", "artisanal oils"],
     image: "/assets/artisanal_gifting.png",
   },
@@ -145,69 +145,69 @@ export const publicPagesSeo: PageSeoConfig[] = [
     path: "/products",
     title: "Dry Fruit Collections | Organic Nuts & Premium Snacks",
     description:
-      "Shop premium almonds, cashews, walnuts, pistachios, dates, figs, and organic dry fruit blends from NutriHarvest.",
+      "Shop premium almonds, cashews, walnuts, pistachios, dates, figs, and organic dry fruit blends from Crunchveda.",
     keywords: ["buy dry fruits", "organic almonds", "cashews", "walnuts", "pistachios"],
     image: "/assets/almonds_product.png",
   },
   {
     path: "/best-seller",
-    title: "Best Selling Organic Dry Fruits | NutriHarvest",
+    title: "Best Selling Organic Dry Fruits | Crunchveda",
     description:
-      "Browse NutriHarvest best sellers, limited-batch harvests, premium dates, organic honey, walnuts, and exotic fruit selections.",
+      "Browse Crunchveda best sellers, limited-batch harvests, premium dates, organic honey, walnuts, and exotic fruit selections.",
     keywords: ["best selling dry fruits", "premium dates", "organic honey"],
     image: "/assets/best_seller_dates.png",
   },
   {
     path: "/gifts",
-    title: "Premium Dry Fruit Gift Hampers | NutriHarvest Gifts",
+    title: "Premium Dry Fruit Gift Hampers | Crunchveda Gifts",
     description:
-      "Order curated dry fruit gift hampers, corporate gift boxes, custom chests, and artisanal wellness gifts from NutriHarvest.",
+      "Order curated dry fruit gift hampers, corporate gift boxes, custom chests, and artisanal wellness gifts from Crunchveda.",
     keywords: ["dry fruit gifts", "corporate gift hampers", "premium gift boxes"],
     image: "/assets/founders_reserve.png",
   },
   {
     path: "/about-us",
-    title: "About NutriHarvest | Organic Stewardship & Heritage",
+    title: "About Crunchveda | Organic Stewardship & Heritage",
     description:
-      "Learn about NutriHarvest's heritage, organic stewardship, artisanal process, and commitment to premium farm-sourced products.",
-    keywords: ["about NutriHarvest", "organic stewardship", "sustainable agriculture"],
+      "Learn about Crunchveda's heritage, organic stewardship, artisanal process, and commitment to premium farm-sourced products.",
+    keywords: ["about Crunchveda", "organic stewardship", "sustainable agriculture"],
     image: "/assets/about_banner.png",
   },
   {
     path: "/our-story",
-    title: "Our Story | NutriHarvest Heritage & Artisanal Earth",
+    title: "Our Story | Crunchveda Heritage & Artisanal Earth",
     description:
-      "Explore NutriHarvest's story, century of stewardship, minimal intervention philosophy, and sustainable harvest legacy.",
-    keywords: ["NutriHarvest story", "organic farm heritage", "artisanal agriculture"],
+      "Explore Crunchveda's story, century of stewardship, minimal intervention philosophy, and sustainable harvest legacy.",
+    keywords: ["Crunchveda story", "organic farm heritage", "artisanal agriculture"],
     image: "/assets/story_hero_bg.png",
   },
   {
     path: "/sustainability",
     title: "Sustainability | Regenerative Agriculture & Zero Plastic",
     description:
-      "See NutriHarvest's sustainability pledge across regenerative agriculture, zero-plastic packaging, and climate-neutral delivery.",
+      "See Crunchveda's sustainability pledge across regenerative agriculture, zero-plastic packaging, and climate-neutral delivery.",
     keywords: ["regenerative agriculture", "zero plastic packaging", "climate neutral delivery"],
     image: "/assets/sustainability_hero_bg.png",
   },
   {
     path: "/contact-us",
-    title: "Contact NutriHarvest | Concierge Support",
+    title: "Contact Crunchveda | Concierge Support",
     description:
-      "Contact NutriHarvest for product inquiries, bulk gifting, concierge support, store details, and WhatsApp assistance.",
-    keywords: ["NutriHarvest contact", "bulk gifting inquiry", "dry fruit support"],
+      "Contact Crunchveda for product inquiries, bulk gifting, concierge support, store details, and WhatsApp assistance.",
+    keywords: ["Crunchveda contact", "bulk gifting inquiry", "dry fruit support"],
     image: "/assets/contact_hero_shirt.png",
   },
   {
     path: "/cart",
-    title: "Harvest Basket | NutriHarvest Cart",
+    title: "Harvest Basket | Crunchveda Cart",
     description:
-      "Review your NutriHarvest harvest basket, order summary, recommended add-ons, and WhatsApp checkout details.",
-    keywords: ["NutriHarvest cart", "harvest basket", "WhatsApp checkout"],
+      "Review your Crunchveda harvest basket, order summary, recommended add-ons, and WhatsApp checkout details.",
+    keywords: ["Crunchveda cart", "harvest basket", "WhatsApp checkout"],
     image: "/assets/strawberries.png",
   },
   {
     path: "/checkout",
-    title: "Checkout | NutriHarvest",
+    title: "Checkout | Crunchveda",
     description:
       "Provide your delivery information and confirm your organic harvest orders for manual WhatsApp checkout.",
     keywords: ["checkout", "confirm order", "shipping details"],
@@ -215,42 +215,42 @@ export const publicPagesSeo: PageSeoConfig[] = [
   },
   {
     path: "/saved",
-    title: "Saved Products | NutriHarvest Wishlist",
+    title: "Saved Products | Crunchveda Wishlist",
     description:
-      "View saved NutriHarvest products, curated selections, recommendations, and move favourites into your harvest basket.",
-    keywords: ["saved dry fruits", "wishlist", "NutriHarvest favourites"],
+      "View saved Crunchveda products, curated selections, recommendations, and move favourites into your harvest basket.",
+    keywords: ["saved dry fruits", "wishlist", "Crunchveda favourites"],
     image: "/assets/dates_category.png",
   },
   {
     path: "/privacy-policy",
-    title: "Privacy Policy | NutriHarvest",
+    title: "Privacy Policy | Crunchveda",
     description:
-      "Read NutriHarvest's privacy policy covering data collection, cookies, data sharing, security, and customer rights.",
-    keywords: ["NutriHarvest privacy policy", "data security", "cookie policy"],
+      "Read Crunchveda's privacy policy covering data collection, cookies, data sharing, security, and customer rights.",
+    keywords: ["Crunchveda privacy policy", "data security", "cookie policy"],
     image: "/assets/best_seller_orchard.png",
   },
   {
     path: "/terms-condition",
-    title: "Terms & Conditions | NutriHarvest",
+    title: "Terms & Conditions | Crunchveda",
     description:
-      "Review NutriHarvest terms and conditions for website use, product authenticity, intellectual property, and liability.",
-    keywords: ["NutriHarvest terms", "terms and conditions", "product authenticity"],
+      "Review Crunchveda terms and conditions for website use, product authenticity, intellectual property, and liability.",
+    keywords: ["Crunchveda terms", "terms and conditions", "product authenticity"],
     image: "/assets/best_seller_orchard.png",
   },
   {
     path: "/login",
-    title: "Sign In / Join NutriHarvest | Premium Dry Fruits & Nuts",
+    title: "Sign In / Join Crunchveda | Premium Dry Fruits & Nuts",
     description:
-      "Log in or register for a NutriHarvest account to track orders, save items to your wishlist, and manage your delivery details.",
-    keywords: ["login nutriharvest", "create account", "user register"],
+      "Log in or register for a Crunchveda account to track orders, save items to your wishlist, and manage your delivery details.",
+    keywords: ["login crunchveda", "create account", "user register"],
     image: "/assets/homeBannerImg.png",
   },
   {
     path: "/profile",
-    title: "My Account | NutriHarvest Dashboard",
+    title: "My Account | Crunchveda Dashboard",
     description:
-      "Manage your personal details, order history, address details, and settings on your NutriHarvest profile dashboard.",
-    keywords: ["user profile", "nutriharvest account", "my orders"],
+      "Manage your personal details, order history, address details, and settings on your Crunchveda profile dashboard.",
+    keywords: ["user profile", "crunchveda account", "my orders"],
     image: "/assets/dates_category.png",
   },
 ];

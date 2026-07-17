@@ -94,7 +94,7 @@ export default function StoryMain() {
   const legacyShow = beginning ? beginning.showSection !== false : true;
   const legacyEyebrow = beginning?.sectionLabel !== undefined && beginning?.sectionLabel !== null ? beginning.sectionLabel : "The Beginning";
   const legacyHeading = beginning?.sectionTitle !== undefined && beginning?.sectionTitle !== null ? beginning.sectionTitle : "The Legacy of Soil and Spirit";
-  const legacyBody = beginning?.sectionDescription !== undefined && beginning?.sectionDescription !== null ? beginning.sectionDescription : "Our story began in 1924, on a small patch of untouched soil that whispered of potential. Founder Elias and Martha Nutri saw not just a farm, but a living ecosystem that demanded respect rather than dominance.\n\nToday, NutriHarvest stands as a beacon of high-end agricultural craft. We treat each harvest as a masterpiece, ensuring that the honor is preserved for the generations to come. It is an editorial journey from seed to table, curated with meticulous attention to detail.";
+  const legacyBody = beginning?.sectionDescription !== undefined && beginning?.sectionDescription !== null ? beginning.sectionDescription : "Our story began in 1924, on a small patch of untouched soil that whispered of potential. Founder Elias and Martha Crunchveda saw not just a farm, but a living ecosystem that demanded respect rather than dominance.\n\nToday, Crunchveda stands as a beacon of high-end agricultural craft. We treat each harvest as a masterpiece, ensuring that the honor is preserved for the generations to come. It is an editorial journey from seed to table, curated with meticulous attention to detail.";
   const legacyImage = cleanUrl(beginning?.image || "") || assets.storyLegacySoil;
 
   // 3. Philosophy Section — from /api/our-story/philosophy
@@ -109,7 +109,7 @@ export default function StoryMain() {
   let philosophyCards: Array<{ title: string; description: string }> = [
     { title: "Biodynamic Balance", description: "Aligning our harvests close with celestial cycles to ensure the highest potential energy and energetic purity." },
     { title: "Pure Sourcing", description: "Only 2% of global harvests meet our criteria for soil cleanliness, mineral depth, and certified pure origin." },
-    { title: "Artisanal Curation", description: "Every batch is hand-inspected, air-cured slowly, and packed in protective glass to preserve the sensory richness that NutriHarvest is famous for." }
+    { title: "Artisanal Curation", description: "Every batch is hand-inspected, air-cured slowly, and packed in protective glass to preserve the sensory richness that Crunchveda is famous for." }
   ];
   if (Array.isArray(philosophyData?.philosophies) && philosophyData.philosophies.length > 0) {
     philosophyCards = philosophyData.philosophies.map((p: any) => ({
@@ -125,7 +125,7 @@ export default function StoryMain() {
 
   let timelineItems: Array<{ year: string; title: string; description: string; image: string }> = [
     { year: "1924", title: "The Founding Soil", description: "The first 40 acres are purchased in the fertile valleys of Oregon, marking the inception of a dedicated agricultural lineage.", image: assets.storyTimeline1924 },
-    { year: "1968", title: "Organic Pioneer", description: "NutriHarvest becomes one of the first certified organic estates in the region, introducing natural balance and compost enrichment techniques.", image: assets.storyTimeline1968 },
+    { year: "1968", title: "Organic Pioneer", description: "Crunchveda becomes one of the first certified organic estates in the region, introducing natural balance and compost enrichment techniques.", image: assets.storyTimeline1968 },
     { year: "2024", title: "The Global Standard", description: "Actively today, we continue to redefine the standards of agricultural efficacy, combining artisanal precision with ecological stewardship.", image: assets.storyTimeline2024 }
   ];
   if (Array.isArray(stewardshipData?.milestones) && stewardshipData.milestones.length > 0) {

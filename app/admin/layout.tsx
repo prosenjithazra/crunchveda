@@ -1,8 +1,8 @@
 import { createPageMetadata } from "@/lib/seo/siteSeo";
 
 export const metadata = createPageMetadata({
-  title: "Admin | NutriHarvest",
-  description: "NutriHarvest administrative workspace.",
+  title: "Admin | Crunchveda",
+  description: "Crunchveda administrative workspace.",
   path: "/admin",
   noIndex: true,
 });

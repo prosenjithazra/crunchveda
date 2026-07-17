@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .join(" ");
 
   return createPageMetadata({
-    title: `${formattedTitle} | Premium Gifting | NutriHarvest`,
+    title: `${formattedTitle} | Premium Gifting | Crunchveda`,
     description: `Discover the details, ingredients, and custom options for our premium curated gift set: ${formattedTitle}.`,
     path: `/gifts/${slug}`,
   });
