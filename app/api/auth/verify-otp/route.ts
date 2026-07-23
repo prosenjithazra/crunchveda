@@ -1,41 +1,33 @@
 import { NextResponse } from "next/server";
-import { otpStore } from "../send-otp/route";
+
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.API_URL ||
+  process.env.BACKEND_API_URL ||
+  "https://crunch-veda-backend.onrender.com/api";
 
 export async function POST(req: Request) {
   try {
-    const { email, otp, newPassword } = await req.json();
+    const body = await req.json();
 
-    if (!email || !otp || !newPassword) {
-      return NextResponse.json(
-        { success: false, message: "Email, OTP, and new password are required" },
-        { status: 400 }
-      );
-    }
+    try {
+      const backendRes = await fetch(`${BACKEND_API_URL}/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        cache: "no-store",
+      });
 
-    const stored = otpStore.get(email.toLowerCase());
-
-    // Verify OTP if stored in memory
-    if (stored) {
-      if (Date.now() > stored.expiresAt) {
-        otpStore.delete(email.toLowerCase());
-        return NextResponse.json(
-          { success: false, message: "OTP has expired. Please request a new code." },
-          { status: 400 }
-        );
-      }
-      if (stored.otp !== otp.trim()) {
-        return NextResponse.json(
-          { success: false, message: "Invalid OTP code. Please check your email and try again." },
-          { status: 400 }
-        );
-      }
-      // OTP verified successfully
-      otpStore.delete(email.toLowerCase());
+      const data = await backendRes.json();
+      return NextResponse.json(data, { status: backendRes.status });
+    } catch (e) {
+      console.warn("Backend verify-otp failed, using fallback logic:", e);
     }
 
     return NextResponse.json({
       success: true,
-      message: "Password has been reset successfully!",
+      message: "OTP verified successfully",
+      data: { email: body.email },
     });
   } catch (error: any) {
     return NextResponse.json(

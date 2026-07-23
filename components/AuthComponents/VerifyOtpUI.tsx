@@ -18,11 +18,12 @@ import {
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { outFit } from "@/mui-theme/_muiTheme";
+import { authService } from "@/services/authService";
 
 export default function VerifyOtpUI() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get("email") || "your registered email";
+  const email = searchParams.get("email") || "";
 
   const [otp, setOtp] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -39,17 +40,13 @@ export default function VerifyOtpUI() {
   }, [resendTimer]);
 
   const handleResendOtp = async () => {
-    if (resendTimer > 0) return;
+    if (resendTimer > 0 || !email) return;
     setResendTimer(30);
     try {
-      await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      toast.success("A new OTP has been sent to your email!");
-    } catch {
-      toast.success("A new OTP has been sent to your email!");
+      const data = await authService.sendOtp(email);
+      toast.success(data.message || "A new OTP has been sent to your email!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to resend OTP code");
     }
   };
 
@@ -62,24 +59,11 @@ export default function VerifyOtpUI() {
 
     setIsPending(true);
     try {
-      const res = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast.success("OTP verified successfully!");
-        router.push(`/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
-      } else {
-        // Fallback simulation for seamless UX
-        toast.success("OTP verified successfully!");
-        router.push(`/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
-      }
-    } catch (err) {
-      toast.success("OTP verified successfully!");
+      const data = await authService.verifyOtp(email, otp);
+      toast.success(data.message || "OTP verified successfully!");
       router.push(`/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
+    } catch (err: any) {
+      toast.error(err.message || "Invalid or expired verification code");
     } finally {
       setIsPending(false);
     }

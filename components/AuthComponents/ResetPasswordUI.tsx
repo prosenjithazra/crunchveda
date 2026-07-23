@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { outFit } from "@/mui-theme/_muiTheme";
+import { authService } from "@/services/authService";
 
 export default function ResetPasswordUI() {
   const router = useRouter();
@@ -45,26 +46,18 @@ export default function ResetPasswordUI() {
       toast.error("Passwords do not match");
       return;
     }
+    if (!email) {
+      toast.error("Invalid session email. Please restart forgot password process.");
+      return;
+    }
 
     setIsPending(true);
     try {
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, newPassword }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast.success(data.message || "Password reset successfully! Please sign in.");
-        router.push("/login");
-      } else {
-        toast.success("Password reset successfully! Please sign in.");
-        router.push("/login");
-      }
-    } catch (err) {
-      toast.success("Password reset successfully! Please sign in.");
+      const data = await authService.resetPassword(email, otp, newPassword);
+      toast.success(data.message || "Password reset successfully! Please sign in with your new password.");
       router.push("/login");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to reset password. Please check your verification code.");
     } finally {
       setIsPending(false);
     }

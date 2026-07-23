@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { outFit } from "@/mui-theme/_muiTheme";
+import { authService } from "@/services/authService";
 
 export default function ForgotPasswordUI() {
   const router = useRouter();
@@ -35,25 +36,11 @@ export default function ForgotPasswordUI() {
 
     setIsPending(true);
     try {
-      // Send request to API endpoint (or handle OTP dispatch)
-      const res = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast.success(data.message || "OTP sent successfully to your email!");
-        router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
-      } else {
-        // Fallback simulation for seamless offline / mock testing
-        toast.success("OTP sent to your email!");
-        router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
-      }
-    } catch (err) {
-      toast.success("OTP sent to your email!");
+      const data = await authService.sendOtp(email);
+      toast.success(data.message || "OTP sent successfully to your email!");
       router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send OTP to email address");
     } finally {
       setIsPending(false);
     }

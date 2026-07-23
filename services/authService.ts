@@ -91,6 +91,66 @@ export const authService = {
     return data;
   },
 
+  sendOtp: async (email: string): Promise<{ success: boolean; message: string }> => {
+    let res = await fetch(`${API_URL}/auth/send-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (!res.ok) {
+      res = await fetch(`/api/auth/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+    }
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to send OTP");
+    }
+    return data;
+  },
+
+  verifyOtp: async (email: string, otp: string): Promise<{ success: boolean; message: string }> => {
+    let res = await fetch(`${API_URL}/auth/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
+    if (!res.ok) {
+      res = await fetch(`/api/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
+    }
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to verify OTP");
+    }
+    return data;
+  },
+
+  resetPassword: async (email: string, otp: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+    let res = await fetch(`${API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp, newPassword }),
+    });
+    if (!res.ok) {
+      res = await fetch(`/api/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp, newPassword }),
+      });
+    }
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to reset password");
+    }
+    return data;
+  },
+
   logout: async (): Promise<{ success: boolean; message: string }> => {
     const res = await fetch(`${API_URL}/auth/logout`, {
       method: "POST",
