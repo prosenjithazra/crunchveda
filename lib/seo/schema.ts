@@ -120,9 +120,23 @@ export const createProductSchema = (product: {
   offers: {
     "@type": "Offer",
     url: absoluteUrl(`/products/${product.id}`),
-    priceCurrency: "USD",
-    price: product.sizePrices[product.defaultSize],
+    priceCurrency: "INR",
+    price: product.sizePrices[product.defaultSize] ?? Object.values(product.sizePrices)[0] ?? 0,
     availability: "https://schema.org/InStock",
     itemCondition: "https://schema.org/NewCondition",
   },
+});
+
+export const createCollectionPageSchema = (category: {
+  name: string;
+  description: string;
+  url: string;
+  itemCount?: number;
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: category.name,
+  description: category.description,
+  url: absoluteUrl(category.url),
+  ...(category.itemCount !== undefined && { numberOfItems: category.itemCount }),
 });

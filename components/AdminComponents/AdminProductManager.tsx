@@ -230,10 +230,11 @@ export default function AdminProductManager() {
                     </td>
                     <td style={{ padding: "10px 16px" }}>
                       <Chip
-                        label={p.stock}
+                        label={p.stock > 10 ? `In Stock (${p.stock})` : p.stock > 0 ? `Low Stock (${p.stock})` : "Out of Stock (0)"}
                         size="small"
-                        color={p.stock > 0 ? "default" : "error"}
+                        color={p.stock > 10 ? "success" : p.stock > 0 ? "warning" : "error"}
                         variant="outlined"
+                        sx={{ fontWeight: 600 }}
                       />
                     </td>
                     <td style={{ padding: "10px 16px" }}>

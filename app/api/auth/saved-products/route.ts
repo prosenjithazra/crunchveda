@@ -1,0 +1,66 @@
+import { NextResponse } from "next/server";
+
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.API_URL ||
+  process.env.BACKEND_API_URL ||
+  "https://crunch-veda-backend.onrender.com/api";
+
+const readBackendJson = async (response: Response) => {
+  const text = await response.text();
+
+  if (!text) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {
+      status: "error",
+      message: "Server returned a non-JSON response.",
+      preview: text.slice(0, 180).replace(/\s+/g, " ").trim(),
+    };
+  }
+};
+
+export async function GET(request: Request) {
+  const authorization = request.headers.get("authorization");
+
+  try {
+    const backendResponse = await fetch(`${BACKEND_API_URL}/auth/saved-products`, {
+      method: "GET",
+      headers: {
+        ...(authorization ? { Authorization: authorization } : {}),
+      },
+      cache: "no-store",
+    });
+    const data = await readBackendJson(backendResponse);
+    return NextResponse.json(data, { status: backendResponse.status });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to connect to server.";
+    return NextResponse.json({ status: "error", message }, { status: 502 });
+  }
+}
+
+export async function POST(request: Request) {
+  const authorization = request.headers.get("authorization");
+
+  try {
+    const body = await request.json().catch(() => ({}));
+    const backendResponse = await fetch(`${BACKEND_API_URL}/auth/saved-products`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(authorization ? { Authorization: authorization } : {}),
+      },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    });
+    const data = await readBackendJson(backendResponse);
+    return NextResponse.json(data, { status: backendResponse.status });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to connect to server.";
+    return NextResponse.json({ status: "error", message }, { status: 502 });
+  }
+}

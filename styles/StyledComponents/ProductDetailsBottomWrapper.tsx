@@ -5,26 +5,26 @@ export const ProductDetailsBottomWrapper = styled("div")`
   /* ─── Heritage Banner ─── */
   .heritage_banner {
     position: relative;
-    padding: 80px 0;
+    padding: 48px 0;
     @media (max-width: 1199px) {
-      padding: 60px 0;
+      padding: 36px 0;
     }
     @media (max-width: 599px) {
-      padding: 40px 0;
+      padding: 24px 0;
     }
     .wrapperOuter_heritage {
       background: ${({ theme }) => theme.palette.primary.dark};
-      padding: 80px 40px;
+      padding: 48px 32px;
       position: relative;
       overflow: hidden;
-      border-radius: 40px;
+      border-radius: 28px;
       @media (max-width: 1199px) {
-        padding: 64px 24px;
-        border-radius: 24px;
+        padding: 36px 20px;
+        border-radius: 20px;
       }
       @media (max-width: 599px) {
-        padding: 48px 16px;
-        border-radius: 20px;
+        padding: 28px 14px;
+        border-radius: 16px;
       }
       &::before {
         content: "";
@@ -157,14 +157,14 @@ export const ProductDetailsBottomWrapper = styled("div")`
 
   /* ─── Nutritional Clarity ─── */
   .nutrition_section {
-    padding: 80px 0;
+    padding: 48px 0;
     background: ${({ theme }) => theme.palette.customColors?.lightCream};
 
     @media (max-width: 1199px) {
-      padding: 64px 0;
+      padding: 36px 0;
     }
     @media (max-width: 599px) {
-      padding: 48px 0;
+      padding: 24px 0;
     }
   }
 
@@ -320,14 +320,14 @@ export const ProductDetailsBottomWrapper = styled("div")`
 
   /* ─── Pairs Well With ─── */
   .pairs_section {
-    padding: 80px 0;
+    padding: 48px 0;
     background: ${({ theme }) => theme.palette.common.white};
 
     @media (max-width: 1199px) {
-      padding: 64px 0;
+      padding: 36px 0;
     }
     @media (max-width: 599px) {
-      padding: 48px 0;
+      padding: 24px 0;
     }
   }
 

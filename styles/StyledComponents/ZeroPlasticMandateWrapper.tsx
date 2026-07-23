@@ -4,18 +4,18 @@ import { playFair, outFit } from "@/mui-theme/_muiTheme";
 export const ZeroPlasticMandateWrapper = styled("section")`
   position: relative;
   width: 100%;
-  padding: 100px 0;
+  padding: 48px 0;
   background-color: ${({ theme }) => theme.palette.primary.dark};
   color: #ffffff;
 
-  @media(max-width: 1199px) {
-    padding: 80px 0;
+  @media (max-width: 1199px) {
+    padding: 36px 0;
   }
-  @media(max-width: 899px) {
-    padding: 60px 0;
+  @media (max-width: 899px) {
+    padding: 28px 0;
   }
-  @media(max-width: 599px) {
-    padding: 40px 0;
+  @media (max-width: 599px) {
+    padding: 20px 0;
   }
   .mandate_header {
     text-align: center;

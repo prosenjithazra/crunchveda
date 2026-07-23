@@ -20,6 +20,9 @@ interface CollectionItem {
   buttonText: string;
   buttonLink: string;
   _id?: string;
+  price?: string;
+  stock?: string;
+  whatsInside?: string[];
 }
 
 interface GiftDetailsMainProps {
@@ -31,8 +34,13 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
   const [loading, setLoading] = useState(true);
   const [giftCollections, setGiftCollections] = useState<CollectionItem[]>([]);
   const [selectedGift, setSelectedGift] = useState<CollectionItem | null>(null);
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fullNameError, setFullNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [messageError, setMessageError] = useState('');
 
   useEffect(() => {
     fetch('/api/gifts/gift-collections', { cache: 'no-store' })
@@ -67,20 +75,102 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  const handleAddToCart = () => {
-    if (!selectedGift) return;
-    toast.success(`Added ${selectedGift.title} to your harvest basket!`);
+  const isBlockedEmailDomain = (emailVal: string) => {
+    const blockedDomains = [
+      "yopmail.com",
+      "yopmail.net",
+      "yopmail.fr",
+      "mailinator.com",
+      "mailer.com",
+      "tempmail.com",
+      "tempmail.net",
+      "dispostable.com",
+      "guerrillamail.com",
+      "sharklasers.com",
+      "10minutemail.com",
+    ];
+    const domain = emailVal.split("@")[1]?.toLowerCase().trim() || "";
+    return blockedDomains.some((blocked) => domain === blocked || domain.endsWith("." + blocked));
   };
 
-  const handleInquirySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const validateForm = () => {
+    let valid = true;
+    
+    if (!fullName.trim()) {
+      setFullNameError('Full name is required.');
+      valid = false;
+    } else if (fullName.trim().length < 2) {
+      setFullNameError('Full name must be at least 2 characters.');
+      valid = false;
+    } else {
+      setFullNameError('');
+    }
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!email) {
-      toast.error('Please enter your email address.');
+      setEmailError('Email address is required.');
+      valid = false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address.');
+      valid = false;
+    } else if (isBlockedEmailDomain(email)) {
+      setEmailError('Temporary or disposable emails (e.g. yopmail, mailer, mailinator) are not allowed.');
+      valid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (!message.trim()) {
+      setMessageError('Message is required.');
+      valid = false;
+    } else if (message.trim().length < 10) {
+      setMessageError('Message must be at least 10 characters.');
+      valid = false;
+    } else {
+      setMessageError('');
+    }
+
+    return valid;
+  };
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) {
       return;
     }
-    toast.success(`Thank you! Inquiry request sent for: ${selectedGift?.title}`);
-    setEmail('');
-    setMessage('');
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fullName,
+          email: email,
+          enquiryType: 'Gift Quote',
+          message: `Inquiry for Gift Set: "${selectedGift?.title}".\n\nUser Message:\n${message}`,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success(
+          "Thank you! Your corporate gifting request has been sent successfully. We will contact you shortly."
+        );
+        setFullName('');
+        setEmail('');
+        setMessage('');
+        setFullNameError('');
+        setEmailError('');
+        setMessageError('');
+      } else {
+        toast.error(data.message || 'Failed to send inquiry. Please try again.');
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -106,28 +196,30 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
   const isFoundersReserve = selectedGift.title.toLowerCase().includes('founder');
   const isRoyalHarvest = selectedGift.title.toLowerCase().includes('royal');
 
-  const giftPrice = isFoundersReserve ? '₹145.00' : isRoyalHarvest ? '₹85.00' : '₹65.00';
-  const componentsList = isFoundersReserve 
-    ? [
-        'Handmade, engraved premium pinewood keepsake chest.',
-        'Wildflower Honey (250g) harvested from clean organic meadows.',
-        'Rich Single-Origin Artisanal Dark Chocolate (70% Cacao).',
-        'Cold-Pressed Extra Virgin Olive Oil (250ml) pressed in autumn.',
-        'Premium Medjool Dates & Dry Fruit selection.'
-      ]
-    : isRoyalHarvest
-    ? [
-        'Elegant gold-foiled textured sampling chest.',
-        'Raw Wild Forest Honey jar (150g).',
-        'Jumbo Medjool Dates premium grade.',
-        'Dry Roasted Organic Almonds and Walnuts.'
-      ]
-    : [
-        'Classic linen-bound slide-out botanical chest.',
-        'Loose Leaf Organic Herbal Tea blend (Chamomilla & Rose).',
-        'Handmade brass tea infuser spoon.',
-        'Mini Lavender & Spiced Wildflower Honey jar.'
-      ];
+  const giftPrice = selectedGift.price || (isFoundersReserve ? '₹145.00' : isRoyalHarvest ? '₹85.00' : '₹65.00');
+  const componentsList = (selectedGift.whatsInside && selectedGift.whatsInside.length > 0)
+    ? selectedGift.whatsInside
+    : (isFoundersReserve 
+      ? [
+          'Handmade, engraved premium pinewood keepsake chest.',
+          'Wildflower Honey (250g) harvested from clean organic meadows.',
+          'Rich Single-Origin Artisanal Dark Chocolate (70% Cacao).',
+          'Cold-Pressed Extra Virgin Olive Oil (250ml) pressed in autumn.',
+          'Premium Medjool Dates & Dry Fruit selection.'
+        ]
+      : isRoyalHarvest
+      ? [
+          'Elegant gold-foiled textured sampling chest.',
+          'Raw Wild Forest Honey jar (150g).',
+          'Jumbo Medjool Dates premium grade.',
+          'Dry Roasted Organic Almonds and Walnuts.'
+        ]
+      : [
+          'Classic linen-bound slide-out botanical chest.',
+          'Loose Leaf Organic Herbal Tea blend (Chamomilla & Rose).',
+          'Handmade brass tea infuser spoon.',
+          'Mini Lavender & Spiced Wildflower Honey jar.'
+        ]);
 
   const relatedGifts = giftCollections.filter(item => item.title !== selectedGift.title).slice(0, 2);
 
@@ -286,36 +378,26 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.05em' }}>
                   PRE-CURATED PRICE
                 </Typography>
-                <Typography variant="h3" sx={{ fontWeight: 800, color: '#3A2E2D', mt: 1, mb: 3 }}>
+                <Typography variant="h3" sx={{ fontWeight: 800, color: '#3A2E2D', mt: 1, mb: selectedGift.stock ? 1 : 3 }}>
                   {giftPrice}
                 </Typography>
+                {selectedGift.stock && (
+                  <Typography 
+                    sx={{ 
+                      fontSize: '0.9rem', 
+                      fontWeight: 600, 
+                      color: selectedGift.stock.toLowerCase().includes('out') ? 'error.main' : 'success.main',
+                      mb: 3
+                    }}
+                  >
+                    ● {selectedGift.stock}
+                  </Typography>
+                )}
 
                 <Stack spacing={2}>
                   <Button 
                     fullWidth 
                     variant="contained" 
-                    color="primary" 
-                    size="large"
-                    onClick={handleAddToCart}
-                    startIcon={<LocalMallOutlinedIcon />}
-                    sx={{ 
-                      py: 1.5, 
-                      borderRadius: 3, 
-                      textTransform: 'none', 
-                      fontSize: '1.05rem', 
-                      fontWeight: 700,
-                      boxShadow: '0 10px 20px rgba(138,154,134,0.3)',
-                      transition: 'transform 0.2s ease',
-                      '&:hover': {
-                        transform: 'scale(1.02)'
-                      }
-                    }}
-                  >
-                    Add to Basket
-                  </Button>
-                  <Button 
-                    fullWidth 
-                    variant="outlined" 
                     component={Link}
                     href="/gifts"
                     size="large"
@@ -335,15 +417,17 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
                   Interested in personalizing this gift set for your business partners or guests? Submit an inquiry and our team will get in touch.
                 </Typography>
 
-                <form onSubmit={handleInquirySubmit}>
+                 <form onSubmit={handleInquirySubmit}>
                   <Stack spacing={2}>
                     <TextField
                       fullWidth
                       size="small"
-                      placeholder="Your Email Address"
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      placeholder="Your Full Name"
+                      type="text"
+                      value={fullName}
+                      onChange={e => setFullName(e.target.value)}
+                      error={!!fullNameError}
+                      helperText={fullNameError}
                       required
                       sx={{ 
                         bgcolor: 'rgba(255,255,255,0.1)', 
@@ -352,17 +436,22 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
                           color: '#fff',
                           '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
                           '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                        },
+                        '& .MuiFormHelperText-root': {
+                          color: '#ff8a80',
                         }
                       }}
                     />
                     <TextField
                       fullWidth
                       size="small"
-                      placeholder="Message / Details (Optional)"
-                      multiline
-                      minRows={3}
-                      value={message}
-                      onChange={e => setMessage(e.target.value)}
+                      placeholder="Your Email Address"
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      error={!!emailError}
+                      helperText={emailError}
+                      required
                       sx={{ 
                         bgcolor: 'rgba(255,255,255,0.1)', 
                         borderRadius: 2,
@@ -370,6 +459,33 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
                           color: '#fff',
                           '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
                           '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                        },
+                        '& .MuiFormHelperText-root': {
+                          color: '#ff8a80',
+                        }
+                      }}
+                    />
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder="Message / Details (Required)"
+                      multiline
+                      minRows={3}
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
+                      error={!!messageError}
+                      helperText={messageError}
+                      required
+                      sx={{ 
+                        bgcolor: 'rgba(255,255,255,0.1)', 
+                        borderRadius: 2,
+                        '& .MuiOutlinedInput-root': {
+                          color: '#fff',
+                          '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                          '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                        },
+                        '& .MuiFormHelperText-root': {
+                          color: '#ff8a80',
                         }
                       }}
                     />
@@ -379,10 +495,20 @@ export default function GiftDetailsMain({ slug }: GiftDetailsMainProps) {
                       variant="contained" 
                       color="info"
                       size="large"
+                      disabled={isSubmitting}
                       startIcon={<EmailOutlinedIcon />}
-                      sx={{ py: 1.5, borderRadius: 3, textTransform: 'none', fontWeight: 700 }}
+                      sx={{ 
+                        py: 1.5, 
+                        borderRadius: 3, 
+                        textTransform: 'none', 
+                        fontWeight: 700,
+                        '&.Mui-disabled': {
+                          bgcolor: 'rgba(255, 255, 255, 0.25) !important',
+                          color: 'rgba(255, 255, 255, 0.6) !important'
+                        }
+                      }}
                     >
-                      Inquire
+                      {isSubmitting ? 'Sending...' : 'Inquire'}
                     </Button>
                   </Stack>
                 </form>

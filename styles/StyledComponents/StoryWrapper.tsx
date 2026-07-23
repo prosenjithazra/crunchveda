@@ -5,12 +5,12 @@ export const StoryWrapper = styled("div")`
   position: relative;
   width: 100%;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
-  padding-bottom: 80px;
+  padding-bottom: 48px;
   /* ── 1. Hero Banner ── */
   .story_hero {
     position: relative;
     width: 100%;
-    height: 640px;
+    height: 440px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,12 +18,12 @@ export const StoryWrapper = styled("div")`
     overflow: hidden;
 
     @media (max-width: 899px) {
-      height: 520px;
-      padding-bottom: 60px;
+      height: 360px;
+      padding-bottom: 40px;
     }
     @media (max-width: 599px) {
-      height: 460px;
-      padding-bottom: 40px;
+      height: 280px;
+      padding-bottom: 24px;
     }
 
     .hero_bg {

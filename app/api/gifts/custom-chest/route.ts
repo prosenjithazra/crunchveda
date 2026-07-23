@@ -208,7 +208,8 @@ export async function PUT(request: Request) {
     { id: "description", label: "Banner description", type: "textarea", value: customChest.sectionDescription || "" },
     { id: "ctaLabel", label: "CTA label", type: "text", value: customChest.buttonText || "" },
     { id: "ctaHref", label: "CTA link", type: "text", value: customChest.buttonLink || "" },
-    { id: "image", label: "Banner image", type: "image", value: customChest.backgroundImage || "" }
+    { id: "image", label: "Banner image", type: "image", value: customChest.backgroundImage || "" },
+    { id: "showSection", label: "Show section", type: "toggle", value: customChest.showSection !== false }
   ];
   localJson.records[recordIndex] = record;
   writeLocalData(localJson);

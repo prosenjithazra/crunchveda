@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Box, Container, Grid, Button, IconButton } from "@mui/material";
@@ -18,7 +18,7 @@ import { ProductDetailsMainWrapper } from "@/styles/StyledComponents/ProductDeta
 import ProductDetailsBottom from "./ProductDetailsBottom";
 import { DryFruitProduct } from "@/json/mock/dryFruits";
 import { toast } from "react-hot-toast";
-import { getBadgeInfo } from "@/services/productService";
+import { getBadgeInfo, productService } from "@/services/productService";
 import { cartService } from "@/services/cartService";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
@@ -35,15 +35,29 @@ export default function ProductDetailsMain({ product }: Props) {
   const router = useRouter();
   const { cartItems } = useCart();
 
+  const sizes = Object.keys(product.sizePrices || {});
+  const [selectedSize, setSelectedSize] = useState(product.defaultSize || sizes[0] || "");
+  const [quantity, setQuantity] = useState(1);
+  const [liveStock, setLiveStock] = useState<number | undefined>(product.stock);
+
+  useEffect(() => {
+    const productId = product._id || product.id;
+    if (productId) {
+      productService.getProductStock(productId).then((res) => {
+        if (res.success && res.data && typeof res.data.stock === "number") {
+          setLiveStock(res.data.stock);
+        }
+      }).catch((err) => console.error("Error fetching live product stock:", err));
+    }
+  }, [product._id, product.id]);
+
+  const currentStock = liveStock !== undefined ? liveStock : product.stock;
+
   const isInCart = cartItems.some(
     (item) => item.id === (product._id || product.id) && item.size === selectedSize
   );
 
-  const sizes = Object.keys(product.sizePrices);
-  const [selectedSize, setSelectedSize] = useState(product.defaultSize);
-  const [quantity, setQuantity] = useState(1);
-
-  const price = product.sizePrices[selectedSize];
+  const price = product.sizePrices ? (product.sizePrices[selectedSize] ?? Object.values(product.sizePrices)[0] ?? 0) : 0;
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -259,22 +273,22 @@ export default function ProductDetailsMain({ product }: Props) {
                 </Box>
 
                 {/* Stock Status Details */}
-                {product.stock !== undefined && (
+                {currentStock !== undefined && (
                   <Box sx={{ mb: 2.5, mt: 1, display: "flex", alignItems: "center", gap: "8px" }}>
-                    {product.stock <= 0 ? (
+                    {currentStock <= 0 ? (
                       <Box sx={{ color: "error.main", fontSize: "14px", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
                         <Box component="span" sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "error.main", display: "inline-block" }} />
                         Out of Stock
                       </Box>
-                    ) : product.stock < 10 ? (
+                    ) : currentStock < 10 ? (
                       <Box sx={{ color: "error.main", fontSize: "14px", fontWeight: 700, display: "flex", alignItems: "center", gap: "6px" }}>
                         <Box component="span" sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "error.main", display: "inline-block" }} />
-                        Order Soon – Limited Quantity Left (Only {product.stock} items remaining)
+                        Order Soon – Limited Quantity Left (Only {currentStock} items remaining)
                       </Box>
                     ) : (
                       <Box sx={{ color: "success.main", fontSize: "14px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
                         <Box component="span" sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "success.main", display: "inline-block" }} />
-                        In Stock ({product.stock} items available)
+                        In Stock ({currentStock} items available)
                       </Box>
                     )}
                   </Box>
@@ -285,16 +299,16 @@ export default function ProductDetailsMain({ product }: Props) {
                   <Box className="quantity_selector">
                     <IconButton 
                       onClick={handleDecrease} 
-                      disabled={product.stock !== undefined && product.stock <= 0 || quantity <= 1}
+                      disabled={(currentStock !== undefined && currentStock <= 0) || quantity <= 1}
                       aria-label="Decrease quantity"
                       disableRipple
                     >
                       <MinusIcon />
                     </IconButton>
-                    <Box className="qty_value">{product.stock !== undefined && product.stock <= 0 ? 0 : quantity}</Box>
+                    <Box className="qty_value">{currentStock !== undefined && currentStock <= 0 ? 0 : quantity}</Box>
                     <IconButton 
                       onClick={handleIncrease}
-                      disabled={product.stock !== undefined && product.stock <= 0}
+                      disabled={currentStock !== undefined && currentStock <= 0}
                       aria-label="Increase quantity"
                       disableRipple
                     >
@@ -318,10 +332,10 @@ export default function ProductDetailsMain({ product }: Props) {
                       color="primary"
                       disableRipple
                       onClick={handleAddToCart}
-                      disabled={product.stock !== undefined && product.stock <= 0}
-                      startIcon={!(product.stock !== undefined && product.stock <= 0) && <CartIcon iconColor='white' />}
+                      disabled={currentStock !== undefined && currentStock <= 0}
+                      startIcon={!(currentStock !== undefined && currentStock <= 0) && <CartIcon iconColor='white' />}
                     >
-                      {product.stock !== undefined && product.stock <= 0 ? 'Sold Out' : 'Add to Cart'}
+                      {currentStock !== undefined && currentStock <= 0 ? 'Sold Out' : 'Add to Cart'}
                     </Button>
                   )}
                 </Box>

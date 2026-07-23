@@ -12,6 +12,9 @@ export const ProductDetailsSectionWrapper = styled("section")`
   @media (max-width: 899px) {
     padding: 60px 0;
   }
+  @media (max-width: 599px) {
+    padding: 40px 0;
+  }
 
   .details_container {
     display: flex;
@@ -23,6 +26,9 @@ export const ProductDetailsSectionWrapper = styled("section")`
     }
     @media (max-width: 899px) {
       gap: 60px;
+    }
+    @media (max-width: 599px) {
+      gap: 40px;
     }
   }
 

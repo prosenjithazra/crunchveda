@@ -1096,6 +1096,7 @@ export const adminContentService = {
         const sectionTitle = section.fields.find(f => f.id === "heading")?.value || "";
         const sectionButtonText = section.fields.find(f => f.id === "exploreLabel")?.value || "";
         const sectionButtonLink = section.fields.find(f => f.id === "exploreLink")?.value || "";
+        const showSection = section.fields.find(f => f.id === "showSection")?.value;
         
         let collections: any[] = [];
         const rawCol = section.fields.find(f => f.id === "collections")?.value;
@@ -1114,6 +1115,7 @@ export const adminContentService = {
             sectionTitle,
             sectionButtonText,
             sectionButtonLink,
+            showSection: showSection !== false,
             collections
           }
         };
@@ -1125,6 +1127,7 @@ export const adminContentService = {
         const buttonText = section.fields.find(f => f.id === "ctaLabel")?.value || "";
         const buttonLink = section.fields.find(f => f.id === "ctaHref")?.value || "";
         const backgroundImage = section.fields.find(f => f.id === "image")?.value || "";
+        const showSection = section.fields.find(f => f.id === "showSection")?.value;
 
         bodyData = {
           customChest: {
@@ -1133,11 +1136,13 @@ export const adminContentService = {
             sectionDescription,
             buttonText,
             buttonLink,
-            backgroundImage
+            backgroundImage,
+            showSection: showSection !== false
           }
         };
       } else if (section.id === "gifts-collections") {
-        endpoint = `/api/gifts/gift-products`;
+        const token = session?.token || "";
+        const showSection = section.fields.find(f => f.id === "showSection")?.value;
         let categories: any[] = [];
         const rawCategories = section.fields.find(f => f.id === "categories")?.value;
         if (Array.isArray(rawCategories)) {
@@ -1185,11 +1190,40 @@ export const adminContentService = {
           ];
         }
 
-        bodyData = {
-          giftProducts: {
-            categories
+        const heritageCategory = categories.find(c => c.categoryTitle?.toLowerCase()?.includes("heritage"));
+        const seasonalCategory = categories.find(c => c.categoryTitle?.toLowerCase()?.includes("seasonal"));
+
+        if (heritageCategory) {
+          const res = await fetch(`/api/gifts/heritage`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ category: heritageCategory }),
+          });
+          if (!res.ok) {
+            const data = await readApiJson(res);
+            throw new Error(data.message || "Failed to save Heritage category");
           }
-        };
+        }
+
+        if (seasonalCategory) {
+          const res = await fetch(`/api/gifts/seasonal`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ category: seasonalCategory }),
+          });
+          if (!res.ok) {
+            const data = await readApiJson(res);
+            throw new Error(data.message || "Failed to save Seasonal category");
+          }
+        }
+
+        return section;
       }
 
       const res = await fetch(endpoint, {

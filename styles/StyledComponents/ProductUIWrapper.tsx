@@ -3,14 +3,14 @@ import { styled } from "@mui/material";
 
 export const ProductUIWrapper = styled("div")`
   position: relative;
-  padding: 60px 0 100px 0;
+  padding: 40px 0 60px 0;
   background: ${({ theme }) => theme.palette.customColors?.lightGray};
 
   @media (max-width: 1199px) {
-    padding: 40px 0 80px 0;
+    padding: 28px 0 50px 0;
   }
   @media (max-width: 599px) {
-    padding: 30px 0 60px 0;
+    padding: 16px 0 40px 0;
   }
 
   .breadcrumb_box {
@@ -277,11 +277,15 @@ export const ProductUIWrapper = styled("div")`
   .products_grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 18px;
 
     @media (max-width: 1199px) {
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 14px;
+    }
+    @media (max-width: 599px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
     @media (max-width: 479px) {
       grid-template-columns: 1fr;
@@ -291,24 +295,24 @@ export const ProductUIWrapper = styled("div")`
   /* Product Card */
   .product_card {
     background: ${({ theme }) => theme.palette.common.white};
-    border-radius: 24px;
-    padding: 16px;
+    border-radius: 20px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.02);
     border: 1px solid rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
     height: 100%;
-    @media(max-width: 1199px){
-      border-radius: 20px;
-      padding: 14px;
-    }
-     @media(max-width: 899px){
+    @media (max-width: 1199px) {
       border-radius: 16px;
       padding: 12px;
     }
+    @media (max-width: 599px) {
+      border-radius: 12px;
+      padding: 9px;
+    }
     &:hover {
-      box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.06);
+      box-shadow: 0px 10px 24px rgba(0, 0, 0, 0.06);
     }
   }
 
@@ -360,13 +364,13 @@ export const ProductUIWrapper = styled("div")`
     }
 
     &.badge_discount {
-      background: rgba(47, 128, 237, 0.15);
-      color: #2F80ED;
+      background: ${({theme})=>theme.palette.info.main};
+      color: ${({ theme }) => theme.palette.common.black};
     }
 
     &.badge_toprated {
-      background: rgba(224, 82, 82, 0.15);
-      color: #e05252;
+      background: ${({theme})=>theme.palette.error.main};
+      color: ${({ theme }) => theme.palette.common.white};
     }
   }
 

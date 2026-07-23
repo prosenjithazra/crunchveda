@@ -9,18 +9,18 @@ export const SustainabilityHeroWrapper = styled("section")`
   .sustainability_hero {
     position: relative;
     width: 100%;
-    height: 580px;
+    height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     overflow: hidden;
     
-    @media(max-width: 899px) {
-      height: 480px;
+    @media (max-width: 899px) {
+      height: 320px;
     }
-    @media(max-width: 599px) {
-      height: 380px;
+    @media (max-width: 599px) {
+      height: 250px;
     }
 
     .hero_bg {
@@ -30,7 +30,19 @@ export const SustainabilityHeroWrapper = styled("section")`
       width: 100%;
       height: 100%;
       z-index: 1;
-      
+      background: rgba(0,0,0,0.2);
+      &::before{
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        inset: 0;
+        z-index: 1;
+        background: rgba(0 ,0 ,0 ,0.3);
+        backdrop-filter: blur(2px);
+      }
       img {
         object-fit: cover;
         width: 100%;
@@ -48,8 +60,8 @@ export const SustainabilityHeroWrapper = styled("section")`
       background: linear-gradient(
         180deg,
         rgba(252, 249, 242, 0.1) 0%,
-        rgba(252, 249, 242, 0.6) 60%,
-        rgba(252, 249, 242, 1) 100__percent
+        rgba(252, 249, 242, 0.6) 80%,
+        rgba(252, 249, 242, 1)
       );
     }
 

@@ -74,7 +74,14 @@
               "description": "Dolore qui eum maxim",
               "buttonText": "Fugiat sunt saepe a",
               "buttonLink": "Eu soluta voluptates",
-              "_id": "6a4ba83368a084edc873a777"
+              "_id": "6a4ba83368a084edc873a777",
+              "price": "299",
+              "stock": "20",
+              "whatsInside": [
+                "efjefnk efjn enk nkj kjn knefjnjnejfnejf ",
+                "feklmfkme f kemfkmefkmekfmke km ke",
+                ""
+              ]
             },
             {
               "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418176624_contact_hero_shirt_iPfqwv_or.png",
@@ -83,7 +90,13 @@
               "description": "Earum sint corporis",
               "buttonText": "Reprehenderit conseq",
               "buttonLink": "Sint enim doloribus",
-              "_id": "6a4ba83368a084edc873a778"
+              "_id": "6a4ba83368a084edc873a778",
+              "price": "500",
+              "stock": "1",
+              "whatsInside": [
+                "fefemnklfemlkfmkl lfl elfe fme fm ef",
+                "f le f elem lfejkfkelfm leml efl klefle fle f"
+              ]
             },
             {
               "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418180748_royal_harvest_RknlU6TB5.png",
@@ -92,12 +105,26 @@
               "description": "Harum provident off",
               "buttonText": "In minim sequi quis ",
               "buttonLink": "Sit molestias sapien",
-              "_id": "6a4ba83368a084edc873a779"
+              "_id": "6a4ba83368a084edc873a779",
+              "stock": "10",
+              "price": "120",
+              "whatsInside": [
+                "gbefghjfef",
+                "efnjnjkefnjkef",
+                "jknjknjknjknfe",
+                "fefefef"
+              ]
             }
           ]
+        },
+        {
+          "id": "showSection",
+          "label": "Show section",
+          "type": "toggle",
+          "value": true
         }
       ],
-      "updatedAt": "2026-07-07"
+      "updatedAt": "2026-07-23"
     },
     {
       "id": "gifts-custom-chest",
@@ -109,7 +136,7 @@
           "id": "eyebrow",
           "label": "Banner subtitle",
           "type": "text",
-          "value": "Ut cupiditate itaque"
+          "value": "Ut cupiditate itaque ddd"
         },
         {
           "id": "heading",
@@ -142,7 +169,7 @@
           "value": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1783418954059_pistachios_product_uIhSPOO73.png"
         }
       ],
-      "updatedAt": "2026-07-07"
+      "updatedAt": "2026-07-23"
     },
     {
       "id": "gifts-collections",
@@ -160,7 +187,7 @@
           "id": "heritageItems",
           "label": "Heritage items",
           "type": "textarea",
-          "value": "Old Orchard Classic | Heritage cider, heirloom apples & seasonal fruit. | ₹110.00\nThe Orchard Spa | Botanical body mist, lavender oil & organic tea. | ₹75.00"
+          "value": "Old Orchard Classic 12 | Heritage cider, heirloom apples & seasonal fruit. | 160\nThe Orchard Spa 11 | Botanical body mist, lavender oil & organic tea. | 150"
         },
         {
           "id": "seasonalHeading",
@@ -172,7 +199,52 @@
           "id": "seasonalItems",
           "label": "Seasonal items",
           "type": "textarea",
-          "value": "Winter Solstice | Spiced honey, dark chocolate & hand-poured candle. | ₹120.00\nThe Morning Harvest | Blueberry jam, wildflower honey & signature blend. | ₹95.00"
+          "value": "Winter Solstice 12 | Spiced honey, dark chocolate & hand-poured candle. | 125\nThe Morning Harvest 11 | Blueberry jam, wildflower honey & signature blend. | 190"
+        },
+        {
+          "id": "categories",
+          "label": "Categories data",
+          "type": "textarea",
+          "value": [
+            {
+              "categoryTitle": "The Heritage",
+              "products": [
+                {
+                  "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1784786182667_instagram_1_nJjK3iGSn.png",
+                  "title": "Old Orchard Classic 12",
+                  "description": "Heritage cider, heirloom apples & seasonal fruit.",
+                  "price": "160",
+                  "_id": "6a4bac669970b0ba46cf9ce0"
+                },
+                {
+                  "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1784786192398_almond_detail_BMBYL35_g.png",
+                  "title": "The Orchard Spa 11",
+                  "description": "Botanical body mist, lavender oil & organic tea.",
+                  "price": "150",
+                  "_id": "6a4bac669970b0ba46cf9ce1"
+                }
+              ]
+            },
+            {
+              "categoryTitle": "The Seasonal",
+              "products": [
+                {
+                  "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1784786203007_instagram_3_GwK7LvzYU.png",
+                  "title": "Winter Solstice 12",
+                  "description": "Spiced honey, dark chocolate & hand-poured candle.",
+                  "price": "125",
+                  "_id": "6a4bac669970b0ba46cf9cd0"
+                },
+                {
+                  "image": "https://ik.imagekit.io/phzkfvkms/crunchveda/crunchveda_1784786212966_instagram_2_pfgBoiqEI.png",
+                  "title": "The Morning Harvest 11",
+                  "description": "Blueberry jam, wildflower honey & signature blend.",
+                  "price": "190",
+                  "_id": "6a4bac669970b0ba46cf9cd1"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "showSection",
@@ -180,7 +252,8 @@
           "type": "toggle",
           "value": true
         }
-      ]
+      ],
+      "updatedAt": "2026-07-23"
     },
     {
       "id": "gifts-concierge",

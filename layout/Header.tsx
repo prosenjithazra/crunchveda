@@ -74,6 +74,7 @@ export function Header() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [scrollDir, setScrollDir] = useState<"up" | "down" | "top">("top");
 
   const { user } = useUser();
@@ -81,6 +82,14 @@ export function Header() {
   const logoutMutation = useLogout();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearchOpen(false);
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -221,7 +230,7 @@ export function Header() {
                     aria-expanded={isMenuOpen ? "true" : undefined}
                   >
                     <Avatar
-                      src={user.avatar || undefined}
+                      src={(user as any).profilePicture || user.avatar || undefined}
                       sx={{
                         width: 40,
                         height: 40,
@@ -373,12 +382,14 @@ export function Header() {
             </Typography>
 
             {/* Search row */}
-            <Stack direction={"row"} sx={{ alignItems: "center", gap: "8px" }}>
+            <Stack component="form" onSubmit={handleSearchSubmit} direction={"row"} sx={{ alignItems: "center", gap: "8px" }}>
               <Box sx={{ flex: 1 }}>
                 <CommonInput
                   fullWidth
                   placeholder="Search for products…"
                   autoFocus
+                  value={searchQuery}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                   startAdornment={<SearchIcon />}
                 />
               </Box>
@@ -386,7 +397,9 @@ export function Header() {
                 variant="contained"
                 color="primary"
                 disableRipple
+                type="submit"
                 className="searchBtn"
+                onClick={handleSearchSubmit}
               >
                 Search
               </Button>
@@ -420,7 +433,7 @@ export function Header() {
                   sx={{ alignItems: "center" }}
                 >
                   <Avatar
-                    src={user.avatar || undefined}
+                    src={(user as any).profilePicture || user.avatar || undefined}
                     sx={{ width: 40, height: 40, bgcolor: "primary.main" }}
                   >
                     {user.name ? user.name[0].toUpperCase() : "U"}

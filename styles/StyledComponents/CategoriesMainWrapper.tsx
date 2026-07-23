@@ -5,22 +5,22 @@ export const CategoriesMainWrapper = styled("section")`
   position: relative;
   width: 100%;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
-  padding: 80px 0;
+  padding: 52px 0;
   
-  @media(max-width: 1199px) {
-    padding: 60px 0;
+  @media (max-width: 1199px) {
+    padding: 38px 0;
   }
-  @media(max-width: 599px) {
-    padding: 40px 0;
+  @media (max-width: 599px) {
+    padding: 24px 0;
   }
 
   .title_section {
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 56px;
+    max-width: 680px;
+    margin: 0 auto 36px;
     padding: 0 16px;
-    @media(max-width: 599px) {
-      margin: 0 auto 28px;
+    @media (max-width: 599px) {
+      margin: 0 auto 18px;
       padding: 0;
     }
     

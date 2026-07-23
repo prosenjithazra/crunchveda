@@ -29,6 +29,8 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import ContactMailOutlinedIcon from "@mui/icons-material/ContactMailOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { useContentModules } from "@/hooks/useContent";
 
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -38,13 +40,15 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import SpaOutlinedIcon from "@mui/icons-material/SpaOutlined";
 import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import GavelOutlinedIcon from "@mui/icons-material/GavelOutlined";
+import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import type { SvgIconComponent } from "@mui/icons-material";
 
 const moduleIconMap: Record<string, SvgIconComponent> = {
@@ -57,12 +61,12 @@ const moduleIconMap: Record<string, SvgIconComponent> = {
   "about-us": ArticleOutlinedIcon,
   "our-story": ArticleOutlinedIcon,
   "sustainability": SpaOutlinedIcon,
-  "contact-us": ContactSupportOutlinedIcon,
   "cart": ShoppingCartOutlinedIcon,
   "saved": FavoriteBorderOutlinedIcon,
-  "privacy-policy": GavelOutlinedIcon,
-  "terms-condition": GavelOutlinedIcon,
 };
+
+// CMS modules excluded from sidebar (managed via dedicated pages)
+const EXCLUDED_CMS_MODULES = ["contact-us", "privacy-policy", "terms-condition"];
 
 const drawerWidth = 280;
 
@@ -266,6 +270,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           />
         </ListItemButton>
 
+        {/* Orders Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/orders"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/orders")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/orders") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/orders") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
+            "&:hover": {
+              bgcolor: pathname.startsWith("/admin/orders") ? "primary.main" : "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <ShoppingBagOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/orders") ? 700 : 500 }}>
+                Orders Management
+              </Typography>
+            }
+          />
+        </ListItemButton>
+
         {/* Bestsellers Link */}
         <ListItemButton
           component={Link}
@@ -299,6 +336,105 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           />
         </ListItemButton>
 
+        {/* Users Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/users"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/users")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/users") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/users") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
+            "&:hover": {
+              bgcolor: pathname.startsWith("/admin/users") ? "primary.main" : "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <PeopleOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/users") ? 700 : 500 }}>
+                Users Management
+              </Typography>
+            }
+          />
+        </ListItemButton>
+
+        {/* Contact Queries Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/contacts"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/contacts")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/contacts") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/contacts") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
+            "&:hover": {
+              bgcolor: pathname.startsWith("/admin/contacts") ? "primary.main" : "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <ContactMailOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/contacts") ? 700 : 500 }}>
+                Contact Queries
+              </Typography>
+            }
+          />
+        </ListItemButton>
+
+        {/* Newsletter Subscribers Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/newsletter"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/newsletter")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/newsletter") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/newsletter") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": {
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+            },
+            "&:hover": {
+              bgcolor: pathname.startsWith("/admin/newsletter") ? "primary.main" : "action.hover",
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <EmailOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/newsletter") ? 700 : 500 }}>
+                Newsletter List
+              </Typography>
+            }
+          />
+        </ListItemButton>
+
         <Divider sx={{ my: 2 }} />
 
         {/* CMS Pages Header */}
@@ -307,7 +443,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </Typography>
 
         {/* Dynamic Pages/Modules */}
-        {sidebarModules.map(moduleData => {
+        {sidebarModules.filter(m => !EXCLUDED_CMS_MODULES.includes(m.moduleId || m.id)).map(moduleData => {
           const mId = moduleData.moduleId || moduleData.id;
           const Icon = moduleIconMap[mId] || ArticleOutlinedIcon;
           const isOpen = Boolean(openModules[mId]);
@@ -386,6 +522,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         })}
 
         <Divider sx={{ my: 2 }} />
+
+        {/* Store Config Link */}
+        <ListItemButton
+          component={Link}
+          href="/admin/store-config"
+          onClick={() => setMobileOpen(false)}
+          selected={pathname.startsWith("/admin/store-config")}
+          className="menuListSidebar"
+          sx={{
+            mb: 0.5,
+            borderRadius: 2,
+            color: pathname.startsWith("/admin/store-config") ? "primary.contrastText" : "text.primary",
+            bgcolor: pathname.startsWith("/admin/store-config") ? "primary.main" : "transparent",
+            "&.Mui-selected, &.Mui-selected:hover": { bgcolor: "primary.main", color: "primary.contrastText" },
+            "&:hover": { bgcolor: pathname.startsWith("/admin/store-config") ? "primary.main" : "action.hover" },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: theme.spacing(5), color: "inherit" }}>
+            <TuneOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Typography variant="body2" sx={{ fontWeight: pathname.startsWith("/admin/store-config") ? 700 : 500 }}>
+                Store Config
+              </Typography>
+            }
+          />
+        </ListItemButton>
 
         {/* Media Link */}
         <ListItemButton

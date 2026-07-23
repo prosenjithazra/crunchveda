@@ -4,14 +4,14 @@ import { playFair, outFit } from "@/mui-theme/_muiTheme";
 export const ContactMainWrapper = styled("section")`
   position: relative;
   width: 100%;
-  padding-bottom: 80px;
+  padding-bottom: 48px;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
 
-  @media(max-width: 1199px) {
-    padding-bottom: 60px;
+  @media (max-width: 1199px) {
+    padding-bottom: 36px;
   }
-  @media(max-width: 599px) {
-    padding-bottom: 40px;
+  @media (max-width: 599px) {
+    padding-bottom: 24px;
   }
 
   /* Left side (Global Presence) */

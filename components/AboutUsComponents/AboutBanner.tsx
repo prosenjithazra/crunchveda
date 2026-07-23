@@ -6,6 +6,7 @@ import { Box, Container, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
 import { AboutBannerSkeleton } from '../Loader/SectionSkeletons';
+import { getValidImageSrc } from '@/services/productService';
 
 interface AboutBannerProps {
   data?: {
@@ -25,7 +26,7 @@ export default function AboutBanner({ data }: AboutBannerProps) {
     const eyebrow = data.bannerLabel ?? "EST. 1914";
     const headline = data.bannerTitle ?? "Cultivating Legacy Through the Seasons";
     const description = data.bannerDescription ?? "A century of dedication to the soil, the seed, and the harvest. The story of our organic stewardship.";
-    const image = data.bannerImage || assets.aboutBanner;
+    const image = getValidImageSrc(data.bannerImage, assets.aboutBanner);
 
     return (
       <Box className="about_hero">
@@ -72,7 +73,7 @@ export default function AboutBanner({ data }: AboutBannerProps) {
   const eyebrow = getFieldValue("eyebrow", "EST. 1914");
   const headline = getFieldValue("headline", "Cultivating Legacy Through the Seasons");
   const description = getFieldValue("description", "A century of dedication to the soil, the seed, and the harvest. The story of our organic stewardship.");
-  const image = getFieldValue("image", assets.aboutBanner);
+  const image = getValidImageSrc(getFieldValue("image", assets.aboutBanner), assets.aboutBanner);
 
   return (
     <Box className="about_hero">

@@ -251,7 +251,8 @@ export async function PUT(request: Request) {
       { id: "heading", label: "Section heading", type: "text", value: giftCollections.sectionTitle || "" },
       { id: "exploreLabel", label: "Explore link label", type: "text", value: giftCollections.sectionButtonText || "" },
       { id: "exploreLink", label: "Explore link URL", type: "text", value: giftCollections.sectionButtonLink || "" },
-      { id: "collections", label: "Collections data", type: "textarea", value: giftCollections.collections || [] }
+      { id: "collections", label: "Collections data", type: "textarea", value: giftCollections.collections || [] },
+      { id: "showSection", label: "Show section", type: "toggle", value: giftCollections.showSection !== false }
     ];
     localJson.records[recordIndex] = record;
     writeLocalData(localJson);

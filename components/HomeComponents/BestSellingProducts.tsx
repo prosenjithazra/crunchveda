@@ -247,7 +247,7 @@ export default function BestSellingProducts() {
             <Button
               variant='contained'
               className='add_cart_btn'
-              sx={{ bgcolor: "#8F5E15", "&:hover": { bgcolor: "#764D0F" } }}
+              sx={{ bgcolor: "#8F5E15", "&:hover": { bgcolor: "#764D0F" }, width: "100%" }}
               startIcon={<ShopingBagIcon />}
               onClick={() => router.push("/cart")}
               disableRipple
@@ -258,6 +258,7 @@ export default function BestSellingProducts() {
             <Button
               variant='contained'
               className='add_cart_btn'
+              sx={{ width: "100%" }}
               startIcon={!isOutOfStock && <ShopingBagIcon />}
               onClick={() => handleAddToCart(product.id, product.title, selectedSize, priceVal || 0, product.image, product.badge?.text || "")}
               disableRipple
@@ -266,16 +267,6 @@ export default function BestSellingProducts() {
               {isOutOfStock ? 'Sold Out' : 'Add to Cart'}
             </Button>
           )}
-          <Button
-            variant='contained'
-            className='whatsapp_btn'
-            startIcon={<WhatsAppIcon />}
-            onClick={() => handleWhatsAppInquiry(product.title, selectedSize)}
-            disableRipple
-            disabled={!product.hasWhatsApp}
-          >
-            {product.hasWhatsApp ? 'WhatsApp Order' : 'Not Available'}
-          </Button>
         </Box>
       </Box>
     );

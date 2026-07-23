@@ -8,12 +8,12 @@ export const AboutWrapper = styled("div")`
 
   /* ── Common Utilities ── */
   .section_pad {
-    padding: 80px 0;
-    @media(max-width: 1199px) {
-      padding: 60px 0;
+    padding: 48px 0;
+    @media (max-width: 1199px) {
+      padding: 36px 0;
     }
-    @media(max-width: 599px) {
-      padding: 40px 0;
+    @media (max-width: 599px) {
+      padding: 24px 0;
     }
   }
 

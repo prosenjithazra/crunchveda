@@ -20,14 +20,17 @@ import {
 } from "@mui/material";
 import { ProductUIWrapper } from "@/styles/StyledComponents/ProductUIWrapper";
 import CartIcon from "@/ui/Icons/CartIcon";
+import SearchIcon from "@/ui/Icons/SearchIcon";
 import WhatsAppIcon from "@/ui/Icons/WhatsAppIcon";
 import FilterBtnIcon from "@/ui/Icons/FilterBtnIcon";
 import HeartBtnIcon from "@/ui/Icons/HeartBtnIcon";
 import CloseIcon from '@mui/icons-material/Close';
+import CommonInput from "@/ui/CommonInput/CommonInput";
 import { DryFruitProduct as ProductItem } from "@/json/mock/dryFruits";
 import { useProducts, useCategories } from "@/hooks/useProducts";
-import { mapApiProductToUi, getBadgeInfo } from "@/services/productService";
+import { mapApiProductToUi, getBadgeInfo, productService } from "@/services/productService";
 import { cartService } from "@/services/cartService";
+import { useUser } from "@/hooks/useAuth";
 import { toast } from "react-hot-toast";
 
 const badgeOptions = ["Organic", "Best Seller", "New Launch", "Top Rated"];
@@ -35,11 +38,9 @@ const badgeOptions = ["Organic", "Best Seller", "New Launch", "Top Rated"];
 function ProductCard({
   product,
   onAddToCart,
-  onWhatsAppInquiry,
 }: {
   product: ProductItem;
   onAddToCart: (p: ProductItem, size: string, price: number) => void;
-  onWhatsAppInquiry: (p: ProductItem, size: string) => void;
 }) {
   const sizes = Object.keys(product.sizePrices);
   // Ensure selectedSize is always a valid key; fall back to first available size
@@ -47,9 +48,47 @@ function ProductCard({
     ? product.defaultSize
     : sizes[0] ?? "";
   const [selectedSize, setSelectedSize] = useState(validDefaultSize);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const router = useRouter();
   const { cartItems } = useCart();
+  const { user, refetch: refetchUser } = useUser();
+
+  const targetProdId = (product._id || product.id)?.toString();
+
+  const isSavedInUser = useMemo(() => {
+    if (!user || !user.savedProducts || !Array.isArray(user.savedProducts)) return false;
+    return user.savedProducts.some((item: any) => {
+      const itemId = (item._id || item.id || item)?.toString();
+      return itemId === targetProdId;
+    });
+  }, [user, targetProdId]);
+
+  const [isWishlisted, setIsWishlisted] = useState(isSavedInUser);
+
+  useEffect(() => {
+    setIsWishlisted(isSavedInUser);
+  }, [isSavedInUser]);
+
+  const handleToggleWishlist = async () => {
+    const nextState = !isWishlisted;
+    setIsWishlisted(nextState);
+
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") || localStorage.getItem("tocken") : null;
+    if (!token || !user) {
+      toast.success(nextState ? "Saved locally! Log in to save to your account." : "Removed from wishlist");
+      return;
+    }
+
+    try {
+      const res = await productService.toggleSaveProduct(targetProdId, token);
+      if (res.success) {
+        toast.success(res.message || (nextState ? "Added to saved products!" : "Removed from saved products"));
+        await refetchUser();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update saved products");
+      setIsWishlisted(!nextState);
+    }
+  };
 
   const isInCart = cartItems.some(
     (item) => item.id === (product._id || product.id) && item.size === selectedSize
@@ -57,7 +96,6 @@ function ProductCard({
 
   // Safely get price — fall back to first value if selectedSize isn't in map
   const price = product.sizePrices[selectedSize] ?? Object.values(product.sizePrices)[0] ?? 0;
-
 
   const badgeInfo = getBadgeInfo(product.badge);
 
@@ -73,7 +111,7 @@ function ProductCard({
         )}
         <button
           className={`wishlist_btn${isWishlisted ? " wishlisted" : ""}`}
-          onClick={() => setIsWishlisted((prev) => !prev)}
+          onClick={handleToggleWishlist}
           title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
           aria-label={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
         >
@@ -144,13 +182,6 @@ function ProductCard({
               <CartIcon />
             </button>
           )}
-          <button
-            className="action_btn btn_whatsapp"
-            onClick={() => onWhatsAppInquiry(product, selectedSize)}
-            title="Inquire on WhatsApp"
-          >
-            <WhatsAppIcon />
-          </button>
         </Box>
       </Box>
     </Box>
@@ -191,6 +222,10 @@ export default function ProductUI() {
 
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
+  const searchParam = searchParams.get("search") || searchParams.get("q") || "";
+
+  const [searchTerm, setSearchTerm] = useState<string>(searchParam);
+  const [prevSearchParam, setPrevSearchParam] = useState<string | null>(null);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [prevCategoryParam, setPrevCategoryParam] = useState<string | null>(null);
@@ -215,6 +250,11 @@ export default function ProductUI() {
   if (categoryParam !== prevCategoryParam) {
     setPrevCategoryParam(categoryParam);
     setSelectedCategories(categoryParam ? [categoryParam] : []);
+  }
+
+  if (searchParam !== prevSearchParam) {
+    setPrevSearchParam(searchParam);
+    setSearchTerm(searchParam);
   }
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [mobileFilterBox, setMobileFilterBox] = useState(false);
@@ -307,6 +347,18 @@ export default function ProductUI() {
   const filteredProducts = useMemo(() => {
     let result = productsList;
 
+    // Filter by live search term
+    if (searchTerm.trim()) {
+      const q = searchTerm.toLowerCase().trim();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          (p.badge && p.badge.toLowerCase().includes(q))
+      );
+    }
+
     // Filter by Categories (case-insensitive match against category name)
     if (selectedCategories.length > 0) {
       result = result.filter((p) =>
@@ -350,7 +402,7 @@ export default function ProductUI() {
     }
 
     return result;
-  }, [productsList, selectedCategories, selectedBadges, priceRange, sortBy]);
+  }, [productsList, searchTerm, selectedCategories, selectedBadges, priceRange, sortBy]);
 
   // Paginated Products
   const paginatedProducts = useMemo(() => {
@@ -465,6 +517,34 @@ export default function ProductUI() {
 
           {/* Main Grid Content */}
           <Grid size={{ xs: 12, lg: 9 }}>
+            {/* Live Search Bar */}
+            <Box sx={{ mb: 3, display: "flex", gap: "10px", alignItems: "center" }}>
+              <Box sx={{ flex: 1 }}>
+                <CommonInput
+                  fullWidth
+                  placeholder="Search products by name, category, or keyword..."
+                  value={searchTerm}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  startAdornment={<SearchIcon />}
+                />
+              </Box>
+              {searchTerm && (
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setCurrentPage(1);
+                  }}
+                  sx={{ borderRadius: "10px", whiteSpace: "nowrap", textTransform: "none", fontWeight: 600 }}
+                >
+                  Clear Search
+                </Button>
+              )}
+            </Box>
+
             {/* Listing Header Options */}
             <Box className="filerIcon_wrapper">
               <Button
@@ -529,7 +609,6 @@ export default function ProductUI() {
                     key={product.id}
                     product={product}
                     onAddToCart={handleAddToCart}
-                    onWhatsAppInquiry={handleWhatsAppInquiry}
                   />
                 ))}
               </Box>

@@ -6,6 +6,7 @@ import { Box, Container, Grid, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
 import { ArtisanalJourneySkeleton } from '../Loader/SectionSkeletons';
+import { getValidImageSrc } from '@/services/productService';
 
 const defaultSteps = [
   {
@@ -69,16 +70,17 @@ export default function ArtisanalJourney({ data }: ArtisanalJourneyProps) {
     imageSetRaw = getFieldValue("imageSet", "");
   }
 
-  let steps: Array<{ title: string; description: string; image: string }> = data ? [] : defaultSteps;
+  let steps: Array<{ title: string; description: string; image: string }> = defaultSteps;
   if (stepsRaw && stepsRaw.trim()) {
     const lines = stepsRaw.split("\n").filter(Boolean);
     const images = imageSetRaw ? imageSetRaw.split("\n").filter(Boolean) : [];
     steps = lines.map((line, idx) => {
       const parts = line.split("|");
+      const fallbackImg = defaultSteps[idx]?.image || assets.seedHeritage;
       return {
         title: parts[0]?.trim() || "",
         description: parts[1]?.trim() || "",
-        image: images[idx]?.trim() || defaultSteps[idx]?.image || assets.seedHeritage
+        image: getValidImageSrc(images[idx]?.trim(), fallbackImg)
       };
     });
   }

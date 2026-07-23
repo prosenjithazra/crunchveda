@@ -44,7 +44,7 @@ export default function BestSellerGrid() {
               const price = product.sizePrices[product.defaultSize] || 0;
               return (
                 <Grid size={{ xs: 12, md: 4 }} key={p._id}>
-                  <Box component={Link} href={`/product/${product.id}`} className="collection_card">
+                  <Box component={Link} href={`/products/${product.id}`} className="collection_card">
                     <Box className="card_imgBox">
                       <Image
                         src={product.image || assets.cashewsProduct}

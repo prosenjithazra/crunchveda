@@ -223,6 +223,49 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
   React.useEffect(() => {
     let active = true;
 
+    if (moduleId === "gifts" && sectionId === "gifts-collections") {
+      Promise.all([
+        fetch("/api/gifts/heritage", { cache: "no-store" }).then(res => res.json()),
+        fetch("/api/gifts/seasonal", { cache: "no-store" }).then(res => res.json())
+      ])
+        .then(([heritageJson, seasonalJson]) => {
+          if (!active) return;
+          const heritageCategory = heritageJson.data?.category || { categoryTitle: "The Heritage", products: [] };
+          const seasonalCategory = seasonalJson.data?.category || { categoryTitle: "The Seasonal", products: [] };
+          setGiftProductsCategories([heritageCategory, seasonalCategory]);
+
+          adminContentService.getModuleById(moduleId).then(data => {
+            if (!active) return;
+            if (data) {
+              setModule(data);
+              const rec = data.records.find(r => r.id === sectionId);
+              if (rec) {
+                // Update categories field with current categories
+                const updatedFields = rec.fields.map(f => {
+                  if (f.id === "heritageHeading") return { ...f, value: heritageCategory.categoryTitle };
+                  if (f.id === "seasonalHeading") return { ...f, value: seasonalCategory.categoryTitle };
+                  if (f.id === "categories") return { ...f, value: [heritageCategory, seasonalCategory] };
+                  return f;
+                });
+                setRecord({ ...rec, fields: updatedFields });
+                setLoadError(null);
+              }
+            }
+          });
+        })
+        .catch(error => {
+          if (!active) return;
+          const message = error instanceof Error ? error.message : "Failed to load Heritage and Seasonal categories.";
+          toast.error(message);
+          setLoadError(message);
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+
+      return () => { active = false; };
+    }
+
     if (moduleId === "our-story" && sectionId === "story-hero") {
       adminContentService
         .getOurStoryBanner()
@@ -1441,6 +1484,44 @@ export default function AdminContentSectionManager({ moduleId, sectionId }: Admi
                             )))}
                             multiline
                             minRows={2}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Card price"
+                            value={item.price || ""}
+                            placeholder="E.g. ₹65.00"
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, price: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="Stock status"
+                            value={item.stock || ""}
+                            placeholder="E.g. In Stock, Out of Stock"
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, stock: event.target.value } : card
+                            )))}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label="What's Inside (One item per line)"
+                            value={(item.whatsInside || []).join("\n")}
+                            placeholder="E.g. Classic linen-bound slide-out botanical chest."
+                            onChange={event => setGiftCollections(prev => prev.map((card, itemIndex) => (
+                              itemIndex === index ? { ...card, whatsInside: event.target.value.split("\n") } : card
+                            )))}
+                            multiline
+                            minRows={3}
                           />
                         </Grid>
                       </Grid>

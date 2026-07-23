@@ -5,23 +5,24 @@ export const FooterWrapper = styled("footer")`
   position: relative;
   background: ${({ theme }) => theme.palette.customColors?.footerBg};
   border-top: 1px solid rgba(115, 121, 115, 0.1);
-  padding-top: 80px;
-  padding-bottom: 24px;
-    @media(max-width: 1199px){
-        padding: 60px 0 20px;
-    }
-     @media(max-width: 899px){
-        padding: 40px 0 100px;
-    }
+  padding-top: 48px;
+  padding-bottom: 20px;
+  @media (max-width: 1199px) {
+    padding: 36px 0 16px;
+  }
+  @media (max-width: 899px) {
+    padding: 28px 0 80px;
+  }
   .footer_grid {
     display: grid;
     gap: 32px;
     grid-template-columns: 1fr;
 
-    
-
     @media (min-width: 1200px) {
       grid-template-columns: 1.8fr 1fr 1fr 1.6fr;
+    }
+    @media (max-width: 1399px) {
+      gap: 16px;
     }
 
     @media (max-width: 1199px) {
@@ -32,28 +33,28 @@ export const FooterWrapper = styled("footer")`
       align-items: flex-start;
       row-gap: 20px;
     }
-    .firstClm{
-        @media (max-width: 1199px) {
-           width: 50%;
-        }
+    .firstClm {
+      @media (max-width: 1199px) {
+        width: 50%;
+      }
 
-    @media(max-width: 599px){
+      @media (max-width: 599px) {
         width: 100%;
+      }
     }
-    }
-    .cmnClm{
-        @media (max-width: 1199px) {
-           width: 20%;
-        }
+    .cmnClm {
+      @media (max-width: 1199px) {
+        width: 20%;
+      }
 
-    @media(max-width: 599px){
+      @media (max-width: 599px) {
         width: 40%;
+      }
     }
-    }
-    .newsLetterClm{
-        @media (max-width: 1199px) {
-           width: 100%;
-        }
+    .newsLetterClm {
+      @media (max-width: 1199px) {
+        width: 100%;
+      }
     }
   }
 
@@ -67,10 +68,10 @@ export const FooterWrapper = styled("footer")`
     max-width: 360px;
     line-height: 1.8;
 
-        @media (max-width: 1199px) {
-            max-width: 100%;
-            line-height: 1.5;
-        }
+    @media (max-width: 1199px) {
+      max-width: 100%;
+      line-height: 1.5;
+    }
   }
 
   .social_icon {
@@ -85,9 +86,9 @@ export const FooterWrapper = styled("footer")`
     width: 34px;
     cursor: pointer;
     transition: all 0.3s ease;
-    svg{
-        width: 16px;
-        height: auto;
+    svg {
+      width: 16px;
+      height: auto;
     }
     &:hover {
       color: ${({ theme }) => theme.palette.primary.main};
@@ -104,13 +105,18 @@ export const FooterWrapper = styled("footer")`
   .subscribe_desc {
     color: ${({ theme }) => theme.palette.text.secondary};
     line-height: 1.7;
-    @media(max-width: 1199px){
-        line-height: 1.5;
+    @media (max-width: 1199px) {
+      line-height: 1.5;
     }
   }
 
   .subscribe_btn {
     min-width: 94px;
+    height: 44px;
+    @media (max-width: 599px) {
+      height: 40px;
+      width: 100%;
+    }
   }
 
   .footer_divider {
@@ -122,15 +128,15 @@ export const FooterWrapper = styled("footer")`
       margin-bottom: 16px;
     }
   }
-  .input_wrap{
-    @media(max-width: 1199px){
-        width: 100%;
+  .input_wrap {
+    @media (max-width: 1199px) {
+      width: 100%;
     }
   }
   .footer_bottom {
     display: flex;
-      align-items: center;
-      flex-direction: row;
+    align-items: center;
+    flex-direction: row;
     gap: 16px;
     justify-content: space-between;
 
@@ -143,12 +149,11 @@ export const FooterWrapper = styled("footer")`
 
   .copyright_text {
     color: ${({ theme }) => theme.palette.text.secondary};
-    a{
-    color: ${({ theme }) => theme.palette.text.secondary};
-    &:hover{
-       color: ${({ theme }) => theme.palette.primary.main};
-    }
-
+    a {
+      color: ${({ theme }) => theme.palette.text.secondary};
+      &:hover {
+        color: ${({ theme }) => theme.palette.primary.main};
+      }
     }
   }
 

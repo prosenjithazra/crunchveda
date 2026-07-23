@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box, Container } from "@mui/material";
+import { Box, Container, CircularProgress } from "@mui/material";
 import { dryFruits, DryFruitProduct } from "@/json/mock/dryFruits";
+import { productService, mapApiProductToUi } from "@/services/productService";
 import { ProductDetailsBottomWrapper } from "@/styles/StyledComponents/ProductDetailsBottomWrapper";
 
 interface Props {
@@ -19,10 +20,53 @@ const nutritionData = [
 ];
 
 export default function ProductDetailsBottom({ product }: Props) {
-  // Show 4 other products as "Pairs Well With"
-  const pairsProducts = dryFruits
-    .filter((p) => p.id !== product.id)
-    .slice(0, 4);
+  const [pairsProducts, setPairsProducts] = useState<DryFruitProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    const currentId = product._id || product.id;
+
+    productService
+      .getProducts({ limit: 12 })
+      .then((res) => {
+        if (isMounted && res.data) {
+          const mapped = res.data
+            .map((p) => mapApiProductToUi(p))
+            .filter(
+              (p) =>
+                p._id !== currentId &&
+                p.id !== currentId &&
+                p.id !== product.id
+            )
+            .slice(0, 4);
+
+          if (mapped.length > 0) {
+            setPairsProducts(mapped);
+          } else {
+            // Fallback to mock data if API returned no other items
+            const fallback = dryFruits
+              .filter((p) => p.id !== product.id)
+              .slice(0, 4);
+            setPairsProducts(fallback);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load Pairs Well With products:", err);
+        const fallback = dryFruits
+          .filter((p) => p.id !== product.id)
+          .slice(0, 4);
+        setPairsProducts(fallback);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [product._id, product.id]);
 
   return (
     <ProductDetailsBottomWrapper>
@@ -134,36 +178,46 @@ export default function ProductDetailsBottom({ product }: Props) {
             </Link>
           </Box>
 
-          <Box className="pairs_grid">
-            {pairsProducts.map((item) => {
-              const defaultPrice = item.sizePrices[item.defaultSize];
-              return (
-                <Link
-                  key={item.id}
-                  href={`/products/${item.id}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Box className="pair_card">
-                    <Box className="pair_img_box">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={400}
-                        height={400}
-                      />
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
+              <CircularProgress color="success" />
+            </Box>
+          ) : (
+            <Box className="pairs_grid">
+              {pairsProducts.slice(0, 4).map((item) => {
+                const sizePrices = item.sizePrices || {};
+                const defaultPrice =
+                  sizePrices[item.defaultSize] ??
+                  Object.values(sizePrices)[0] ??
+                  0;
+                return (
+                  <Link
+                    key={item.id || item._id}
+                    href={`/products/${item.id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Box className="pair_card">
+                      <Box className="pair_img_box">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={400}
+                          height={400}
+                        />
+                      </Box>
+                      <Box component="p" className="pair_name">
+                        {item.name}
+                      </Box>
+                      <Box component="p" className="pair_price">
+                        ₹{defaultPrice.toFixed(2)}
+                      </Box>
+                      <button className="pair_add_btn">Explore Product</button>
                     </Box>
-                    <Box component="p" className="pair_name">
-                      {item.name}
-                    </Box>
-                    <Box component="p" className="pair_price">
-                      ₹{defaultPrice.toFixed(2)}
-                    </Box>
-                    <button className="pair_add_btn">Add to Cart</button>
-                  </Box>
-                </Link>
-              );
-            })}
-          </Box>
+                  </Link>
+                );
+              })}
+            </Box>
+          )}
         </Container>
       </Box>
     </ProductDetailsBottomWrapper>

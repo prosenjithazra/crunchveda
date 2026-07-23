@@ -3,30 +3,33 @@ import { styled } from "@mui/material";
 
 export const CuratedCategoriesWrapper = styled("section")`
   position: relative;
-  padding: 80px 0;
+  padding: 56px 0;
   background: ${({ theme }) => theme.palette.customColors.headerBg};
   @media (max-width: 1199px) {
-    padding: 60px 0;
+    padding: 44px 0;
   }
   @media (max-width: 599px) {
-    padding: 40px 0;
+    padding: 28px 0;
   }
   .wrapper_titleBox {
     text-align: center;
-    margin-bottom: 48px;
+    margin-bottom: 28px;
+    @media (max-width: 599px) {
+      margin-bottom: 16px;
+    }
     h2 {
       position: relative;
-      padding-bottom: 16px;
+      padding-bottom: 10px;
       &::before {
         position: absolute;
         content: "";
         left: 50%;
         transform: translateX(-50%);
         background: ${({ theme }) => theme.palette.warning.light};
-        height: 4px;
-        width: 100px;
+        height: 3px;
+        width: 70px;
         bottom: 0;
-        border-radius: 5px;
+        border-radius: 4px;
       }
     }
   }

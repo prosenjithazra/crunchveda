@@ -5,13 +5,13 @@ export const SavePageWrapper = styled("div")`
   position: relative;
   width: 100%;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
-  padding: 80px 0;
-  
-  @media(max-width: 1199px) {
-    padding: 60px 0;
+  padding: 40px 0 60px 0;
+
+  @media (max-width: 1199px) {
+    padding: 28px 0 44px 0;
   }
-  @media(max-width: 599px) {
-    padding: 40px 0;
+  @media (max-width: 599px) {
+    padding: 16px 0 32px 0;
   }
 
   .header_section {
@@ -19,21 +19,24 @@ export const SavePageWrapper = styled("div")`
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 48px;
-    
-    @media(max-width: 899px) {
+
+    @media (max-width: 899px) {
       flex-direction: column;
       align-items: flex-start;
       gap: 24px;
     }
-    
-    @media(max-width: 599px) {
+
+    @media (max-width: 599px) {
       margin-bottom: 32px;
       gap: 16px;
     }
 
     .header_text {
       max-width: 600px;
-      
+      @media (max-width: 1199px) {
+        max-width: 500px;
+      }
+
       h1 {
         font-family: ${playFair.style.fontFamily};
         font-size: 48px;
@@ -41,11 +44,13 @@ export const SavePageWrapper = styled("div")`
         line-height: 1.2;
         color: ${({ theme }) => theme.palette.primary.main};
         margin-bottom: 16px;
-        
-        @media(max-width: 899px) {
+        @media (max-width: 1199px) {
+          font-size: 44px;
+        }
+        @media (max-width: 899px) {
           font-size: 38px;
         }
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 30px;
           margin-bottom: 8px;
         }
@@ -56,7 +61,7 @@ export const SavePageWrapper = styled("div")`
         font-size: 15px;
         line-height: 1.6;
         color: ${({ theme }) => theme.palette.customColors.textColor};
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 13px;
         }
       }
@@ -66,8 +71,8 @@ export const SavePageWrapper = styled("div")`
       display: flex;
       align-items: center;
       gap: 24px;
-      
-      @media(max-width: 599px) {
+
+      @media (max-width: 599px) {
         width: 100%;
         justify-content: space-between;
         gap: 16px;
@@ -86,7 +91,7 @@ export const SavePageWrapper = styled("div")`
         border: none;
         padding: 8px 0;
         transition: color 0.3s ease;
-        
+
         &:hover {
           color: ${({ theme }) => theme.palette.secondary.light};
         }
@@ -97,7 +102,7 @@ export const SavePageWrapper = styled("div")`
   /* ── Items Grid ── */
   .saved_grid {
     margin-bottom: 80px;
-    @media(max-width: 599px) {
+    @media (max-width: 599px) {
       margin-bottom: 48px;
     }
   }
@@ -105,7 +110,7 @@ export const SavePageWrapper = styled("div")`
   .saved_card {
     position: relative;
     width: 100%;
-    
+
     .image_container {
       position: relative;
       width: 100%;
@@ -114,12 +119,13 @@ export const SavePageWrapper = styled("div")`
       overflow: hidden;
       margin-bottom: 20px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-      background-color: ${({ theme }) => theme.palette.customColors.greyLightBg};
-      
-      @media(max-width: 1199px) {
+      background-color: ${({ theme }) =>
+        theme.palette.customColors.greyLightBg};
+
+      @media (max-width: 1199px) {
         border-radius: 16px;
       }
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         border-radius: 12px;
         margin-bottom: 12px;
       }
@@ -148,19 +154,19 @@ export const SavePageWrapper = styled("div")`
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
-        
+
         &:hover {
           background-color: ${({ theme }) => theme.palette.error.main};
           color: ${({ theme }) => theme.palette.common.white};
           transform: scale(1.05);
         }
 
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           width: 32px;
           height: 32px;
           top: 12px;
           right: 12px;
-          
+
           svg {
             width: 12px;
             height: 12px;
@@ -183,7 +189,7 @@ export const SavePageWrapper = styled("div")`
       text-transform: uppercase;
       color: ${({ theme }) => theme.palette.text.secondary};
       margin-bottom: 6px;
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         font-size: 10px;
         margin-bottom: 4px;
       }
@@ -195,10 +201,10 @@ export const SavePageWrapper = styled("div")`
       font-weight: 600;
       color: ${({ theme }) => theme.palette.primary.main};
       margin-bottom: 8px;
-      @media(max-width: 1199px) {
+      @media (max-width: 1199px) {
         font-size: 20px;
       }
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         font-size: 18px;
         margin-bottom: 4px;
       }
@@ -210,7 +216,7 @@ export const SavePageWrapper = styled("div")`
       line-height: 1.5;
       color: ${({ theme }) => theme.palette.customColors.textColor};
       margin-bottom: 12px;
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         font-size: 13px;
         margin-bottom: 8px;
       }
@@ -222,7 +228,7 @@ export const SavePageWrapper = styled("div")`
       font-weight: 700;
       color: ${({ theme }) => theme.palette.primary.main};
       margin-bottom: 16px;
-      @media(max-width: 599px) {
+      @media (max-width: 599px) {
         font-size: 18px;
         margin-bottom: 12px;
       }
@@ -232,21 +238,21 @@ export const SavePageWrapper = styled("div")`
   .empty_state {
     text-align: center;
     padding: 64px 0;
-    
+
     h3 {
       font-family: ${playFair.style.fontFamily};
       font-size: 28px;
       color: ${({ theme }) => theme.palette.primary.main};
       margin-bottom: 16px;
     }
-    
+
     p {
       font-family: ${outFit.style.fontFamily};
       font-size: 15px;
       color: ${({ theme }) => theme.palette.text.secondary};
       margin-bottom: 24px;
     }
-    
+
     .explore_btn {
       background-color: ${({ theme }) => theme.palette.primary.main};
       color: ${({ theme }) => theme.palette.common.white};
@@ -260,7 +266,7 @@ export const SavePageWrapper = styled("div")`
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
-      
+
       &:hover {
         background-color: ${({ theme }) => theme.palette.secondary.dark};
       }
@@ -272,12 +278,12 @@ export const SavePageWrapper = styled("div")`
     background-color: ${({ theme }) => theme.palette.customColors.greyLightBg};
     padding: 64px 0;
     border-radius: 24px;
-    
-    @media(max-width: 1199px) {
+
+    @media (max-width: 1199px) {
       padding: 48px 0;
       border-radius: 16px;
     }
-    @media(max-width: 599px) {
+    @media (max-width: 599px) {
       padding: 32px 0;
       border-radius: 12px;
     }
@@ -288,8 +294,8 @@ export const SavePageWrapper = styled("div")`
       align-items: flex-end;
       margin-bottom: 36px;
       padding: 0 24px;
-      
-      @media(max-width: 599px) {
+
+      @media (max-width: 599px) {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
@@ -302,10 +308,10 @@ export const SavePageWrapper = styled("div")`
         font-size: 32px;
         font-weight: 700;
         color: ${({ theme }) => theme.palette.primary.main};
-        @media(max-width: 899px) {
+        @media (max-width: 899px) {
           font-size: 26px;
         }
-        @media(max-width: 599px) {
+        @media (max-width: 599px) {
           font-size: 22px;
         }
       }
@@ -319,7 +325,7 @@ export const SavePageWrapper = styled("div")`
         color: ${({ theme }) => theme.palette.primary.main};
         text-decoration: underline;
         transition: color 0.3s ease;
-        
+
         &:hover {
           color: ${({ theme }) => theme.palette.secondary.light};
         }
@@ -331,8 +337,8 @@ export const SavePageWrapper = styled("div")`
       padding: 0 12px;
       text-decoration: none;
       display: block;
-      
-      @media(max-width: 599px) {
+
+      @media (max-width: 599px) {
         padding: 0 8px;
         margin-bottom: 24px;
         &:last-child {
@@ -347,10 +353,11 @@ export const SavePageWrapper = styled("div")`
         border-radius: 16px;
         overflow: hidden;
         margin-bottom: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        background-color: ${({ theme }) => theme.palette.customColors.lightPaperBg};
-        
-        @media(max-width: 599px) {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        background-color: ${({ theme }) =>
+          theme.palette.customColors.lightPaperBg};
+
+        @media (max-width: 599px) {
           border-radius: 10px;
           margin-bottom: 8px;
         }

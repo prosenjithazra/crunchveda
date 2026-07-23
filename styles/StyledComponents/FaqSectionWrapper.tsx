@@ -16,10 +16,10 @@ export const FaqSectionWrapper = styled("section")`
   .faq_header {
     text-align: center;
     margin-bottom: 48px;
-    @media(max-width: 1199px){
+    @media (max-width: 1199px) {
       margin-bottom: 32px;
     }
-    @media(max-width: 599px){
+    @media (max-width: 599px) {
       margin-bottom: 24px;
     }
     h2 {
@@ -46,6 +46,10 @@ export const FaqSectionWrapper = styled("section")`
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.03);
 
+    @media (max-width: 599px) {
+      border-radius: 12px;
+    }
+
     &.active {
       box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.04);
       border-color: rgba(32, 53, 39, 0.1);
@@ -68,11 +72,13 @@ export const FaqSectionWrapper = styled("section")`
     color: ${({ theme }) => theme.palette.primary.dark};
     transition: color 0.2s ease;
 
-    @media (max-width: 599px) {
+    @media (max-width: 899px) {
       padding: 18px 20px;
       font-size: 16px;
     }
-
+    @media (max-width: 599px) {
+      padding: 12px 16px;
+    }
     &:hover {
       color: ${({ theme }) => theme.palette.primary.main};
     }
@@ -87,7 +93,9 @@ export const FaqSectionWrapper = styled("section")`
     border-radius: 50%;
     background: ${({ theme }) => theme.palette.customColors?.lightGrey};
     color: ${({ theme }) => theme.palette.primary.dark};
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      background-color 0.3s ease;
     flex-shrink: 0;
     margin-left: 16px;
 

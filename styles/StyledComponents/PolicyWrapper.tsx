@@ -4,14 +4,14 @@ import { playFair, outFit } from "@/mui-theme/_muiTheme";
 export const PolicyWrapper = styled("section")`
   position: relative;
   width: 100%;
-  padding: 60px 0 80px 0;
+  padding: 40px 0 60px 0;
   background-color: ${({ theme }) => theme.palette.customColors?.lightCream || "#FCF9F2"};
 
-  @media(max-width: 1199px) {
-    padding: 40px 0 60px 0;
+  @media (max-width: 1199px) {
+    padding: 28px 0 44px 0;
   }
-  @media(max-width: 599px) {
-    padding: 30px 0 40px 0;
+  @media (max-width: 599px) {
+    padding: 16px 0 30px 0;
   }
 
   .policy_container {

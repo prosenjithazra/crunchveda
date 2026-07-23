@@ -52,7 +52,7 @@ export default function SustainabilityCharter({ data }: SustainabilityCharterPro
   let heading = "The Sustainability Charter";
   let description = "Our commitment to the future is deeply etched in our soil. We operate on principles of regenerative abundance.";
   let reportLabel = "Read Our Full Report";
-  let reportHref = "#report";
+  let reportHref = "/sustainability";
   let chartersRaw = "";
   let showSection = true;
 
@@ -61,7 +61,7 @@ export default function SustainabilityCharter({ data }: SustainabilityCharterPro
     heading = data.heading ?? heading;
     description = data.description ?? description;
     reportLabel = data.reportLabel ?? reportLabel;
-    reportHref = data.reportHref ?? reportHref;
+    reportHref = (data.reportHref && data.reportHref !== "#report") ? data.reportHref : "/sustainability";
     chartersRaw = data.charters ?? "";
   } else {
     const charterRecord = moduleData?.records?.find(r => r.id === "about-charter");
@@ -77,11 +77,12 @@ export default function SustainabilityCharter({ data }: SustainabilityCharterPro
     heading = getFieldValue("heading", heading);
     description = getFieldValue("description", description);
     reportLabel = getFieldValue("reportLabel", reportLabel);
-    reportHref = getFieldValue("reportHref", reportHref);
+    const fetchedHref = getFieldValue("reportHref", "/sustainability");
+    reportHref = (fetchedHref && fetchedHref !== "#report") ? fetchedHref : "/sustainability";
     chartersRaw = getFieldValue("charters", "");
   }
 
-  let charters = data ? [] : defaultCharters;
+  let charters = defaultCharters;
   if (chartersRaw && chartersRaw.trim()) {
     const lines = chartersRaw.split("\n").filter(Boolean);
     charters = lines.map((line, idx) => {

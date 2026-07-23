@@ -6,11 +6,13 @@ import CloseIcon from '@/ui/Icons/CloseIcon';
 
 export interface SavedItem {
   id: string;
+  _id?: string;
   category: string;
   name: string;
   description: string;
   price: number;
   image: string;
+  rawProduct?: any;
 }
 
 interface Props {

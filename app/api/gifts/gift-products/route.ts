@@ -277,7 +277,8 @@ export async function PUT(request: Request) {
     { id: "heritageItems", label: "Heritage items", type: "textarea", value: serializeItems(heritageCat?.products || []) },
     { id: "seasonalHeading", label: "Right column heading", type: "text", value: seasonalCat?.categoryTitle || "" },
     { id: "seasonalItems", label: "Seasonal items", type: "textarea", value: serializeItems(seasonalCat?.products || []) },
-    { id: "categories", label: "Categories data", type: "textarea", value: giftProducts.categories || [] }
+    { id: "categories", label: "Categories data", type: "textarea", value: giftProducts.categories || [] },
+    { id: "showSection", label: "Show section", type: "toggle", value: giftProducts.showSection !== false }
   ];
   localJson.records[recordIndex] = record;
   writeLocalData(localJson);

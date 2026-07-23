@@ -4,14 +4,14 @@ import { playFair, outFit } from "@/mui-theme/_muiTheme";
 export const ContactHeroWrapper = styled("section")`
   position: relative;
   width: 100%;
-  padding: 100px 0 60px;
+  padding: 48px 0 28px;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
 
-  @media(max-width: 899px) {
-    padding: 60px 0 40px;
+  @media (max-width: 899px) {
+    padding: 32px 0 20px;
   }
-  @media(max-width: 599px) {
-    padding: 40px 0 20px;
+  @media (max-width: 599px) {
+    padding: 20px 0 12px;
   }
 
   .hero_text_col {

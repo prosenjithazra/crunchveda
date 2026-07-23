@@ -59,13 +59,23 @@ textarea,
 select {
   outline: none;
 }
-.menuListSidebar{
 
-  &:hover,  &.Mui-selected {
+.menuListSidebar {
+  &:hover,
+  &.Mui-selected {
     background: #203527 !important;
     color: #fff !important;
-    p{
+    p {
       color: #fff !important;
     }
+  }
+}
+
+
+
+@media (min-width: 600px) and (max-width: 1199px) {
+  .MuiContainer-root {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
   }
 }

@@ -59,10 +59,6 @@ export default function ClimateNeutralDelivery() {
               <Typography className="delivery_desc">
                 Our carbon footprint is tracked from farm to gate. All shipments are offset through verified carbon-offset projects.
               </Typography>
-              
-              <Button className='reportBtn' LinkComponent={Link} href="#" disableRipple variant='contained' color='primary'>
-                View Impact Report
-              </Button>
             </Box>
           </Grid>
         </Grid>

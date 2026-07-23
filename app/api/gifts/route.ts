@@ -198,6 +198,7 @@ export async function PUT(request: Request) {
     const eyebrow = section.fields.find((f: any) => f.id === "eyebrow")?.value || "";
     const headline = section.fields.find((f: any) => f.id === "headline")?.value || "";
     const description = section.fields.find((f: any) => f.id === "description")?.value || "";
+    const showSection = section.fields.find((f: any) => f.id === "showSection")?.value;
 
     const options: RequestInit = {
       method: "PUT",
@@ -209,7 +210,8 @@ export async function PUT(request: Request) {
         banner: {
           bannerLabel: eyebrow,
           bannerTitle: headline,
-          bannerDescription: description
+          bannerDescription: description,
+          showSection: showSection !== false
         }
       })
     };

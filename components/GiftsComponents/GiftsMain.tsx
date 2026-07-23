@@ -133,14 +133,31 @@ export default function GiftsMain() {
       })
       .catch(err => console.error('Failed to load custom chest:', err));
 
-    fetch('/api/gifts/gift-products', { cache: 'no-store' })
-      .then(res => res.json())
-      .then(json => {
-        if (json.success && json.data?.giftProducts) {
-          setGiftProducts(json.data.giftProducts);
+    Promise.all([
+      fetch('/api/gifts/heritage', { cache: 'no-store' }).then(res => res.json()),
+      fetch('/api/gifts/seasonal', { cache: 'no-store' }).then(res => res.json())
+    ])
+      .then(([heritageJson, seasonalJson]) => {
+        const categories = [];
+        if (heritageJson.success && heritageJson.data?.category) {
+          categories.push(heritageJson.data.category);
+        } else {
+          categories.push({
+            categoryTitle: "The Heritage",
+            products: []
+          });
         }
+        if (seasonalJson.success && seasonalJson.data?.category) {
+          categories.push(seasonalJson.data.category);
+        } else {
+          categories.push({
+            categoryTitle: "The Seasonal",
+            products: []
+          });
+        }
+        setGiftProducts({ categories });
       })
-      .catch(err => console.error('Failed to load gifts products:', err));
+      .catch(err => console.error('Failed to load heritage and seasonal collections:', err));
   }, []);
 
   const handleAddToCart = (itemName: string) => {
@@ -320,7 +337,7 @@ export default function GiftsMain() {
                     </Box>
                     <Typography variant="h3" className="product_title">{product.title}</Typography>
                     <Typography className="product_desc">{product.description}</Typography>
-                    <Typography className="product_price">{product.price}</Typography>
+                    <Typography className="product_price">₹{product.price}</Typography>
                   </Box>
                 ))}
               </Box>

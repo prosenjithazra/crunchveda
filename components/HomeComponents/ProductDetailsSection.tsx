@@ -151,8 +151,8 @@ export default function ProductDetailsSection() {
             return (
               <Grid
                 container
-                spacing={{ xs: 4, md: 6, lg: 10 }}
-                sx={{ alignItems: 'center', mb: index === items.length - 1 ? 0 : { xs: 6, md: 10 } }}
+                spacing={{ xs: 3, sm: 4, md: 6, lg: 10 }}
+                sx={{ alignItems: 'center', mb: index === items.length - 1 ? 0 : { xs:2, sm: 4, md:5, lg: 6 } }}
                 key={index}
               >
                 {isImageRight ? [textColumn, imageColumn] : [imageColumn, textColumn]}

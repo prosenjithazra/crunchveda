@@ -6,6 +6,7 @@ import { Box, Container, Grid, Typography } from '@mui/material';
 import { assets } from '@/json/assest';
 import { useContentModule } from '@/hooks/useContent';
 import { StewardshipSectionSkeleton } from '../Loader/SectionSkeletons';
+import { getValidImageSrc } from '@/services/productService';
 
 interface StewardshipSectionProps {
   data?: {
@@ -42,7 +43,7 @@ export default function StewardshipSection({ data }: StewardshipSectionProps) {
     quote = data.quote ?? quote;
     badgeNumber = data.badgeNumber ?? badgeNumber;
     badgeText = data.badgeText ?? badgeText;
-    image = data.image || image;
+    image = getValidImageSrc(data.image, assets.stewardshipFarmer);
   } else {
     const rootsRecord = moduleData?.records?.find(r => r.id === "about-stewardship" || r.id === "about-roots");
     const showSectionField = rootsRecord?.fields?.find(f => f.id === "showSection");
@@ -60,7 +61,7 @@ export default function StewardshipSection({ data }: StewardshipSectionProps) {
     quote = getFieldValue("quote", quote);
     badgeNumber = getFieldValue("badgeNumber", badgeNumber);
     badgeText = getFieldValue("badgeText", badgeText);
-    image = getFieldValue("image", image);
+    image = getValidImageSrc(getFieldValue("image", assets.stewardshipFarmer), assets.stewardshipFarmer);
   }
 
   return (

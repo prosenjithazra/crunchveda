@@ -97,16 +97,18 @@ export default function LoginUI() {
         { email: loginEmail, password: loginPassword },
         {
           onSuccess: (res) => {
-            const token = res.token || res.tocken || res.data?.accessToken || res.data?.token;
-            const userObj = res.data?.user || (res.data?.email ? {
-              id: res.data.id || "",
-              name: res.data.name || "",
-              email: res.data.email || "",
-              role: res.data.role || "customer",
-              phone: res.data.phone || "",
-              avatar: res.data.avatar || "",
-              createdAt: res.data.createdAt || new Date().toISOString(),
-            } : null);
+            const token = res.token || res.tocken || res.data?.accessToken || res.data?.token || (res as any).accessToken;
+            const rawUser = (res as any).user || res.data?.user || (res.data?.email ? res.data : (res as any).data);
+            const userPhone = rawUser?.phone || rawUser?.phoneNumber || rawUser?.mobile || rawUser?.mobileNumber || rawUser?.phone_number || rawUser?.contact || "";
+            const userObj = rawUser ? {
+              id: rawUser.id || rawUser._id || "",
+              name: rawUser.name || "",
+              email: rawUser.email || "",
+              role: rawUser.role || "customer",
+              phone: userPhone,
+              avatar: rawUser.avatar || "",
+              createdAt: rawUser.createdAt || new Date().toISOString(),
+            } : null;
 
             if (typeof window !== "undefined") {
               if (token) {
@@ -146,16 +148,18 @@ export default function LoginUI() {
         { name: registerName, email: registerEmail, password: registerPassword, phone: registerPhone, role: "customer" },
         {
           onSuccess: (res) => {
-            const token = res.token || res.tocken || res.data?.accessToken || res.data?.token;
-            const userObj = res.data?.user || (res.data?.email ? {
-              id: res.data.id || "",
-              name: res.data.name || "",
-              email: res.data.email || "",
-              role: res.data.role || "customer",
-              phone: res.data.phone || "",
-              avatar: res.data.avatar || "",
-              createdAt: res.data.createdAt || new Date().toISOString(),
-            } : null);
+            const token = res.token || res.tocken || res.data?.accessToken || res.data?.token || (res as any).accessToken;
+            const rawUser = (res as any).user || res.data?.user || (res.data?.email ? res.data : (res as any).data);
+            const userPhone = rawUser?.phone || rawUser?.phoneNumber || rawUser?.mobile || rawUser?.mobileNumber || rawUser?.phone_number || rawUser?.contact || registerPhone;
+            const userObj = rawUser ? {
+              id: rawUser.id || rawUser._id || "",
+              name: rawUser.name || "",
+              email: rawUser.email || "",
+              role: rawUser.role || "customer",
+              phone: userPhone,
+              avatar: rawUser.avatar || "",
+              createdAt: rawUser.createdAt || new Date().toISOString(),
+            } : null;
 
             if (typeof window !== "undefined") {
               if (token) {

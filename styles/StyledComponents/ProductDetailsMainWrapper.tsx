@@ -3,17 +3,17 @@ import { styled } from "@mui/material";
 
 export const ProductDetailsMainWrapper = styled("section")`
   position: relative;
-  padding: 60px 0 80px 0;
+  padding: 40px 0 56px 0;
   background: ${({ theme }) => theme.palette.customColors?.lightCream};
 
   @media (max-width: 1199px) {
-    padding: 48px 0 64px 0;
+    padding: 28px 0 44px 0;
   }
   @media (max-width: 899px) {
-    padding: 32px 0 48px 0;
+    padding: 20px 0 36px 0;
   }
   @media (max-width: 599px) {
-    padding: 24px 0 40px 0;
+    padding: 14px 0 28px 0;
   }
 
   /* Breadcrumb */

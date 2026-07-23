@@ -1,4 +1,4 @@
-import { publicPagesSeo, siteSeo } from "@/lib/seo/siteSeo";
+import { siteSeo } from "@/lib/seo/siteSeo";
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
@@ -6,8 +6,33 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: publicPagesSeo.map(page => page.path),
-        disallow: ["/admin", "/admin/", "/admin/*"],
+        allow: "/",
+        disallow: [
+          "/admin",
+          "/admin/*",
+          "/api/*",
+          "/cart",
+          "/checkout",
+          "/profile",
+          "/forgot-password",
+          "/verify-otp",
+          "/reset-password",
+        ],
+      },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: [
+          "/admin",
+          "/admin/*",
+          "/api/*",
+          "/cart",
+          "/checkout",
+          "/profile",
+          "/forgot-password",
+          "/verify-otp",
+          "/reset-password",
+        ],
       },
     ],
     sitemap: `${siteSeo.url}/sitemap.xml`,

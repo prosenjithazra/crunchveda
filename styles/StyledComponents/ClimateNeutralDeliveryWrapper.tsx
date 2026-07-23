@@ -4,14 +4,14 @@ import { playFair, outFit } from "@/mui-theme/_muiTheme";
 export const ClimateNeutralDeliveryWrapper = styled("section")`
   position: relative;
   width: 100%;
-  padding: 80px 0;
+  padding: 48px 0;
   background-color: ${({ theme }) => theme.palette.customColors.lightCream};
 
-  @media(max-width: 1199px) {
-    padding: 60px 0;
+  @media (max-width: 1199px) {
+    padding: 36px 0;
   }
-  @media(max-width: 899px) {
-    padding: 40px 0;
+  @media (max-width: 899px) {
+    padding: 24px 0;
   }
 
   .stats_col {

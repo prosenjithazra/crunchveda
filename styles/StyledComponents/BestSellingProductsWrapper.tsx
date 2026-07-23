@@ -3,47 +3,48 @@ import { styled } from "@mui/material";
 
 export const BestSellingProductsWrapper = styled("section")`
   position: relative;
-  padding: 80px 0;
+  padding: 56px 0;
   background: ${({ theme }) => theme.palette.common?.white};
   @media (max-width: 1199px) {
-    padding: 60px 0;
+    padding: 44px 0;
   }
   @media (max-width: 599px) {
-    padding: 40px 0;
+    padding: 28px 0;
   }
   .best_selling_header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 40px;
+    margin-bottom: 28px;
 
     @media (max-width: 599px) {
       flex-direction: column;
       align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-bottom: 16px;
     }
   }
 
   .cmnSmallTitle {
     font-family: ${outFit.style.fontFamily};
     font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 2.8px;
+    font-size: 13px;
+    letter-spacing: 2.2px;
     text-transform: uppercase;
     color: ${({ theme }) => theme.palette.secondary?.dark};
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 
     @media (max-width: 599px) {
-      font-size: 12px;
-      letter-spacing: 1.5px;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      margin-bottom: 4px;
     }
   }
 
   .view_all_link {
     font-family: ${outFit.style.fontFamily};
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     color: ${({ theme }) => theme.palette.text.primary};
     text-decoration: underline;
     transition: color 0.3s ease;
@@ -70,20 +71,20 @@ export const BestSellingProductsWrapper = styled("section")`
     .splide__pagination {
       position: relative;
       bottom: auto;
-      margin-top: 24px;
-      gap: 8px;
+      margin-top: 16px;
+      gap: 6px;
 
       .splide__pagination__page {
         background: ${({ theme }) => theme.palette.grey[300]};
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         opacity: 1;
         transition: all 0.3s ease;
 
         &.is-active {
           background: ${({ theme }) => theme.palette.primary.main};
-          width: 24px;
-          border-radius: 4px;
+          width: 20px;
+          border-radius: 3px;
         }
       }
     }
@@ -91,18 +92,23 @@ export const BestSellingProductsWrapper = styled("section")`
 
   .product_card {
     background: ${({ theme }) => theme.palette.customColors.headerBg};
-    border-radius: 24px;
-    padding: 16px;
+    border-radius: 18px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
     transition:
       transform 0.3s ease,
       box-shadow 0.3s ease;
 
+    @media (max-width: 599px) {
+      border-radius: 14px;
+      padding: 10px;
+    }
+
     &:hover {
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
     }
   }
 
@@ -110,11 +116,15 @@ export const BestSellingProductsWrapper = styled("section")`
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     background: ${({ theme }) => theme.palette.common.white};
-    a{
+    @media (max-width: 599px) {
+      margin-bottom: 8px;
+      border-radius: 10px;
+    }
+    a {
       width: 100%;
       height: 100%;
       line-height: 0;
@@ -127,21 +137,21 @@ export const BestSellingProductsWrapper = styled("section")`
     }
 
     &:hover img {
-      transform: scale(1.05);
+      transform: scale(1.04);
     }
   }
 
   .product_badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: 10px;
+    left: 10px;
     z-index: 10;
-    padding: 4px 12px;
-    border-radius: 20px;
+    padding: 3px 10px;
+    border-radius: 16px;
     font-family: ${outFit.style.fontFamily};
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
 
     &.badge_organic {
@@ -155,12 +165,12 @@ export const BestSellingProductsWrapper = styled("section")`
     }
 
     &.badge_discount {
-      background: rgba(47, 128, 237, 0.677);
-      color: ${({ theme }) => theme.palette.common.white};
+      background: ${({ theme }) => theme.palette.info.main};
+      color: ${({ theme }) => theme.palette.common.black};
     }
 
     &.badge_toprated {
-      background: rgba(224, 82, 82, 0.677);
+      background: ${({ theme }) => theme.palette.error.main};
       color: ${({ theme }) => theme.palette.common.white};
     }
   }
@@ -168,23 +178,34 @@ export const BestSellingProductsWrapper = styled("section")`
   .product_title {
     font-family: ${playFair.style.fontFamily};
     font-weight: 600;
-    font-size: 20px;
+    font-size: 17px;
     color: ${({ theme }) => theme.palette.primary.light};
-    margin-bottom: 8px;
-    line-height: 1.3;
-    min-height: 52px;
+    margin-bottom: 6px;
+    line-height: 1.25;
+    min-height: 44px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+
+    @media (max-width: 599px) {
+      font-size: 14px;
+      min-height: 36px;
+      margin-bottom: 4px;
+    }
   }
 
   .product_price {
     font-family: ${outFit.style.fontFamily};
     font-weight: 700;
-    font-size: 20px;
+    font-size: 17px;
     color: ${({ theme }) => theme.palette.warning.dark};
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+
+    @media (max-width: 599px) {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
   }
 
   .product_sizes {

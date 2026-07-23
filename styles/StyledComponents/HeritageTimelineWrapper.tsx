@@ -12,6 +12,9 @@ export const HeritageTimelineWrapper = styled("section")`
   @media (max-width: 899px) {
     padding: 60px 0;
   }
+  @media (max-width: 599px) {
+    padding: 40px 0;
+  }
 
   .timeline_header {
     text-align: center;
@@ -47,6 +50,10 @@ export const HeritageTimelineWrapper = styled("section")`
     margin: 0 auto;
     padding: 20px 0;
 
+    @media (max-width: 599px) {
+      padding: 10px 0;
+    }
+
     &::before {
       content: "";
       position: absolute;
@@ -77,6 +84,10 @@ export const HeritageTimelineWrapper = styled("section")`
       padding-left: 50px;
       padding-right: 0;
       padding-bottom: 30px;
+    }
+    @media (max-width: 599px) {
+      padding-top: 16px;
+      padding-bottom: 20px;
     }
 
     &.event_left {

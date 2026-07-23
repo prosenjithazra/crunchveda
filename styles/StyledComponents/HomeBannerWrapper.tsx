@@ -3,15 +3,15 @@ import { styled } from "@mui/material";
 export const HomeBannerWrapper = styled("section")`
   position: relative;
   width: 100%;
-  padding: 200px 0;
-  @media(max-width:1199px){
-    padding: 160px 0;
+  padding: 120px 0;
+  @media (max-width: 1199px) {
+    padding: 100px 0;
   }
-    @media(max-width:899px){
-    padding: 120px 0;
+  @media (max-width: 899px) {
+    padding: 75px 0;
   }
-      @media(max-width:599px){
-    padding: 90px 0;
+  @media (max-width: 599px) {
+    padding: 48px 0;
   }
   &::before {
     position: absolute;
@@ -28,11 +28,12 @@ export const HomeBannerWrapper = styled("section")`
     pointer-events: none;
     z-index: 2;
 
-    @media(max-width:599px){ background: linear-gradient(
-      90deg,
-      rgba(252, 249, 242, 0.75) 70%,
-      rgba(252, 249, 242, 0.2) 100%
-    );
+    @media (max-width: 599px) {
+      background: linear-gradient(
+        90deg,
+        rgba(252, 249, 242, 0.85) 75%,
+        rgba(252, 249, 242, 0.25) 100%
+      );
     }
   }
   .bannerImg {
@@ -47,47 +48,57 @@ export const HomeBannerWrapper = styled("section")`
   .bannerTxtBoxWrapper {
     position: relative;
     z-index: 3;
-    max-width: 580px;
+    max-width: 540px;
     .cmnSmallTitle {
       font-weight: 600;
-      font-size: 14px;
-      letter-spacing: 2.8px;
+      font-size: 13px;
+      letter-spacing: 2.2px;
       text-transform: uppercase;
       color: ${({ theme }) => theme.palette.secondary?.dark};
-      margin-bottom: 10px;
+      margin-bottom: 8px;
 
-    @media(max-width:599px){
-        font-size: 12px;
-        letter-spacing: 1.5px;
-    }
+      @media (max-width: 599px) {
+        font-size: 11px;
+        letter-spacing: 1.2px;
+        margin-bottom: 6px;
+      }
     }
     h1 {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      @media (max-width: 599px) {
+        margin-bottom: 8px;
+      }
     }
     p {
       max-width: 440px;
       font-weight: 400;
-      font-size: 18px;
-      letter-spacing: 0.18px;
+      font-size: 16px;
+      letter-spacing: 0.15px;
       color: ${({ theme }) => theme.palette.customColors?.textColor};
 
-    @media(max-width:599px){
-        font-size: 16px;
-        max-width: 260px;
+      @media (max-width: 599px) {
+        font-size: 14px;
+        max-width: 280px;
+        line-height: 1.35;
+      }
     }
-    }
-    .btnWrapper{
-        margin-top: 24px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
+    .btnWrapper {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
 
-    @media(max-width:599px){
-    margin-top: 16px;
-    }
-        button{
-            min-width: 220px;
+      @media (max-width: 599px) {
+        margin-top: 12px;
+        gap: 8px;
+      }
+      button {
+        min-width: 180px;
+        @media (max-width: 599px) {
+          min-width: 140px;
+          padding: 8px 16px;
         }
+      }
     }
   }
 `;

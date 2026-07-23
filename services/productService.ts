@@ -229,21 +229,149 @@ export const productService = {
       data: filtered,
     };
   },
+
+  getProductStock: async (id: string): Promise<{ success: boolean; data: { id: string; name: string; stock: number; isOutOfStock: boolean } }> => {
+    try {
+      const res = await fetch(`${API_URL}/products/${id}/stock`, { cache: "no-store" });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || `Failed to fetch stock for product: ${id}`);
+      }
+      const isSuccess = data.status === "success" || data.success === true;
+      return {
+        success: isSuccess,
+        data: data.data || { id, name: "", stock: 0, isOutOfStock: true },
+      };
+    } catch (err) {
+      console.error("Failed to fetch product stock:", err);
+      return {
+        success: false,
+        data: { id, name: "", stock: 0, isOutOfStock: true },
+      };
+    }
+  },
+
+  getSavedProducts: async (token: string): Promise<{ success: boolean; message: string; data: Product[] }> => {
+    const res = await fetch(`${API_URL}/products/saved`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const text = await res.text();
+    let data: any = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error("Saved products API returned an invalid response");
+    }
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch saved products");
+    }
+    const isSuccess = data.status === "success" || data.success === true;
+    const savedList = data.data?.savedProducts || (Array.isArray(data.data) ? data.data : []);
+    return {
+      success: isSuccess,
+      message: data.message || "Saved products fetched successfully",
+      data: savedList,
+    };
+  },
+
+  toggleSaveProduct: async (
+    productId: string,
+    token: string
+  ): Promise<{ success: boolean; message: string; isSaved: boolean; data: any }> => {
+    const res = await fetch(`${API_URL}/products/saved/${productId}/toggle`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const text = await res.text();
+    let data: any = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error("Save product API returned an invalid response");
+    }
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to toggle saved product");
+    }
+    const isSuccess = data.status === "success" || data.success === true;
+    return {
+      success: isSuccess,
+      message: data.message || "Saved status updated",
+      isSaved: Boolean(data.isSaved),
+      data: data.data,
+    };
+  },
+
+  saveProduct: async (
+    productId: string,
+    token: string
+  ): Promise<{ success: boolean; message: string; isSaved: boolean; data: any }> => {
+    return productService.toggleSaveProduct(productId, token);
+  },
+
+  removeSavedProduct: async (
+    productId: string,
+    token: string
+  ): Promise<{ success: boolean; message: string; isSaved: boolean }> => {
+    const res = await fetch(`${API_URL}/products/saved/${productId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const text = await res.text();
+    let data: any = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error("Remove saved product API returned an invalid response");
+    }
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to remove saved product");
+    }
+    const isSuccess = data.status === "success" || data.success === true;
+    return {
+      success: isSuccess,
+      message: data.message || "Removed from saved products",
+      isSaved: false,
+    };
+  },
 };
+
+export function getValidImageSrc(src: any, fallback: any = "/assets/cashews_product.png"): any {
+  if (!src) return fallback;
+  if (typeof src === "object") return src;
+  if (typeof src === "string") {
+    const trimmed = src.trim();
+    if (
+      trimmed.startsWith("/") ||
+      trimmed.startsWith("http://") ||
+      trimmed.startsWith("https://") ||
+      trimmed.startsWith("data:")
+    ) {
+      return trimmed;
+    }
+  }
+  return fallback;
+}
 
 export function mapApiProductToUi(apiProd: Product): DryFruitProduct {
   const categoryName = typeof apiProd.category === "object" && apiProd.category !== null
     ? (apiProd.category as Category).name || ""
     : apiProd.category || "";
 
-  let image = apiProd.image || apiProd.images?.[0] || "";
-  if (!image || image === "") {
-    image = "/assets/cashews_product.png";
-  }
+  const rawImage = apiProd.image || apiProd.images?.[0] || "";
+  const image = getValidImageSrc(rawImage, "/assets/cashews_product.png");
 
-  const gallery = apiProd.images && apiProd.images.length > 0 && apiProd.images[0] !== ""
-    ? apiProd.images
-    : (apiProd.image && apiProd.image !== "" ? [apiProd.image] : ["/assets/cashews_product.png"]);
+  const rawGallery = (apiProd.images && apiProd.images.length > 0) ? apiProd.images : [rawImage];
+  const validGallery = rawGallery
+    .map((img) => getValidImageSrc(img, "/assets/cashews_product.png"))
+    .filter(Boolean);
+
+  const gallery = validGallery.length > 0 ? validGallery : [image];
 
   // ── Handle both new `prices` array AND legacy `sizePrices` map ──────────────
   let sizePrices: Record<string, number> = {};

@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
@@ -7,6 +6,7 @@ import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
 import { ContactSupportWrapper } from '@/styles/StyledComponents/ContactSupportWrapper';
 
 export default function ContactSupport() {
+  
   return (
     <ContactSupportWrapper>
       <Container fixed>
@@ -19,7 +19,7 @@ export default function ContactSupport() {
               Support Center
             </Typography>
           </Box>
-          <Link href="#" className="browse_link">
+          <Link href="/help-support" className="browse_link">
             Browse All Topics
           </Link>
         </Box>

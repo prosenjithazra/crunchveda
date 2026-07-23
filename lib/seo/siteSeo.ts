@@ -32,6 +32,13 @@ export const siteSeo = {
     "sustainable food delivery",
     "Crunchveda",
   ],
+  verification: {
+    google: "google-site-verification-placeholder",
+    yandex: "yandex-verification-placeholder",
+    other: {
+      "msvalidate.01": "bing-site-verification-placeholder",
+    },
+  },
 };
 
 export type PageSeoConfig = {
@@ -68,12 +75,17 @@ export function createPageMetadata({
   const imageUrl = absoluteUrl(image);
 
   return {
-    title,
+    metadataBase: new URL(siteSeo.url),
+    title: {
+      default: title,
+      template: `%s | ${siteSeo.name}`,
+    },
     description,
     keywords: [...siteSeo.keywords, ...keywords],
     authors: [{ name: siteSeo.author }],
     creator: siteSeo.author,
     publisher: siteSeo.author,
+    verification: siteSeo.verification,
     alternates: {
       canonical,
     },
@@ -201,17 +213,19 @@ export const publicPagesSeo: PageSeoConfig[] = [
     path: "/cart",
     title: "Harvest Basket | Crunchveda Cart",
     description:
-      "Review your Crunchveda harvest basket, order summary, recommended add-ons, and WhatsApp checkout details.",
-    keywords: ["Crunchveda cart", "harvest basket", "WhatsApp checkout"],
+      "Review your Crunchveda harvest basket, order summary, recommended add-ons, and checkout details.",
+    keywords: ["Crunchveda cart", "harvest basket"],
     image: "/assets/strawberries.png",
+    noIndex: true,
   },
   {
     path: "/checkout",
     title: "Checkout | Crunchveda",
     description:
-      "Provide your delivery information and confirm your organic harvest orders for manual WhatsApp checkout.",
+      "Provide your delivery information and confirm your organic harvest orders.",
     keywords: ["checkout", "confirm order", "shipping details"],
     image: "/assets/strawberries.png",
+    noIndex: true,
   },
   {
     path: "/saved",
@@ -244,6 +258,42 @@ export const publicPagesSeo: PageSeoConfig[] = [
       "Log in or register for a Crunchveda account to track orders, save items to your wishlist, and manage your delivery details.",
     keywords: ["login crunchveda", "create account", "user register"],
     image: "/assets/homeBannerImg.png",
+    noIndex: true,
+  },
+  {
+    path: "/help-support",
+    title: "Help & Support | Crunchveda Concierge",
+    description:
+      "Find answers about Crunchveda organic dry fruit logistics, single-estate authenticity, returns, product information, and order tracking.",
+    keywords: ["Crunchveda help", "support center", "shipping logistics", "returns policy"],
+    image: "/assets/contact_hero_shirt.png",
+  },
+  {
+    path: "/forgot-password",
+    title: "Forgot Password | Crunchveda",
+    description:
+      "Reset your Crunchveda account password. Enter your registered email address to receive a security verification OTP.",
+    keywords: ["forgot password", "reset password", "crunchveda account"],
+    image: "/assets/homeBannerImg.png",
+    noIndex: true,
+  },
+  {
+    path: "/verify-otp",
+    title: "Verify OTP | Crunchveda",
+    description:
+      "Verify your 6-digit OTP security code sent to your registered email address.",
+    keywords: ["verify otp", "security verification", "crunchveda account"],
+    image: "/assets/homeBannerImg.png",
+    noIndex: true,
+  },
+  {
+    path: "/reset-password",
+    title: "Reset Password | Crunchveda",
+    description:
+      "Choose a new password for your Crunchveda account after security OTP verification.",
+    keywords: ["reset password", "new password", "crunchveda security"],
+    image: "/assets/homeBannerImg.png",
+    noIndex: true,
   },
   {
     path: "/profile",
@@ -252,14 +302,25 @@ export const publicPagesSeo: PageSeoConfig[] = [
       "Manage your personal details, order history, address details, and settings on your Crunchveda profile dashboard.",
     keywords: ["user profile", "crunchveda account", "my orders"],
     image: "/assets/dates_category.png",
+    noIndex: true,
   },
 ];
 
 export const getPageSeo = (path: string) => {
-  const page = publicPagesSeo.find(item => item.path === path);
+  const cleanPath = path ? path.split("?")[0].replace(/\/+$/, "") || "/" : "/";
+  const page = publicPagesSeo.find(
+    (item) => item.path === path || item.path === cleanPath
+  );
 
   if (!page) {
-    throw new Error(`Missing SEO config for ${path}`);
+    return {
+      path: cleanPath,
+      title: "Help & Support | Crunchveda Concierge",
+      description:
+        "Find answers about Crunchveda organic dry fruit logistics, single-estate authenticity, returns, product information, and order tracking.",
+      keywords: ["Crunchveda help", "support center", "shipping logistics", "returns policy"],
+      image: siteSeo.defaultImage,
+    };
   }
 
   return page;

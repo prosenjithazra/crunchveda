@@ -5,7 +5,7 @@ export const HeaderWrapper = styled("header")`
   position: sticky;
   top: 0;
   z-index: 99;
-  padding: 16px 0;
+  padding: 12px 0;
   background: ${({ theme }) => theme.palette.customColors?.headerBg};
   box-shadow: 0px 20px 40px rgba(6, 27, 14, 0.03);
   backdrop-filter: blur(12px);
@@ -28,7 +28,7 @@ export const HeaderWrapper = styled("header")`
 
   &.scroll-up {
     transform: translateY(0);
-    padding: 10px 0;
+    padding: 8px 0;
     background: ${({ theme }) => {
       const bg = theme.palette.customColors?.headerBg || "#FCF9F2";
       return bg.startsWith("#") ? `${bg}dd` : bg;
@@ -38,9 +38,15 @@ export const HeaderWrapper = styled("header")`
   }
 
   @media (max-width: 1199px) {
-    padding: 12px 0;
+    padding: 10px 0;
     &.scroll-up {
-      padding: 8px 0;
+      padding: 6px 0;
+    }
+  }
+  @media (max-width: 599px) {
+    padding: 8px 0;
+    &.scroll-up {
+      padding: 5px 0;
     }
   }
   .mainHeaderWrapper {
@@ -50,15 +56,15 @@ export const HeaderWrapper = styled("header")`
     .logoBox {
       position: relative;
       a {
-        max-width: 180px;
+        max-width: 160px;
         line-height: 0;
         font-size: 0;
 
         @media (max-width: 1199px) {
-          max-width: 140px;
+          max-width: 130px;
         }
         @media (max-width: 599px) {
-          max-width: 120px;
+          max-width: 110px;
         }
         img {
           width: 100%;
@@ -74,18 +80,18 @@ export const HeaderWrapper = styled("header")`
       ul {
         display: flex;
         align-items: center;
-        gap: 30px;
+        gap: 24px;
 
         @media (max-width: 1199px) {
-          gap: 16px;
+          gap: 14px;
         }
         li {
           width: auto;
           a {
             position: relative;
             font-weight: 600;
-            font-size: 14px;
-            letter-spacing: 1.12px;
+            font-size: 13px;
+            letter-spacing: 1px;
             color: ${({ theme }) => theme.palette.customColors.light};
             transition: 0.4s ease-in-out;
             font-family: ${outFit.style.fontFamily};
@@ -101,10 +107,10 @@ export const HeaderWrapper = styled("header")`
               position: absolute;
               content: "";
               left: 0;
-              bottom: -6px;
+              bottom: -4px;
               opacity: 0;
               width: 0;
-              height: 3px;
+              height: 2px;
               border-radius: 20px;
               background: ${({ theme }) => theme.palette.primary.main};
               transition: 0.4s ease-in-out;
@@ -116,12 +122,12 @@ export const HeaderWrapper = styled("header")`
     .wrapper_rightListBox {
       display: flex;
       align-items: center;
-      gap: 10px;
-      @media(max-width:899px){
-        gap:6px;
+      gap: 8px;
+      @media (max-width: 899px) {
+        gap: 4px;
       }
       .searchBtn {
-        padding: 10px;
+        padding: 8px;
         border-radius: 50%;
         &:hover {
           background: ${({ theme }) => theme.palette.grey[200]};
@@ -130,13 +136,13 @@ export const HeaderWrapper = styled("header")`
       .cartBtn {
         padding: 0;
         position: relative;
-        margin-right:10px;
+        margin-right: 8px;
         span {
           position: absolute;
-          right: -6px;
-          top: -6px;
-          width: 16px;
-          height: 16px;
+          right: -5px;
+          top: -5px;
+          width: 15px;
+          height: 15px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -149,21 +155,20 @@ export const HeaderWrapper = styled("header")`
         }
       }
       .whatsAppBtn {
-        svg{
-          display:none;
+        svg {
+          display: none;
         }
         @media (max-width: 1199px) {
-          svg{
-            display:block;
+          svg {
+            display: block;
           }
-          font-size:0;
-          border-radius:50%;
-          font-size:0;
-          padding:0;
-          width: 40px;
-          height: 40px;
-          min-width: 40px;
-          min-height: 40px;
+          font-size: 0;
+          border-radius: 50%;
+          padding: 0;
+          width: 36px;
+          height: 36px;
+          min-width: 36px;
+          min-height: 36px;
         }
       }
     }
@@ -173,12 +178,12 @@ export const HeaderWrapper = styled("header")`
 export const MobileMenuWrapper = styled(Box)`
   .mobileMenuListBox {
     position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 16px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
     background: ${({ theme }) => theme.palette.primary?.main};
-    border-radius: 50px;
-    padding: 10px 48px;
+    border-radius: 40px;
+    padding: 8px 36px;
     display: none;
     z-index: 999;
     @media (max-width: 899px) {
@@ -188,7 +193,7 @@ export const MobileMenuWrapper = styled(Box)`
     }
 
     @media (max-width: 479px) {
-      padding: 10px 32px;
+      padding: 7px 24px;
     }
     ul {
       width: 100%;

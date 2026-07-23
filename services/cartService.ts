@@ -82,18 +82,10 @@ export const cartService = {
                   };
                 }
 
-                return {
-                  id: item.product,
-                  name: "Premium Product",
-                  badge: "CRUNCHVEDA SPECIAL",
-                  price: item.price || 0,
-                  quantity: item.quantity,
-                  image: "/assets/images/placeholder.jpg",
-                  size: item.size || "Default",
-                };
+                return null;
               })
             );
-            return resolved;
+            return (resolved.filter(Boolean) as CartItem[]);
           }
         }
       }

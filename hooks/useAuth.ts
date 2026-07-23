@@ -11,9 +11,11 @@ export function useRegister() {
     onSuccess: (data) => {
       const token =
         data.token || data.tocken || data.data?.accessToken || data.data?.token;
-      let user = data.data?.user || (data.data?.email ? data.data : null);
+      let user = (data as any).user || (data.data as any)?.user || (data.data?.email ? data.data : null);
       if (user) {
-        user = { ...user, id: user.id || user._id };
+        const u = user as any;
+        const phone = u.phone || u.phoneNumber || u.mobile || u.mobileNumber || u.phone_number || u.contact || "";
+        user = { ...user, id: u.id || u._id, phone };
       }
 
       if (typeof window !== "undefined") {
@@ -40,9 +42,11 @@ export function useLogin() {
     onSuccess: (data) => {
       const token =
         data.token || data.tocken || data.data?.accessToken || data.data?.token;
-      let user = data.data?.user || (data.data?.email ? data.data : null);
+      let user = (data as any).user || (data.data as any)?.user || (data.data?.email ? data.data : null);
       if (user) {
-        user = { ...user, id: user.id || user._id };
+        const u = user as any;
+        const phone = u.phone || u.phoneNumber || u.mobile || u.mobileNumber || u.phone_number || u.contact || "";
+        user = { ...user, id: u.id || u._id, phone };
       }
 
       if (typeof window !== "undefined") {
@@ -108,11 +112,14 @@ export function useUser() {
 
       try {
         const response = await authService.getMe(token);
-        if (response.success && response.data) {
-          const rawUser = (response.data as any).user || response.data;
-          const userData = { ...rawUser, id: rawUser.id || rawUser._id };
-          localStorage.setItem("user", JSON.stringify(userData));
-          return userData;
+        if (response) {
+          const rawUser = (response as any).user || (response.data as any)?.user || response.data || response;
+          if (rawUser && (rawUser.email || rawUser.name || rawUser._id || rawUser.id)) {
+            const phone = rawUser.phone || rawUser.phoneNumber || rawUser.mobile || rawUser.mobileNumber || rawUser.phone_number || rawUser.contact || "";
+            const userData = { ...rawUser, id: rawUser.id || rawUser._id, phone };
+            localStorage.setItem("user", JSON.stringify(userData));
+            return userData;
+          }
         }
       } catch (err: any) {
         console.error("useUser fetch failed:", err);
@@ -153,7 +160,8 @@ export function useUser() {
       }
       return null;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes stale time
+    staleTime: 0,
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
   });
 
@@ -168,6 +176,7 @@ export function useUpdateProfile() {
       email: string;
       phone: string;
       avatar?: string;
+      profilePicture?: string;
     }) => {
       const token =
         typeof window !== "undefined"
@@ -177,7 +186,7 @@ export function useUpdateProfile() {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || "https://crunch-veda-backend.onrender.com/api"}/auth/me`,
+          `${process.env.NEXT_PUBLIC_API_URL || "https://crunch-veda-backend.onrender.com/api"}/auth/profile`,
           {
             method: "PUT",
             headers: {
@@ -208,6 +217,7 @@ export function useUpdateProfile() {
         }
         return next;
       });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 }

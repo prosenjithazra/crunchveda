@@ -203,66 +203,7 @@ export const adminModules: AdminModule[] = [
       ]),
     ],
   },
-  {
-    id: "products",
-    title: "Product Listing Page",
-    route: "/products",
-    description: "Manage product listing page copy, filter options, sort options, card rules, WhatsApp CTA text, and pagination settings.",
-    pageType: "Commerce",
-    records: [
-      createContentRecord("product-list-header", "Collections header", "Page header", [
-        field("breadcrumbLabel", "Breadcrumb label", "text", "Collections"),
-        field("headline", "H1 headline", "text", "Dry Fruit Collections"),
-        field("description", "Intro paragraph", "textarea", "Artisanal selections sourced from the finest orchards globally. Each harvest is hand-picked, ensuring peak nutritional density and superior flavor profiles."),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("product-filters", "Filter sidebar", "Filter settings", [
-        field("categories", "Category filter options", "textarea", "Premium Almonds\nExotic Cashews\nWalnut Kernels\nCalifornia Pistachios\nDates & Figs"),
-        field("dietary", "Dietary filter options", "textarea", "Organic\nGluten-Free\nRaw"),
-        field("priceMin", "Minimum price", "number", "5"),
-        field("priceMax", "Maximum price", "number", "100"),
-        field("sortOptions", "Sort options", "textarea", "Premium First\nPrice: Low to High\nPrice: High to Low\nName: A-Z"),
-        field("itemsPerPage", "Items per page", "number", "6"),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("product-card-rules", "Product card display rules", "Card settings", [
-        toggleField("showRating", "Show rating", true),
-        toggleField("showWishlist", "Show wishlist button", true),
-        toggleField("showWhatsApp", "Show WhatsApp action", true),
-        toggleField("showSizePills", "Show size pills", true),
-        toggleField("showSection", "Show section", true),
-      ]),
-    ],
-  },
-  {
-    id: "product-detail",
-    title: "Product Details Page",
-    route: "/products/[slug]",
-    description: "Manage the reusable detail page fields: gallery, badges, pricing blocks, package options, trust badges, WhatsApp CTA, and detail panels.",
-    pageType: "Commerce",
-    records: [
-      createContentRecord("detail-gallery", "Product gallery", "Gallery", [
-        field("breadcrumbLabel", "Breadcrumb label", "text", "Collections"),
-        field("galleryImages", "Gallery images", "textarea", "Use product.gallery image paths from the product record. Add one path per line for future API integration."),
-        toggleField("showThumbnails", "Show thumbnails", true),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("detail-main-info", "Product information panel", "Product detail content", [
-        field("badgeRules", "Badge rules", "textarea", "Organic badge when product.badge is ORGANIC\nBest Seller badge when product.badge is BEST SELLER\nAlways show Premium Grade badge"),
-        field("savingsLabel", "Savings label", "text", "20% Savings"),
-        field("quantityMin", "Minimum quantity", "number", "1"),
-        field("cartCta", "Cart CTA label", "text", "Add to Cart"),
-        field("whatsAppCta", "WhatsApp CTA label", "text", "Order on WhatsApp"),
-        field("responseNote", "Response note", "text", "Typical response time · 1–3 mins"),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("detail-trust-bottom", "Trust and bottom sections", "Trust panels", [
-        field("trustItems", "Trust items", "textarea", "100% Organic | Farm-to-table cultivation\nDirect Trade | Sourced with heritage"),
-        field("bottomSections", "Bottom sections", "textarea", "Origin story\nStorage instructions\nNutrition facts\nRelated products"),
-        toggleField("showSection", "Show section", true),
-      ]),
-    ],
-  },
+
   {
     id: "best-seller",
     title: "Best Seller Page",
@@ -574,60 +515,7 @@ export const adminModules: AdminModule[] = [
       ]),
     ],
   },
-  {
-    id: "cart",
-    title: "Cart Page",
-    route: "/cart",
-    description: "Manage basket title copy, default cart items, summary labels, empty state, upsell items, trust messaging, and WhatsApp checkout text.",
-    pageType: "Utility",
-    records: [
-      createContentRecord("cart-title", "Cart title block", "Page header", [
-        field("headline", "H1 headline", "text", "Harvest Basket"),
-        field("description", "Subtitle", "textarea", "Review your selected artisanal produce before checkout."),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("cart-items", "Default cart items", "Cart products", [
-        field("items", "Default items", "textarea", "Artisanal Forest Strawberries | SEASONAL SELECTION | ₹18.00 | Qty 2\nCold-Pressed Heritage Olive Oil | ESTATE BOTTLED | ₹45.00 | Qty 1"),
-        field("emptyTitle", "Empty state text", "text", "Your basket is currently empty."),
-        field("emptyCtaLabel", "Empty CTA label", "text", "Browse Products"),
-        field("emptyCtaHref", "Empty CTA link", "text", "/products"),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("cart-summary", "Summary and checkout", "Summary panel", [
-        field("summaryTitle", "Summary title", "text", "Summary"),
-        field("shippingLabel", "Shipping label", "text", "Estimated Shipping"),
-        field("taxLabel", "Tax label", "text", "Tax"),
-        field("checkoutLabel", "Checkout CTA label", "text", "Checkout via WhatsApp"),
-        field("secureLabel", "Secure note", "text", "Secure manual checkout via WhatsApp concierge."),
-        field("taxRate", "Mock tax rate percent", "number", "5.55"),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("cart-upsell", "Upsell products", "Upsell cards", [
-        field("items", "Upsell items", "textarea", "Infused Fleur de Sel | ₹12.00\nRaw Wildflower Honey | ₹22.00\nStone-Baked Sourdough | ₹9.00"),
-        toggleField("showSection", "Show section", true),
-      ]),
-    ],
-  },
-  {
-    id: "saved",
-    title: "Saved Items Page",
-    route: "/saved",
-    description: "Manage saved selection items, action labels, empty states, and recommendation list content.",
-    pageType: "Utility",
-    records: [
-      createContentRecord("saved-list", "Curated selection list", "Saved products", [
-        field("items", "Saved items", "textarea", "DESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | ₹32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | ₹32.00\nDESERT HARVEST | Premium Medjool Dates | Hand-selected for honey-like sweetness. | ₹32.00"),
-        field("clearAllLabel", "Clear all label", "text", "Clear All"),
-        field("moveAllLabel", "Move all label", "text", "Move All to Basket"),
-        toggleField("showSection", "Show section", true),
-      ]),
-      createContentRecord("saved-recommendations", "Recommendation list", "Recommendations", [
-        field("heading", "Recommendation heading", "text", "You May Also Like"),
-        field("items", "Recommendation items", "textarea", "Jumbo Cashews\nMamra Almonds\nKashmiri Walnuts\nForest Berry Mix"),
-        toggleField("showSection", "Show section", true),
-      ]),
-    ],
-  },
+
   {
     id: "privacy-policy",
     title: "Privacy Policy Page",

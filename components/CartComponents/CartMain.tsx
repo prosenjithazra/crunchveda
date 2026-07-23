@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Box, Container, Typography, Button, IconButton, CircularProgress } from "@mui/material";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
 import { assets } from "@/json/assest";
 import { CartMainWrapper } from "@/styles/StyledComponents/CartMainWrapper";
 import WhatsAppIcon from "@/ui/Icons/WhatsAppIcon";
@@ -16,59 +18,34 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { toast } from "react-hot-toast";
 
 import { cartService, type CartItem } from "@/services/cartService";
-import { mapApiProductToUi } from "@/services/productService";
+import { mapApiProductToUi, getValidImageSrc } from "@/services/productService";
+import { useProducts } from "@/hooks/useProducts";
 
 interface UpsellItem {
   id: string;
   name: string;
   price: number;
-  image: string;
+  image: string | any;
+  badge?: string;
+  size?: string;
 }
 
 export default function CartMain() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const { data: productsData } = useProducts({ limit: 10 });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const loadCart = useCallback(async () => {
     try {
       const items = await cartService.getCart();
-      if (items.length === 0) {
-        const token = typeof window !== "undefined" ? (localStorage.getItem("token") || localStorage.getItem("tocken")) : null;
-        if (!token) {
-          const defaultItems: CartItem[] = [
-            {
-              id: "strawberries",
-              name: "Artisanal Forest Strawberries",
-              badge: "SEASONAL SELECTION",
-              price: 18.0,
-              quantity: 2,
-              image: assets.strawberries,
-              size: "250g",
-            },
-            {
-              id: "olive_oil",
-              name: "Cold-Pressed Heritage Olive Oil",
-              badge: "ESTATE BOTTLED",
-              price: 45.0,
-              quantity: 1,
-              image: assets.oliveOil,
-              size: "500ml",
-            },
-          ];
-          setCartItems(defaultItems);
-          cartService.saveLocalFallback(defaultItems);
-          // Sync defaults to DB asynchronously
-          defaultItems.forEach(item => {
-            cartService.updateItem(item.id, item.quantity, item.size, item.price);
-          });
-        } else {
-          setCartItems([]);
-        }
-      } else {
-        setCartItems(items);
-        cartService.saveLocalFallback(items);
-      }
+      setCartItems(items);
+      cartService.saveLocalFallback(items);
     } catch (error) {
       console.error("CartMain: Failed to load cart:", error);
     } finally {
@@ -102,26 +79,27 @@ export default function CartMain() {
     cartService.saveLocalFallback(items);
   };
 
-  const upsellProducts: UpsellItem[] = [
-    {
-      id: "fleur_de_sel",
-      name: "Infused Fleur de Sel",
-      price: 12.0,
-      image: assets.fleurDeSel,
-    },
-    {
-      id: "wildflower_honey",
-      name: "Raw Wildflower Honey",
-      price: 22.0,
-      image: assets.wildflowerHoney,
-    },
-    {
-      id: "sourdough_bread",
-      name: "Stone-Baked Sourdough",
-      price: 9.0,
-      image: assets.sourdoughBread,
-    },
-  ];
+  const upsellProducts: UpsellItem[] = useMemo(() => {
+    if (productsData?.data && productsData.data.length > 0) {
+      return productsData.data.slice(0, 8).map((p) => {
+        const uiProd = mapApiProductToUi(p);
+        const priceVal =
+          uiProd.sizePrices[uiProd.defaultSize] ??
+          Object.values(uiProd.sizePrices)[0] ??
+          0;
+        const validImg = getValidImageSrc(uiProd.image, assets.fleurDeSel);
+        return {
+          id: p._id,
+          name: uiProd.name,
+          price: priceVal,
+          image: validImg,
+          badge: uiProd.badge,
+          size: uiProd.defaultSize || "Regular",
+        };
+      });
+    }
+    return [];
+  }, [productsData]);
 
   const handleIncrease = async (id: string, size: string) => {
     const updated = cartItems.map((item) => {
@@ -156,7 +134,7 @@ export default function CartMain() {
 
   const handleAddUpsell = async (upsell: UpsellItem) => {
     let updated: CartItem[] = [];
-    const size = "Regular";
+    const size = upsell.size || "Regular";
     const existing = cartItems.find((item) => item.id === upsell.id && item.size === size);
 
     if (existing) {
@@ -170,7 +148,7 @@ export default function CartMain() {
       cartService.updateItem(upsell.id, newQty, size, upsell.price);
     } else {
       toast.success(`Added ${upsell.name} to basket`);
-      let badgeText = "UPSELL EXCLUSIVE";
+      let badgeText = upsell.badge || "UPSELL EXCLUSIVE";
       if (upsell.id === "fleur_de_sel") badgeText = "HERITAGE SALT";
       if (upsell.id === "wildflower_honey") badgeText = "ORGANIC HONEY";
       if (upsell.id === "sourdough_bread") badgeText = "DAILY FRESH";
@@ -385,41 +363,97 @@ export default function CartMain() {
         </Box>
 
         {/* Upsell Section */}
-        <Box className="upsell_section">
-          <Typography variant="h2" className="upsell_title">
-            Enhance Your Harvest
-          </Typography>
-          <Box className="upsell_grid">
-            {upsellProducts.map((upsell) => (
-              <Box className="upsell_card" key={upsell.id}>
-                <Box className="upsell_img">
-                  <Image
-                    src={upsell.image}
-                    alt={upsell.name}
-                    width={300}
-                    height={250}
-                  />
-                </Box>
-                <Box className="upsell_details">
-                  <Typography variant="h4" className="upsell_name">
-                    {upsell.name}
-                  </Typography>
-                  <Box className="upsell_price">₹{upsell.price.toFixed(2)}</Box>
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disableRipple
-                  onClick={() => handleAddUpsell(upsell)}
-                  fullWidth
-                >
-                  Add to Basket
-                </Button>
+        {isMounted && upsellProducts.length > 0 && (
+          <Box className="upsell_section">
+            <Typography variant="h2" className="upsell_title">
+              Enhance Your Harvest
+            </Typography>
+            {upsellProducts.length > 3 ? (
+              <Splide
+                options={{
+                  type: "slide",
+                  perPage: 3,
+                  perMove: 1,
+                  gap: "24px",
+                  arrows: false,
+                  pagination: true,
+                  breakpoints: {
+                    899: {
+                      perPage: 2,
+                      gap: "16px",
+                    },
+                    599: {
+                      perPage: 1,
+                      gap: "12px",
+                    },
+                  },
+                }}
+              >
+                {upsellProducts.map((upsell) => (
+                  <SplideSlide key={upsell.id}>
+                    <Box className="upsell_card">
+                      <Box className="upsell_img">
+                        <Image
+                          src={upsell.image}
+                          alt={upsell.name}
+                          width={300}
+                          height={250}
+                        />
+                      </Box>
+                      <Box className="upsell_details">
+                        <Typography variant="h4" className="upsell_name">
+                          {upsell.name}
+                        </Typography>
+                        <Box className="upsell_price">₹{upsell.price.toFixed(2)}</Box>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        disableRipple
+                        onClick={() => handleAddUpsell(upsell)}
+                        fullWidth
+                      >
+                        Add to Basket
+                      </Button>
+                    </Box>
+                  </SplideSlide>
+                ))}
+              </Splide>
+            ) : (
+              <Box className="upsell_grid">
+                {upsellProducts.map((upsell) => (
+                  <Box className="upsell_card" key={upsell.id}>
+                    <Box className="upsell_img">
+                      <Image
+                        src={upsell.image}
+                        alt={upsell.name}
+                        width={300}
+                        height={250}
+                      />
+                    </Box>
+                    <Box className="upsell_details">
+                      <Typography variant="h4" className="upsell_name">
+                        {upsell.name}
+                      </Typography>
+                      <Box className="upsell_price">₹{upsell.price.toFixed(2)}</Box>
+                    </Box>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disableRipple
+                      onClick={() => handleAddUpsell(upsell)}
+                      fullWidth
+                    >
+                      Add to Basket
+                    </Button>
+                  </Box>
+                ))}
               </Box>
-            ))}
+            )}
           </Box>
-        </Box>
+        )}
       </Container>
     </CartMainWrapper>
   );
 }
+

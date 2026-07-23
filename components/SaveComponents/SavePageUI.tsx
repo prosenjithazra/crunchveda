@@ -1,76 +1,70 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Container } from '@mui/material';
+import React from 'react';
+import { Container, Box, CircularProgress } from '@mui/material';
 import { toast } from 'react-hot-toast';
 
-import { assets } from '@/json/assest';
 import { SavePageWrapper } from '@/styles/StyledComponents/SavePageWrapper';
 import CuratedSelectionList, { SavedItem } from './CuratedSelectionList';
 import RecommendationList from './RecommendationList';
-
-const mockSavedItems: SavedItem[] = [
-  {
-    id: 'dates-1',
-    category: 'DESERT HARVEST',
-    name: 'Premium Medjool Dates',
-    description: 'Hand-selected for honey-like sweetness.',
-    price: 32.00,
-    image: assets.dates
-  },
-  {
-    id: 'dates-2',
-    category: 'DESERT HARVEST',
-    name: 'Premium Medjool Dates',
-    description: 'Hand-selected for honey-like sweetness.',
-    price: 32.00,
-    image: assets.dates
-  },
-  {
-    id: 'dates-3',
-    category: 'DESERT HARVEST',
-    name: 'Premium Medjool Dates',
-    description: 'Hand-selected for honey-like sweetness.',
-    price: 32.00,
-    image: assets.dates
-  }
-];
+import { useSavedProducts } from '@/hooks/useSavedProducts';
+import { useCart } from '@/contexts/CartContext';
 
 export default function SavePageUI() {
-  const [items, setItems] = useState<SavedItem[]>(mockSavedItems);
+  const { savedProducts, isLoading, removeSave } = useSavedProducts();
+  const { updateItem } = useCart();
 
   const handleRemoveItem = (id: string) => {
-    const itemToRemove = items.find((item) => item.id === id);
-    setItems((prev) => prev.filter((item) => item.id !== id));
-    if (itemToRemove) {
-      toast.success(`Removed ${itemToRemove.name} from your selection.`);
-    }
+    removeSave(id);
   };
 
   const handleClearAll = () => {
-    setItems([]);
+    if (savedProducts.length === 0) return;
+    savedProducts.forEach((item) => {
+      removeSave(item.id);
+    });
     toast.success('Cleared all items from your selection.');
   };
 
-  const handleMoveAllToBasket = () => {
-    toast.success('Moved all saved items to basket!');
-    setItems([]);
+  const handleAddSingleToBasket = async (item: SavedItem) => {
+    try {
+      const defaultSize = item.rawProduct?.defaultSize || '500g';
+      await updateItem(item.id, 1, defaultSize, item.price);
+      toast.success(`Added ${item.name} to harvest basket!`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to add item to basket');
+    }
   };
 
-  const handleAddSingleToBasket = (item: SavedItem) => {
-    toast.success(`Added ${item.name} to harvest basket!`);
+  const handleMoveAllToBasket = async () => {
+    if (savedProducts.length === 0) return;
+    try {
+      for (const item of savedProducts) {
+        const defaultSize = item.rawProduct?.defaultSize || '500g';
+        await updateItem(item.id, 1, defaultSize, item.price);
+      }
+      toast.success('Moved all saved items to basket!');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to move items to basket');
+    }
   };
 
   return (
     <SavePageWrapper>
       <Container fixed>
-        <CuratedSelectionList
-          items={items}
-          onRemoveItem={handleRemoveItem}
-          onClearAll={handleClearAll}
-          onMoveAllToBasket={handleMoveAllToBasket}
-          onAddSingleToBasket={handleAddSingleToBasket}
-        />
+        {isLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress color="primary" size={40} />
+          </Box>
+        ) : (
+          <CuratedSelectionList
+            items={savedProducts}
+            onRemoveItem={handleRemoveItem}
+            onClearAll={handleClearAll}
+            onMoveAllToBasket={handleMoveAllToBasket}
+            onAddSingleToBasket={handleAddSingleToBasket}
+          />
+        )}
         <RecommendationList />
       </Container>
     </SavePageWrapper>

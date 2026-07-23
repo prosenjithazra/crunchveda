@@ -8,8 +8,10 @@ export type UserProfile = {
   role: "admin" | "customer";
   createdAt: string;
   avatar?: string;
+  profilePicture?: string;
   phone: string;
   cartItems?: Array<{ product: string; quantity: number; _id?: string }>;
+  savedProducts?: any[];
 };
 
 export type AuthResponse = {
@@ -102,12 +104,21 @@ export const authService = {
   },
 
   getMe: async (token: string): Promise<ProfileResponse> => {
-    const res = await fetch(`${API_URL}/auth/me`, {
+    let res = await fetch(`${API_URL}/auth/profile`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    if (!res.ok) {
+      res = await fetch(`${API_URL}/auth/me`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
 
     const data = await res.json();
     if (!res.ok) {
@@ -124,6 +135,51 @@ export const authService = {
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || "Failed to refresh token");
+    }
+    return data;
+  },
+
+  getSavedProducts: async (token: string): Promise<any> => {
+    const res = await fetch(`/api/auth/saved-products`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch saved products");
+    }
+    return data;
+  },
+
+  toggleSaveProduct: async (productId: string, token: string): Promise<any> => {
+    const res = await fetch(`/api/auth/saved-products/toggle/${productId}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to update saved products");
+    }
+    return data;
+  },
+
+  removeSavedProduct: async (productId: string, token: string): Promise<any> => {
+    const res = await fetch(`/api/auth/saved-products/${productId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to remove saved product");
     }
     return data;
   },
